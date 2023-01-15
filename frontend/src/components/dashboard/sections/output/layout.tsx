@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import {PromptScene} from './PromptScene'
+import {OutputImage} from './OutputImage'
 
 const LayoutFlex = styled.div`
   width: 100%;
@@ -9,11 +9,10 @@ const LayoutFlex = styled.div`
   gap: 1rem;
 `
 
-
-export const PromptLayout = () => {
+export const OutputLayout = () => {
   return (
     <LayoutFlex>
-      <PromptScene/>
+      <OutputImage/>
     </LayoutFlex>
   )
 }

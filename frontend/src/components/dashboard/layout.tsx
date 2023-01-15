@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 import {Paper} from '@mui/material'
 import {H1} from '../styled/Headers'
+import {HeaderLayout} from './sections/header/layout'
+import {OutputLayout} from './sections/output/layout'
 import {PromptLayout} from './sections/prompt/layout'
 
 const LayoutGrid = styled.main`
@@ -45,7 +47,7 @@ export const DashboardLayout = () => {
     <LayoutGrid>
       <HeaderArea>
         <StyledPaper>
-          <H1>Dashboard</H1>
+          <HeaderLayout/>
         </StyledPaper>
       </HeaderArea>
       <PromptArea>
@@ -55,7 +57,7 @@ export const DashboardLayout = () => {
       </PromptArea>
       <OutputArea>
         <StyledPaper>
-          <H1>Output</H1>
+          <OutputLayout/>
         </StyledPaper>
       </OutputArea>
       <OptionsArea>
