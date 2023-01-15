@@ -1,24 +1,30 @@
 import styled from '@emotion/styled'
 import {Paper} from '@mui/material'
 import {H1} from '../styled/Headers'
+import {PromptLayout} from './sections/prompt/layout'
 
 const LayoutGrid = styled.main`
   height: 100vh;
   width: 100vw;
-  
+
   display: grid;
   gap: 1rem;
   padding: 1rem;
-  
+
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: min-content 1fr 1fr;
   grid-template-areas:
-    'tags output'
+    'header header'
+    'prompt output'
     'options output';
 `
 
-const TagsArea = styled.section`
-  grid-area: tags;
+const HeaderArea = styled.header`
+  grid-area: header;
+`
+
+const PromptArea = styled.section`
+  grid-area: prompt;
 `
 
 const OutputArea = styled.section`
@@ -37,11 +43,16 @@ const StyledPaper = styled(Paper)`
 export const DashboardLayout = () => {
   return (
     <LayoutGrid>
-      <TagsArea>
+      <HeaderArea>
         <StyledPaper>
-          <H1>Tags</H1>
+          <H1>Dashboard</H1>
         </StyledPaper>
-      </TagsArea>
+      </HeaderArea>
+      <PromptArea>
+        <StyledPaper>
+          <PromptLayout/>
+        </StyledPaper>
+      </PromptArea>
       <OutputArea>
         <StyledPaper>
           <H1>Output</H1>

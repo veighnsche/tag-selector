@@ -1,13 +1,13 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react'
 import socketio, {Socket} from 'socket.io-client'
 
+interface SocketProviderProps {
+  children: ReactNode
+}
+
 interface SocketContextProps {
   socket: Socket
   connected: boolean
-}
-
-interface SocketProviderProps {
-  children: ReactNode
 }
 
 const socket = socketio('http://localhost:5000')
