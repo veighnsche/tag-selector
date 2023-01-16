@@ -11,7 +11,7 @@ export function generateImage(emitEvent: string, socket: Socket) {
     console.time('generateImage')
 
     axios.post('http://127.0.0.1:7860/api/v1/generate', {
-      scene,
+      prompt: scene,
       steps: 20
     })
       .then(response => {
