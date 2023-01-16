@@ -1,5 +1,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import socketio, { Socket } from 'socket.io-client'
+import { useAppDispatch } from '../../store'
+import { SdStatus, setSdStatus } from '../../store/reducers/sdStatus'
 
 interface SocketProviderProps {
   children: ReactNode
@@ -25,8 +27,12 @@ const SocketContext = createContext<SocketContextProps>({
 export const SocketProvider = ({children}: SocketProviderProps) => {
   const [connected, setConnected] = useState(false)
   const [reconnectionTimer, setReconnectionTimer] = useState<NodeJS.Timeout>()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
+    /**
+     * Socket connection event
+     */
     socket.on('connect', () => {
       console.log('Connected to server')
       setConnected(true)
@@ -37,10 +43,30 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
       }
     })
 
+    /**
+     * Socket disconnection event
+     */
     socket.on('disconnect', () => {
       console.log('Disconnected from server')
       setConnected(false)
     })
+
+    /**
+     * Sd status event
+     */
+    socket.on('sdStatus', (status: SdStatus ) => {
+      console.log('sdStatus', status)
+      dispatch(setSdStatus(status))
+    })
+
+    /**
+     * Close socket connection on unmount
+     */
+    return () => {
+      socket.off('connect')
+      socket.off('disconnect')
+      socket.off('sdStatus')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

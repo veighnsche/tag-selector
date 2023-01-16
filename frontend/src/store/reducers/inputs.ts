@@ -14,7 +14,7 @@ interface InputsState {
 // Define the initial state using that type
 const initialState: InputsState = {
   prompt: {
-    scene: '',
+    scene: process.env.REACT_APP_DEFAULT_SCENE || '',
     tags: [],
     negativeTags: [],
   },

@@ -14,22 +14,35 @@ const io = new Server(server, {
   },
 })
 
+enum SdStatus {
+  READY = 'READY',
+  BUSY = 'BUSY',
+  ERROR = 'ERROR',
+}
+
 // Socket.io event handling
 io.on('connection', (socket) => {
   console.log('a user connected')
-
-  socket.on('generateImageRequest', (reqData: GenerateImageType) => {
-    generateImage(reqData)
-    .then(resData => {
-      socket.emit('generateImage', resData)
-    })
-    .catch((error: AxiosError) => {
-      socket.emit('error', error)
-    })
-  })
-
   socket.on('disconnect', () => {
     console.log('user disconnected')
   })
+
+  /**
+   * @description Generate image from text
+   */
+  socket.on('generateImage', (reqData: GenerateImageType) => {
+    socket.emit('sdStatus', SdStatus.BUSY)
+    generateImage(reqData)
+    .then(resData => {
+      socket.emit('sdStatus', SdStatus.READY)
+      socket.emit('generateImage', { data: resData })
+    })
+    .catch((error: AxiosError) => {
+      socket.emit('sdStatus', SdStatus.ERROR)
+      socket.emit('error', { error })
+    })
+  })
+
+
 })
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`))

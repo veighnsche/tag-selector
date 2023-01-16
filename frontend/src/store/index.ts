@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { inputsReducer } from './reducers/inputs'
+import { sdStatusReducer } from './reducers/sdStatus'
 
 export const store = configureStore({
   reducer: {
+    sdStatus: sdStatusReducer,
     inputs: inputsReducer,
   },
 })
