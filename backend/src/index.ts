@@ -1,14 +1,17 @@
 import express from 'express'
 import * as http from 'http'
-import {Server} from 'socket.io'
-import {socketRouter} from './router'
+import { Server } from 'socket.io'
+import { socketRouter } from './router'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
 
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: process.env.CLIENT_URL || "*",
   },
 })
 

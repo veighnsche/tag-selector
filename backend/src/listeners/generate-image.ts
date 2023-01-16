@@ -1,5 +1,5 @@
-import axios, {AxiosError} from 'axios'
-import {Socket} from 'socket.io'
+import axios, { AxiosError } from 'axios'
+import { Socket } from 'socket.io'
 
 interface RequestType {
   scene: string;

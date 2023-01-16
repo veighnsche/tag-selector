@@ -1,4 +1,4 @@
-import {GenerateButton} from './GenerateButton'
+import { GenerateButton } from './GenerateButton'
 
 export const HeaderButtonsRight = () => {
   return (

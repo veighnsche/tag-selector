@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import {PromptScene} from './PromptScene'
+import { PromptScene } from './PromptScene'
 
 const LayoutFlex = styled.div`
   width: 100%;

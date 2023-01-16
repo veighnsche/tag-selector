@@ -1,7 +1,7 @@
-import {TextField} from '@mui/material'
-import {ChangeEvent} from 'react'
-import {useAppDispatch, useAppSelector} from '../../../../store'
-import {selectScene, setScene} from '../../../../store/reducers/inputs'
+import { TextField } from '@mui/material'
+import { ChangeEvent } from 'react'
+import { useAppDispatch, useAppSelector } from '../../../../store'
+import { selectScene, setScene } from '../../../../store/reducers/inputs'
 
 export const PromptScene = () => {
   const scene = useAppSelector(selectScene)

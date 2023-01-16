@@ -1,6 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {TagType} from '../../types/Tag'
-import {RootState} from '../index'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { TagType } from '../../types/Tag'
+import { RootState } from '../index'
 
 // Define a type for the slice state
 interface InputsState {

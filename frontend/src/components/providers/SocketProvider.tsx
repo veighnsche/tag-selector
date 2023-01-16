@@ -1,5 +1,5 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react'
-import socketio, {Socket} from 'socket.io-client'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import socketio, { Socket } from 'socket.io-client'
 
 interface SocketProviderProps {
   children: ReactNode
@@ -10,7 +10,7 @@ interface SocketContextProps {
   connected: boolean
 }
 
-const socket = socketio('http://localhost:5432')
+const socket = socketio(process.env.SERVER_URL || 'http://localhost:5432')
 
 const SocketContext = createContext<SocketContextProps>({
   socket,

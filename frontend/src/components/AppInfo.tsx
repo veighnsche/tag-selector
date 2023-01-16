@@ -1,6 +1,6 @@
-import {Button} from '@mui/material'
-import React, {useEffect, useState} from 'react'
-import {useSocket} from './providers/SocketProvider'
+import { Button } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { useSocket } from './providers/SocketProvider'
 
 interface AppInfoMessage {
   name: string;

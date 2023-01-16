@@ -1,6 +1,6 @@
-import {Server, Socket} from 'socket.io'
-import {appInfoRequest} from './listeners/app-info'
-import {generateImage} from './listeners/generate-image'
+import { Server, Socket } from 'socket.io'
+import { appInfoRequest } from './listeners/app-info'
+import { generateImage } from './listeners/generate-image'
 
 enum SocketEvent {
   AppInfoRequest = 'appInfoRequest',

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import {OutputImage} from './OutputImage'
+import { OutputImage } from './OutputImage'
 
 const LayoutFlex = styled.div`
   width: 100%;

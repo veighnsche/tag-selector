@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
-import {Paper} from '@mui/material'
-import {H1} from '../styled/Headers'
-import {HeaderLayout} from './sections/header/layout'
-import {OutputLayout} from './sections/output/layout'
-import {PromptLayout} from './sections/prompt/layout'
+import { Paper } from '@mui/material'
+import { H1 } from '../styled/Headers'
+import { HeaderLayout } from './sections/header/layout'
+import { OutputLayout } from './sections/output/layout'
+import { PromptLayout } from './sections/prompt/layout'
 
 const LayoutGrid = styled.main`
   height: 100vh;

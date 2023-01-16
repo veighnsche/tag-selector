@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
-import {H1} from '../../../styled/Headers'
-import {HeaderButtonsRight} from './HeaderButtonsRight'
+import { H1 } from '../../../styled/Headers'
+import { HeaderButtonsRight } from './HeaderButtonsRight'
 
 const LayoutFlex = styled.div`
   width: 100%;
