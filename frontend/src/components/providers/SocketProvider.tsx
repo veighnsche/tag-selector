@@ -10,7 +10,12 @@ interface SocketContextProps {
   connected: boolean
 }
 
-const socket = socketio(process.env.SERVER_URL || 'http://localhost:5432')
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:5432'
+
+const socket = socketio(SERVER_URL, {
+  transports: ['websocket'],
+  upgrade: false,
+})
 
 const SocketContext = createContext<SocketContextProps>({
   socket,
@@ -36,6 +41,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
       console.log('Disconnected from server')
       setConnected(false)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // attempt to reconnect if disconnected

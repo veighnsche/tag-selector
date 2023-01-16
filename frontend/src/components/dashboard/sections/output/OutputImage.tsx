@@ -5,7 +5,7 @@ export const OutputImage = () => {
   const {socket} = useSocket()
 
   useEffect(() => {
-    socket.on('generateImageResponse', (data) => {
+    socket.on('generateImage', (data) => {
       console.log(data)
     })
   })

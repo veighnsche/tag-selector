@@ -1,17 +1,16 @@
+import { AxiosError } from 'axios'
 import express from 'express'
 import * as http from 'http'
 import { Server } from 'socket.io'
-import { socketRouter } from './router'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import { CLIENT_URL, PORT } from './constants'
+import { generateImage } from './utils/generate-image'
+import type { GenerateImageType } from './utils/generate-image'
 
 const app = express()
-
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "*",
+    origin: CLIENT_URL,
   },
 })
 
@@ -19,12 +18,18 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('a user connected')
 
-  socketRouter(socket, io)
+  socket.on('generateImageRequest', (reqData: GenerateImageType) => {
+    generateImage(reqData)
+    .then(resData => {
+      socket.emit('generateImage', resData)
+    })
+    .catch((error: AxiosError) => {
+      socket.emit('error', error)
+    })
+  })
 
   socket.on('disconnect', () => {
     console.log('user disconnected')
   })
 })
-
-const PORT = process.env.PORT || 5432
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`))
