@@ -10,9 +10,9 @@ export function generateImage(emitEvent: string, socket: Socket) {
     console.log('Generating image for scene:', scene)
     console.time('generateImage')
 
-    axios.post('http://localhost:7860/sdapi/v1/txt2img', {
-      prompt: scene,
-      steps: 20,
+    axios.post('http://127.0.0.1:7860/api/v1/generate', {
+      scene,
+      steps: 20
     })
       .then(response => {
         console.timeEnd('generateImage')

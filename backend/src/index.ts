@@ -2,10 +2,8 @@ import express from 'express'
 import * as http from 'http'
 import {Server} from 'socket.io'
 import {socketRouter} from './router'
-import cors from 'cors'
 
 const app = express()
-app.use(cors({origin: '*'}))
 
 const server = http.createServer(app)
 const io = new Server(server, {
@@ -25,5 +23,5 @@ io.on('connection', (socket) => {
   })
 })
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5432
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`))

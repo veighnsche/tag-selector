@@ -10,7 +10,7 @@ interface SocketContextProps {
   connected: boolean
 }
 
-const socket = socketio('http://localhost:5000')
+const socket = socketio('http://localhost:5432')
 
 const SocketContext = createContext<SocketContextProps>({
   socket,
