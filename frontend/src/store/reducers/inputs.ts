@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ImageInputsType, TagType } from '@shared/types/image-input'
 import { RootState } from '../index'
-import {ImageInputsType, TagType} from 'shared'
 
 const initialState: ImageInputsType = {
   prompt: {

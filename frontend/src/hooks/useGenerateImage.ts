@@ -1,4 +1,5 @@
-import {SocketEvent} from 'shared'
+
+import { SocketEvent } from '@shared/types/socket-event'
 import { useSocket } from '../components/providers/SocketProvider'
 import { useAppSelector } from '../store'
 import { selectInputs } from '../store/reducers/inputs'

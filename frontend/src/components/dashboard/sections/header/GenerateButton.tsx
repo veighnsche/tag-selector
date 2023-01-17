@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { SdStatus } from 'shared'
+import { SdStatus } from '@shared/types/sd-status'
 import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppSelector } from '../../../../store'
 import { selectSdStatus } from '../../../../store/reducers/sdStatus'
