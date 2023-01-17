@@ -1,3 +1,5 @@
-export function SaveImageToOutputs(imageData: any, reqData: any) {
+import {ImageInputsType, ImageOutputType} from 'shared'
+
+export function SaveImageToOutputs(imageInput: ImageInputsType, imageOutput: ImageOutputType): void {
 
 }

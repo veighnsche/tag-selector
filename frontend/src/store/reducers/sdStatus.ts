@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {SdStatus} from 'shared'
 import { RootState } from '../index'
-
-export enum SdStatus {
-  READY = 'READY',
-  BUSY = 'BUSY',
-  ERROR = 'ERROR',
-}
 
 interface SdStatusState {
   status: SdStatus

@@ -1,16 +1,3 @@
-export interface TagType {
-  name: string
-  strength: number
-}
-
-export interface ImageInputsType {
-  prompt: {
-    scene: string,
-    tags: TagType[],
-    negativeTags: TagType[],
-  }
-  options: {
-    width: number,
-    height: number,
-  }
-}
+export { TagType, ImageInputsType } from './types/image-input'
+export { ImageOutputType } from './types/image-output'
+export { SdStatus } from './types/sd-status'

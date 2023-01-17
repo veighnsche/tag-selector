@@ -1,25 +1,11 @@
 import axios, { AxiosError } from 'axios'
+import {ImageInputsType, ImageOutputType} from 'shared'
 import { SD_URL } from '../constants'
 
-export interface TagType {
-  name: string
-  strength: number
-}
-
-export interface InputsState {
-  prompt: {
-    scene: string,
-    tags: TagType[],
-    negativeTags: TagType[],
-  }
-  options: {
-    width: number,
-    height: number,
-  }
-}
-
-export function generateImage({ prompt: { scene }, options: { width, height} }: InputsState) {
-  console.log('Generating image for scene:', scene)
+export function generateImage({
+  prompt: { scene },
+  options: { width, height}
+}: ImageInputsType): Promise<ImageOutputType> {
   console.time('generateImage')
 
   return axios.post(`${SD_URL}/sdapi/v1/txt2img`, {

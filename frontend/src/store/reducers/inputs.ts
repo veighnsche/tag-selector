@@ -1,22 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TagType } from '../../types/Tag'
 import { RootState } from '../index'
-import { ImageInputsType } from 'shared'
+import {ImageInputsType, TagType} from 'shared'
 
-// Define a type for the slice state
-// interface InputsState {
-//   prompt: {
-//     scene: string,
-//     tags: TagType[],
-//     negativeTags: TagType[],
-//   }
-//   options: {
-//     width: number,
-//     height: number,
-//   }
-// }
-//
-// // Define the initial state using that type
 const initialState: ImageInputsType = {
   prompt: {
     scene: process.env.REACT_APP_DEFAULT_SCENE || '',

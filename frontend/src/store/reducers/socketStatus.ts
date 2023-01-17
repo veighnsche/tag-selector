@@ -29,4 +29,3 @@ export const { setSocketStatus } = socketStatusSlice.actions
 export const selectSocketStatus = (state: RootState) => state.socketStatus.status
 
 export const socketStatusReducer = socketStatusSlice.reducer
-
