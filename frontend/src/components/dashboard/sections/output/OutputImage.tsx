@@ -1,33 +1,36 @@
 import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
+import { useAppDispatch } from '../../../../store'
+import { addImageToStart } from '../../../../store/reducers/images'
 import { ImageOutputType, SocketEvent } from '../../../../types'
 import { useSocket } from '../../../providers/SocketProvider'
 
-
-
 const ImageWrapper = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  width: 100%;
-  height: 100%;
 `
 
+// stretch to fit parent
 const StyledImage = styled.img`
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
 `
 
 export const OutputImage = () => {
   const socket = useSocket()
   const [generateImageData, setGenerateImageData] = useState<ImageOutputType | null>(null)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     socket.on(SocketEvent.IMAGE_OUTPUT, ({ imageOutput }: { imageOutput: ImageOutputType }) => {
-      console.log(imageOutput)
       setGenerateImageData(imageOutput)
+
+      const prefixed = imageOutput.images.map((image) => `data:image/png;base64,${image}`)
+      dispatch(addImageToStart(prefixed[0]))
     })
 
     return () => {

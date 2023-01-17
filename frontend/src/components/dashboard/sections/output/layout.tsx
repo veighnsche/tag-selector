@@ -3,10 +3,10 @@ import { OutputImage } from './OutputImage'
 
 const LayoutFlex = styled.div`
   width: 100%;
+  height: 80vh;
   
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 `
 
 export const OutputLayout = () => {

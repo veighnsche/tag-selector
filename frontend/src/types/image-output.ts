@@ -4,3 +4,8 @@ export interface ImageOutputType {
     prompt: string
   }
 }
+
+export interface GetImagesPathsType {
+  toIndex?: number
+  amount?: number
+}

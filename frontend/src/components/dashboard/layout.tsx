@@ -7,12 +7,10 @@ import { OutputLayout } from './sections/output/layout'
 import { PromptLayout } from './sections/prompt/layout'
 
 const LayoutGrid = styled.main`
-  height: 100vh;
-  width: 100vw;
-
+  width: 100%;
+  
   display: grid;
   gap: 1rem;
-  padding: 1rem;
 
   grid-template-columns: 1fr 1fr;
   grid-template-rows: min-content 1fr 1fr;

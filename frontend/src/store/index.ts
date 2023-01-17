@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { imagesReducer } from './reducers/images'
 import { inputsReducer } from './reducers/inputs'
 import { sdStatusReducer } from './reducers/sdStatus'
 import { socketStatusReducer } from './reducers/socketStatus'
@@ -9,6 +10,7 @@ export const store = configureStore({
     socketStatus: socketStatusReducer,
     sdStatus: sdStatusReducer,
     inputs: inputsReducer,
+    images: imagesReducer
   },
 })
 
