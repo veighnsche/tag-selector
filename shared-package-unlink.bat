@@ -1,5 +1,5 @@
-cd frontend
+cd backend
 call npm unlink frontend
-cd ../backend
+cd ../frontend
 call npm unlink frontend
 cd ..
