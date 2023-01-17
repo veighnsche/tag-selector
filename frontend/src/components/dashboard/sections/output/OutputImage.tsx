@@ -19,8 +19,13 @@ const ImageWrapper = styled.div`
   height: 100%;
 `
 
+const StyledImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+`
+
 export const OutputImage = () => {
-  const { socket } = useSocket()
+  const socket = useSocket()
   const [generateImageData, setGenerateImageData] = useState<GenerateImageData | null>(null)
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export const OutputImage = () => {
   return (
     <ImageWrapper>
       {generateImageData?.images.map((image, index) => (
-        <img
+        <StyledImage
           key={index}
           src={`data:image/png;base64,${image}`}
           alt={generateImageData?.parameters.prompt}

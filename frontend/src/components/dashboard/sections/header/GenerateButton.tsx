@@ -1,17 +1,14 @@
 import { Button } from '@mui/material'
+import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppSelector } from '../../../../store'
-import { selectScene } from '../../../../store/reducers/inputs'
 import { SdStatus, selectSdStatus } from '../../../../store/reducers/sdStatus'
-import { useSocket } from '../../../providers/SocketProvider'
 
 export const GenerateButton = () => {
-  const {socket} = useSocket()
-  const scene = useAppSelector(selectScene)
   const sdStatus = useAppSelector(selectSdStatus)
+  const generateImage = useGenerateImage()
 
   function handleClick() {
-    console.log(scene)
-    socket.emit('generateImage', {scene})
+    generateImage()
   }
 
   return (
@@ -20,7 +17,7 @@ export const GenerateButton = () => {
       onClick={handleClick}
       disabled={sdStatus === SdStatus.BUSY}
     >
-      Generate
+      Generate one
     </Button>
   )
 }

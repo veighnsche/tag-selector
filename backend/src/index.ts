@@ -3,8 +3,7 @@ import express from 'express'
 import * as http from 'http'
 import { Server } from 'socket.io'
 import { CLIENT_URL, PORT } from './constants'
-import { generateImage } from './utils/generate-image'
-import type { GenerateImageType } from './utils/generate-image'
+import { generateImage, InputsState } from './utils/generate-image'
 
 const app = express()
 const server = http.createServer(app)
@@ -30,9 +29,9 @@ io.on('connection', (socket) => {
   /**
    * @description Generate image from text
    */
-  socket.on('generateImage', (reqData: GenerateImageType) => {
+  socket.on('generateImage', (reqData: { inputs: InputsState }) => {
     socket.emit('sdStatus', SdStatus.BUSY)
-    generateImage(reqData)
+    generateImage(reqData.inputs)
     .then(resData => {
       socket.emit('sdStatus', SdStatus.READY)
       socket.emit('generateImage', { data: resData })

@@ -20,7 +20,6 @@ export const sdStatusSlice = createSlice({
   initialState,
   reducers: {
     setSdStatus: (state, action: PayloadAction<SdStatus>) => {
-      console.log('setSdStatus', action.payload)
       state.status = action.payload
     }
   }

@@ -9,6 +9,10 @@ interface InputsState {
     tags: TagType[],
     negativeTags: TagType[],
   }
+  options: {
+    width: number,
+    height: number,
+  }
 }
 
 // Define the initial state using that type
@@ -17,6 +21,10 @@ const initialState: InputsState = {
     scene: process.env.REACT_APP_DEFAULT_SCENE || '',
     tags: [],
     negativeTags: [],
+  },
+  options: {
+    width: 512,
+    height: 512,
   },
 }
 
@@ -92,7 +100,7 @@ export const inputsSlice = createSlice({
       name: TagType['name'],
       isNegative?: boolean,
     }>) => {
-      const {name, isNegative} = action.payload
+      const { name, isNegative } = action.payload
       const tags = isNegative ? state.prompt.negativeTags : state.prompt.tags
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
@@ -100,6 +108,14 @@ export const inputsSlice = createSlice({
         const strength = tags[tagIndex].strength
         tags[tagIndex].strength -= strength * 0.1
       }
+    },
+    setRatio: (state, action: PayloadAction<{
+      width: number,
+      height: number,
+    }>) => {
+      const { width, height } = action.payload
+      state.options.width = width
+      state.options.height = height
     },
   },
 })
@@ -112,11 +128,17 @@ export const {
   setTagStrength,
   increaseTagStrength,
   decreaseTagStrength,
+  setRatio,
 } = inputsSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectScene = (state: RootState) => state.inputs.prompt.scene
 export const selectTags = (state: RootState) => state.inputs.prompt.tags
 export const selectNegativeTags = (state: RootState) => state.inputs.prompt.negativeTags
+export const selectRatio = (state: RootState) => {
+  const { width, height } = state.inputs.options
+  return { width, height }
+}
+export const selectInputs = (state: RootState) => state.inputs
 
 export const inputsReducer = inputsSlice.reducer

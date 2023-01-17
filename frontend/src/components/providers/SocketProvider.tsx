@@ -1,15 +1,11 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import socketio, { Socket } from 'socket.io-client'
-import { useAppDispatch } from '../../store'
+import { useAppDispatch, useAppSelector } from '../../store'
 import { SdStatus, setSdStatus } from '../../store/reducers/sdStatus'
+import { selectSocketStatus, setSocketStatus, SocketStatus } from '../../store/reducers/socketStatus'
 
 interface SocketProviderProps {
   children: ReactNode
-}
-
-interface SocketContextProps {
-  socket: Socket
-  connected: boolean
 }
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:5432'
@@ -19,15 +15,12 @@ const socket = socketio(SERVER_URL, {
   upgrade: false,
 })
 
-const SocketContext = createContext<SocketContextProps>({
-  socket,
-  connected: false,
-})
+const SocketContext = createContext<Socket>(socket)
 
 export const SocketProvider = ({children}: SocketProviderProps) => {
-  const [connected, setConnected] = useState(false)
   const [reconnectionTimer, setReconnectionTimer] = useState<NodeJS.Timeout>()
   const dispatch = useAppDispatch()
+  const socketStatus = useAppSelector(selectSocketStatus)
 
   useEffect(() => {
     /**
@@ -35,7 +28,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
      */
     socket.on('connect', () => {
       console.log('Connected to server')
-      setConnected(true)
+      dispatch(setSocketStatus(SocketStatus.CONNECTED))
 
       if (reconnectionTimer) {
         clearTimeout(reconnectionTimer)
@@ -48,14 +41,13 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
      */
     socket.on('disconnect', () => {
       console.log('Disconnected from server')
-      setConnected(false)
+      dispatch(setSocketStatus(SocketStatus.DISCONNECTED))
     })
 
     /**
      * Sd status event
      */
     socket.on('sdStatus', (status: SdStatus ) => {
-      console.log('sdStatus', status)
       dispatch(setSdStatus(status))
     })
 
@@ -72,7 +64,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
 
   // attempt to reconnect if disconnected
   useEffect(() => {
-    if (!connected) {
+    if (socketStatus === SocketStatus.DISCONNECTED) {
       console.log('Attempting to reconnect with server...')
       const timer = setTimeout(() => {
         socket.connect()
@@ -80,10 +72,10 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
 
       setReconnectionTimer(timer)
     }
-  }, [connected])
+  }, [socketStatus])
 
   return (
-    <SocketContext.Provider value={{socket, connected}}>
+    <SocketContext.Provider value={socket}>
       {children}
     </SocketContext.Provider>
   )
