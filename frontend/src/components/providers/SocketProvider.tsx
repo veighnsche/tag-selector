@@ -1,7 +1,5 @@
-import { SdStatus } from '@shared/types/sd-status'
-import { SocketEvent } from '@shared/types/socket-event'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-
+import { SdStatus, SocketEvent } from 'shared'
 import socketio, { Socket } from 'socket.io-client'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { setSdStatus } from '../../store/reducers/sdStatus'

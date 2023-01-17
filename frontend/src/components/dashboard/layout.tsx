@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Paper } from '@mui/material'
+import React from 'react'
 import { HeaderLayout } from './sections/header/layout'
 import { OptionsLayout } from './sections/options/layout'
 import { OutputLayout } from './sections/output/layout'

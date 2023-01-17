@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { ImageOutputType } from '@shared/types/image-output'
-import { SocketEvent } from '@shared/types/socket-event'
 import { useEffect, useState } from 'react'
+import { ImageOutputType } from 'shared/types/image-output'
+import { SocketEvent } from 'shared/types/socket-event'
 import { useSocket } from '../../../providers/SocketProvider'
 
 

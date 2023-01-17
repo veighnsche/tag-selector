@@ -6,7 +6,6 @@
       "dom.iterable",
       "esnext"
     ],
-    "paths": { "@shared/*": ["../shared/*"], },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
