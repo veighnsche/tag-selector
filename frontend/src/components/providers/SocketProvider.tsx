@@ -1,7 +1,8 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import {SdStatus, SocketEvent} from 'shared'
 import socketio, { Socket } from 'socket.io-client'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { SdStatus, setSdStatus } from '../../store/reducers/sdStatus'
+import { setSdStatus } from '../../store/reducers/sdStatus'
 import { selectSocketStatus, setSocketStatus, SocketStatus } from '../../store/reducers/socketStatus'
 
 interface SocketProviderProps {
@@ -26,7 +27,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
     /**
      * Socket connection event
      */
-    socket.on('connect', () => {
+    socket.on(SocketEvent.CONNECT, () => {
       console.log('Connected to server')
       dispatch(setSocketStatus(SocketStatus.CONNECTED))
 
@@ -39,7 +40,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
     /**
      * Socket disconnection event
      */
-    socket.on('disconnect', () => {
+    socket.on(SocketEvent.DISCONNECT, () => {
       console.log('Disconnected from server')
       dispatch(setSocketStatus(SocketStatus.DISCONNECTED))
     })
@@ -47,7 +48,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
     /**
      * Sd status event
      */
-    socket.on('sdStatus', (status: SdStatus ) => {
+    socket.on(SocketEvent.SD_STATUS, (status: SdStatus ) => {
       dispatch(setSdStatus(status))
     })
 
@@ -55,9 +56,9 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
      * Close socket connection on unmount
      */
     return () => {
-      socket.off('connect')
-      socket.off('disconnect')
-      socket.off('sdStatus')
+      socket.off(SocketEvent.CONNECT)
+      socket.off(SocketEvent.DISCONNECT)
+      socket.off(SocketEvent.SD_STATUS)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

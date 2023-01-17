@@ -1,10 +1,10 @@
-import { AxiosError } from 'axios'
+import {AxiosError} from 'axios'
 import express from 'express'
 import * as http from 'http'
-import {ImageInputsType, SdStatus} from 'shared'
-import { Server } from 'socket.io'
-import { CLIENT_URL, PORT } from './constants'
-import { generateImage } from './utils/generate-image'
+import {ImageInputsType, SdStatus, SocketEvent} from 'shared'
+import {Server} from 'socket.io'
+import {CLIENT_URL, PORT} from './constants'
+import {generateImage} from './utils/generate-image'
 import {SaveImageToOutputs} from './utils/save-image-to-outputs'
 
 const app = express()
@@ -16,27 +16,31 @@ const io = new Server(server, {
 })
 
 // Socket.io event handling
-io.on('connection', (socket) => {
+io.on(SocketEvent.CONNECT, (socket) => {
   console.log('a user connected')
-  socket.on('disconnect', () => {
+  socket.on(SocketEvent.DISCONNECT, () => {
     console.log('user disconnected')
   })
 
   /**
    * @description Generate image from text
    */
-  socket.on('generateImage', (reqData: { inputs: ImageInputsType }) => {
-    socket.emit('sdStatus', SdStatus.BUSY)
-    generateImage(reqData.inputs)
-    .then(resData => {
-      socket.emit('sdStatus', SdStatus.READY)
-      socket.emit('generateImage', { data: resData })
-      SaveImageToOutputs(reqData.inputs, resData)
-    })
-    .catch((error: AxiosError) => {
-      socket.emit('sdStatus', SdStatus.ERROR)
-      socket.emit('error', { error })
-    })
+  socket.on(SocketEvent.GENERATE_IMAGE, async (reqData: { inputs: ImageInputsType }) => {
+    socket.emit(SocketEvent.SD_STATUS, SdStatus.BUSY)
+    const imageOutput = await generateImage(reqData.inputs)
+      .catch((error: AxiosError) => {
+        socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
+        socket.emit(SocketEvent.ERROR, {error})
+      })
+
+    if (!imageOutput) return
+
+    socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
+    socket.emit(SocketEvent.IMAGE_OUTPUT, {imageOutput})
+    SaveImageToOutputs(imageOutput)
+      .catch((error: Error) => {
+        socket.emit(SocketEvent.ERROR, {error})
+      })
   })
 
 
