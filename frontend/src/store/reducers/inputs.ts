@@ -95,7 +95,7 @@ export const inputsSlice = createSlice({
         tags[tagIndex].strength -= strength * 0.1
       }
     },
-    setRatio: (state, action: PayloadAction<{
+    setSize: (state, action: PayloadAction<{
       width: number,
       height: number,
     }>) => {
@@ -114,14 +114,14 @@ export const {
   setTagStrength,
   increaseTagStrength,
   decreaseTagStrength,
-  setRatio,
+  setSize,
 } = inputsSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectScene = (state: RootState) => state.inputs.prompt.scene
 export const selectTags = (state: RootState) => state.inputs.prompt.tags
 export const selectNegativeTags = (state: RootState) => state.inputs.prompt.negativeTags
-export const selectRatio = (state: RootState) => {
+export const selectSize = (state: RootState) => {
   const { width, height } = state.inputs.options
   return { width, height }
 }

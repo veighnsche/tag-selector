@@ -49,6 +49,9 @@ io.on(SocketEvent.CONNECT, (socket) => {
 
   socket.on(SocketEvent.FETCH_IMAGES, async (data: GetImagesPathsType) => {
     const images = await getImagesPaths(data)
+    .catch((error: Error) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
     socket.emit(SocketEvent.FETCH_IMAGES, { images })
   })
 
