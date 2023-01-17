@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { SdStatus } from 'shared'
+import { SdStatus } from '../../types'
 
 import { RootState } from '../index'
 

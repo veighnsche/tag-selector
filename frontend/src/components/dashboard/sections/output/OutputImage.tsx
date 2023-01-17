@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
-import { ImageOutputType } from 'shared/types/image-output'
-import { SocketEvent } from 'shared/types/socket-event'
+import { ImageOutputType, SocketEvent } from '../../../../types'
 import { useSocket } from '../../../providers/SocketProvider'
 
 
@@ -26,9 +25,9 @@ export const OutputImage = () => {
   const [generateImageData, setGenerateImageData] = useState<ImageOutputType | null>(null)
 
   useEffect(() => {
-    socket.on(SocketEvent.IMAGE_OUTPUT, ({ data }: { data: ImageOutputType }) => {
-      console.log(data)
-      setGenerateImageData(data)
+    socket.on(SocketEvent.IMAGE_OUTPUT, ({ imageOutput }: { imageOutput: ImageOutputType }) => {
+      console.log(imageOutput)
+      setGenerateImageData(imageOutput)
     })
 
     return () => {

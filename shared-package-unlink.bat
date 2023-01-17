@@ -1,5 +1,5 @@
-cd shared
-call npm unlink shared
+cd frontend
+call npm unlink frontend
+cd ../backend
+call npm unlink frontend
 cd ..
-start cmd /c "cd frontend && npm unlink shared"
-start cmd /c "cd backend && npm unlink shared"

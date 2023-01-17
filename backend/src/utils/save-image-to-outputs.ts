@@ -1,4 +1,5 @@
-import {ImageOutputType} from 'shared'
+
+import { ImageOutputType } from 'frontend/src/types'
 import fs from 'fs'
 import path from 'path'
 import {promisify} from 'util'

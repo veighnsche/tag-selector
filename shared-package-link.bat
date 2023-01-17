@@ -1,5 +1,5 @@
-cd shared
+cd frontend
 call npm link
+cd ../backend
+call npm link frontend
 cd ..
-start cmd /c "cd frontend && npm link shared"
-start cmd /c "cd backend && npm link shared"

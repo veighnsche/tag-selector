@@ -1,9 +1,9 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { SdStatus, SocketEvent } from 'shared'
 import socketio, { Socket } from 'socket.io-client'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { setSdStatus } from '../../store/reducers/sdStatus'
 import { selectSocketStatus, setSocketStatus, SocketStatus } from '../../store/reducers/socketStatus'
+import { SdStatus, SocketEvent } from '../../types'
 
 interface SocketProviderProps {
   children: ReactNode

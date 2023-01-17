@@ -1,7 +1,7 @@
 import {AxiosError} from 'axios'
 import express from 'express'
+import { ImageInputsType, SdStatus, SocketEvent } from 'frontend/src/types'
 import * as http from 'http'
-import {ImageInputsType, SdStatus, SocketEvent} from 'shared'
 import {Server} from 'socket.io'
 import {CLIENT_URL, PORT} from './constants'
 import {generateImage} from './utils/generate-image'

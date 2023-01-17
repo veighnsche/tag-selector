@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import {ImageInputsType, ImageOutputType} from 'shared'
+import { ImageInputsType, ImageOutputType } from 'frontend/src/types'
 import { SD_URL } from '../constants'
 
 export function generateImage({

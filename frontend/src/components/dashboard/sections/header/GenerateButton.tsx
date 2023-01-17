@@ -1,10 +1,10 @@
 import { Button } from '@mui/material'
 import React from 'react'
-import { SdStatus } from 'shared'
 
 import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppSelector } from '../../../../store'
 import { selectSdStatus } from '../../../../store/reducers/sdStatus'
+import { SdStatus } from '../../../../types'
 
 export const GenerateButton = () => {
   const sdStatus = useAppSelector(selectSdStatus)
