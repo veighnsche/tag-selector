@@ -1,7 +1,8 @@
 import { Button } from '@mui/material'
+import { SdStatus } from 'shared'
 import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppSelector } from '../../../../store'
-import { SdStatus, selectSdStatus } from '../../../../store/reducers/sdStatus'
+import { selectSdStatus } from '../../../../store/reducers/sdStatus'
 
 export const GenerateButton = () => {
   const sdStatus = useAppSelector(selectSdStatus)
