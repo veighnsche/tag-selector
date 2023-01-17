@@ -27,8 +27,7 @@ export const OutputsContainer = ({ children }: OutputsContainerProps) => {
 
   useEffect(() => {
     socket.on(SocketEvent.FETCH_IMAGES, ({ images }: { images: string[] }) => {
-      const url = process.env.REACT_APP_SERVER_URL + '/outputs/'
-      dispatch(addImagesToEnd(images.map((image) => url + image)))
+      dispatch(addImagesToEnd(images))
     })
 
     return () => {

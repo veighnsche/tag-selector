@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
 import { useAppDispatch } from '../../../../store'
-import { addImageToStart } from '../../../../store/reducers/images'
+import { addImagesToStart } from '../../../../store/reducers/images'
 import { ImageOutputType, SocketEvent } from '../../../../types'
 import { useSocket } from '../../../providers/SocketProvider'
 
@@ -26,11 +26,9 @@ export const OutputImage = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    socket.on(SocketEvent.IMAGE_OUTPUT, ({ imageOutput }: { imageOutput: ImageOutputType }) => {
+    socket.on(SocketEvent.IMAGE_OUTPUT, ({ imageOutput, images }: { imageOutput: ImageOutputType, images: string[] }) => {
       setGenerateImageData(imageOutput)
-
-      const prefixed = imageOutput.images.map((image) => `data:image/png;base64,${image}`)
-      dispatch(addImageToStart(prefixed[0]))
+      dispatch(addImagesToStart(images))
     })
 
     return () => {

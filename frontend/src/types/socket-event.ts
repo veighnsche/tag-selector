@@ -7,5 +7,5 @@ export enum SocketEvent {
   GENERATE_IMAGE = 'generate-image',
   IMAGE_OUTPUT = 'image-output',
   FETCH_IMAGES = 'fetch-images',
-
+  REMOVE_IMAGE = 'remove-image',
 }

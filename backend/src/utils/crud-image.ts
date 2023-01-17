@@ -91,29 +91,31 @@ async function getFiles(dir: string): Promise<ValidFile[]> {
  * @param {ImageOutputType} imageOutput - An object containing information about the image.
  * @return {Promise<void>} - A promise that resolves when the image has been saved.
  */
-export async function SaveImage(imageOutput: ImageOutputType): Promise<void> {
+export async function saveImages(imageOutput: ImageOutputType): Promise<string[]> {
   const outputsDir = getOutputsDir()
   const files = await getFiles(outputsDir)
   const nextIndex = getLastIndex(files) + 1
 
   // convert the base64 images to PNG files and save it to the root outputs folder
   // images are stored in an array
-  const imagePromises = imageOutput.images.map((image, index) => {
+  const imagePromises = imageOutput.images.map(async (image, index) => {
     const imageBuffer = Buffer.from(image, 'base64')
     const imageFileName = nameImage(nextIndex + index, imageOutput)
     const imageFilePath = path.join(outputsDir, imageFileName)
 
-    return promisify(fs.writeFile)(
+    await promisify(fs.writeFile)(
       imageFilePath,
       imageBuffer,
       'base64',
     )
+
+    return imageFileName
   })
 
-  await Promise.all(imagePromises)
+  return Promise.all(imagePromises)
 }
 
-export async function GetImagesPaths({ toIndex = Infinity, amount = Infinity }: GetImagesPathsType = {}): Promise<string[]> {
+export async function getImagesPaths({ toIndex = Infinity, amount = Infinity }: GetImagesPathsType = {}): Promise<string[]> {
   const outputsDir = getOutputsDir();
   const files = await getFiles(outputsDir);
   // sort files by index in descending order
@@ -122,4 +124,10 @@ export async function GetImagesPaths({ toIndex = Infinity, amount = Infinity }: 
   const filteredFiles = files.filter(file => file.index < toIndex).slice(0, amount);
   // return the file names
   return filteredFiles.map(file => file.fileName);
+}
+
+export async function removeImage(fileName: string): Promise<void> {
+  const outputsDir = getOutputsDir();
+  const filePath = path.join(outputsDir, fileName);
+  await promisify(fs.unlink)(filePath);
 }

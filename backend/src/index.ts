@@ -3,11 +3,11 @@ import express from 'express'
 import { ImageInputsType, SdStatus, SocketEvent } from 'frontend/src/types'
 import { GetImagesPathsType } from 'frontend/src/types/image-output'
 import * as http from 'http'
+import path from 'path'
 import { Server } from 'socket.io'
 import { CLIENT_URL, PORT } from './constants'
-import { GetImagesPaths, SaveImage } from './utils/crud-image'
+import { getImagesPaths, removeImage, saveImages } from './utils/crud-image'
 import { generateImage } from './utils/generate-image'
-import path from 'path'
 
 const app = express()
 const server = http.createServer(app)
@@ -40,16 +40,23 @@ io.on(SocketEvent.CONNECT, (socket) => {
     if (!imageOutput) return
 
     socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
-    socket.emit(SocketEvent.IMAGE_OUTPUT, { imageOutput })
-    SaveImage(imageOutput)
+    const images = await saveImages(imageOutput)
     .catch((error: Error) => {
       socket.emit(SocketEvent.ERROR, { error })
     })
+    socket.emit(SocketEvent.IMAGE_OUTPUT, { imageOutput, images })
   })
 
   socket.on(SocketEvent.FETCH_IMAGES, async (data: GetImagesPathsType) => {
-    const images = await GetImagesPaths(data)
+    const images = await getImagesPaths(data)
     socket.emit(SocketEvent.FETCH_IMAGES, { images })
+  })
+
+  socket.on(SocketEvent.REMOVE_IMAGE, async (data: { fileName: string }) => {
+    removeImage(data.fileName)
+    .catch((error: Error) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
   })
 
 })

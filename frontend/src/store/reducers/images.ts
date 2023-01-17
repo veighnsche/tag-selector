@@ -16,13 +16,17 @@ export const imagesSlice = createSlice({
     addImagesToEnd: (state, action: PayloadAction<string[]>) => {
       state.images.push(...action.payload)
     },
-    addImageToStart: (state, action: PayloadAction<string>) => {
-      state.images.unshift(action.payload)
+    addImagesToStart: (state, action: PayloadAction<string[]>) => {
+      console.log('addImagesToStart', action.payload)
+      state.images.unshift(...action.payload.reverse())
+    },
+    removeImage: (state, action: PayloadAction<number>) => {
+      state.images.splice(action.payload, 1)
     },
   }
 })
 
-export const { addImagesToEnd, addImageToStart } = imagesSlice.actions
+export const { addImagesToEnd, addImagesToStart, removeImage } = imagesSlice.actions
 
 export const selectImages = (state: RootState) => state.images.images
 
