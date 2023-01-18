@@ -8,6 +8,7 @@ import { fetchImageController, removeImageController } from './listeners/crud-im
 import { generateImageController } from './listeners/generate-image.controller'
 import {
   fetchOptionsController,
+  fetchSamplingMethodsController,
   fetchSdModelsController,
   setOptionsController,
 } from './listeners/sd-options.controller'
@@ -33,6 +34,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.FETCH_SD_MODELS, fetchSdModelsController(socket))
   socket.on(SocketEvent.FETCH_SD_OPTIONS, fetchOptionsController(socket))
   socket.on(SocketEvent.SET_SD_OPTIONS, setOptionsController(socket))
+  socket.on(SocketEvent.FETCH_SAMPLERS, fetchSamplingMethodsController(socket))
 })
 
 // host output folder

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import { IconButton } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { removeImage, selectImages } from '../../store/reducers/images'
 import { SocketEvent } from '../../types'
@@ -29,18 +30,15 @@ const StyledImage = styled.img`
   backface-visibility: hidden;
 `
 
-const DeleteButton = styled.button`
+const DeleteButton = styled(IconButton)`
   position: absolute;
   top: 0;
   right: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
+
   color: white;
   font-size: 1.5rem;
-  padding: 0.5rem;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity, color 0.2s ease-in-out;
 
   &:hover {
     opacity: 1;
@@ -61,17 +59,16 @@ export const Images = () => {
 
   return (
     <ImagesWrapper>
-      {images.map((image, index) => {
-        const fileIndex = Number(image.split('-')[0])
-        return (
-          <ImageContainer key={fileIndex}>
-            <StyledImage src={url + image} alt={image}/>
-            <DeleteButton onClick={() => handleDelete(index, image)}>
-              <DeleteOutlinedIcon/>
-            </DeleteButton>
-          </ImageContainer>
-        )
-      })}
+      {images.map((image, index) => (
+        <ImageContainer key={image}>
+          <StyledImage src={url + image} alt={image}/>
+          <DeleteButton onClick={() => {
+            handleDelete(index, image)
+          }}>
+            <DeleteOutlinedIcon/>
+          </DeleteButton>
+        </ImageContainer>
+      ))}
     </ImagesWrapper>
   )
 }

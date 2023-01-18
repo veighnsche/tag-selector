@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { useEffectOnce } from '../../../../hooks/useEffectOnce'
 import { useEmitters } from '../../../../hooks/useEmitters'
@@ -7,9 +6,10 @@ import { selectCurrentModel } from '../../../../store/reducers/sdOptions'
 import { SocketEvent } from '../../../../types'
 import { SdModelType } from '../../../../types/sd-models'
 import { useSocket } from '../../../providers/SocketProvider'
+import { Loading } from './Loading'
 
 interface SdModelWrapperProps {
-  children: ({ models, currentModel }: SdModelWrapperChildrenProps) => ReactNode;
+  children: (props: SdModelWrapperChildrenProps) => ReactNode;
 }
 
 interface SdModelWrapperChildrenProps {
@@ -54,7 +54,7 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
   }
 
   if (loading) {
-    return <TextField variant="outlined" label="Loading models..." size="small"/>
+    return <Loading subject={'models'}/>
   }
 
   return (

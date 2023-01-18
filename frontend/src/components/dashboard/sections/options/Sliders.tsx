@@ -1,18 +1,23 @@
 import styled from '@emotion/styled'
+import CasinoIcon from '@mui/icons-material/Casino'
 import {
   Checkbox,
   FormControl,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Paper,
-  Select, SelectChangeEvent,
+  Select,
+  SelectChangeEvent,
   Slider,
-  TextField,
 } from '@mui/material'
 import React from 'react'
-import { useAppSelector } from '../../../../store'
-import { selectSliders } from '../../../../store/reducers/inputs'
+import { useAppDispatch, useAppSelector } from '../../../../store'
+import { selectSliders, setCfg, setRestoreFaces, setSeed, setSteps } from '../../../../store/reducers/inputs'
+import { SamplingWrapper } from './SamplingWrapper'
 import { SdModelWrapper } from './SdModelWrapper'
 
 const StyledPaper = styled(Paper)`
@@ -26,54 +31,126 @@ const StyledPaper = styled(Paper)`
   gap: 1rem;
 `
 
+const SliderLabel = styled(InputLabel)`
+  transform: translateY(-0.5rem);
+`
+
 export const Sliders = () => {
   const values = useAppSelector(selectSliders)
+  const dispatch = useAppDispatch()
 
   return (
     <StyledPaper elevation={2}>
       <SdModelWrapper>
-        {({ models, currentModel, setModel }) => {
-          const handleChange = (e: SelectChangeEvent) => {
-            setModel(e.target.value as string)
-          }
-
-          return (
-            <FormControl>
-              <InputLabel size="small">Model</InputLabel>
-              <Select label="Model" size="small" value={currentModel} onChange={handleChange}>
-                {models.map((model) => (
-                  <MenuItem key={model.title} value={model.title}>
-                    {model.model_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )
-        }}
+        {({ models, currentModel, setModel }) => (
+          <FormControl>
+            <InputLabel size="small">Model</InputLabel>
+            <Select
+              label="Model"
+              size="small"
+              value={currentModel}
+              onChange={(e: SelectChangeEvent) => {
+                setModel(e.target.value as string)
+              }}
+            >
+              {models.map((model) => (
+                <MenuItem key={model.title} value={model.title}>
+                  {model.model_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </SdModelWrapper>
 
       <FormControl>
-        <InputLabel>Steps</InputLabel>
-        <Slider valueLabelDisplay="auto" min={1} max={150} size="small"/>
+        <SliderLabel>Steps</SliderLabel>
+        <Slider
+          valueLabelDisplay="on"
+          min={1}
+          max={150}
+          size="small"
+          value={values.steps}
+          onChange={(e, value) => {
+            dispatch(setSteps(value as number))
+          }}
+        />
       </FormControl>
 
       <FormControl>
-        <InputLabel>CFG</InputLabel>
-        <Slider valueLabelDisplay="auto" min={0} max={30} step={0.1} size="small"/>
+        <SliderLabel>CFG</SliderLabel>
+        <Slider
+          valueLabelDisplay="on"
+          min={0}
+          max={30}
+          step={0.1}
+          size="small"
+          value={values.cfg}
+          onChange={(e, value) => {
+            dispatch(setCfg(value as number))
+          }}
+        />
       </FormControl>
 
-      <TextField variant="outlined" label="Seed" size="small"/>
-
-      <FormControl>
-        {/*<InputLabel size="small">Sampling method</InputLabel>*/}
-        {/*<Select label="Sampling method" size="small">*/}
-        {/*  <MenuItem value={10}>Ten</MenuItem>*/}
-        {/*  <MenuItem value={20}>Twenty</MenuItem>*/}
-        {/*  <MenuItem value={30}>Thirty</MenuItem>*/}
-        {/*</Select>*/}
+      <FormControl variant="outlined">
+        <InputLabel>Seed</InputLabel>
+        <OutlinedInput
+          label="Seed"
+          size="small"
+          type="number"
+          value={values.seed}
+          onChange={(e) => {
+            dispatch(setSeed(Number(e.target.value) as number))
+          }}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => {
+                  dispatch(setSeed(-1))
+                }}
+                edge="end"
+              >
+                <CasinoIcon/>
+              </IconButton>
+            </InputAdornment>
+          }
+        />
       </FormControl>
 
-      <FormControlLabel control={<Checkbox size="small"/>} label="Restore faces"/>
+      <SamplingWrapper>
+        {({ samplers, setSampler }) => (
+          <FormControl>
+            <InputLabel size="small">Sampling method</InputLabel>
+            <Select
+              label="Sampling method"
+              size="small"
+              value={values.samplingMethod}
+              onChange={(e: SelectChangeEvent) => {
+                setSampler(e.target.value as string)
+              }}
+            >
+              {samplers.map(({ name }) => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+      </SamplingWrapper>
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            size="small"
+            onChange={(e) => {
+              dispatch(setRestoreFaces(e.target.checked as boolean))
+            }}
+          />
+        }
+        label="Restore faces"
+        value={values.restoreFaces}
+      />
     </StyledPaper>
   )
 }

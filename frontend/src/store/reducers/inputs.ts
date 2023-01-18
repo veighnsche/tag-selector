@@ -14,7 +14,7 @@ const initialState: ImageInputsType = {
     steps: 30,
     cfg: 7,
     seed: -1,
-    samplingMethod: 'Euler A',
+    samplingMethod: 'Euler a',
     restoreFaces: false,
   },
 }
@@ -108,6 +108,21 @@ export const inputsSlice = createSlice({
       state.options.width = width
       state.options.height = height
     },
+    setSteps: (state, action: PayloadAction<number>) => {
+      state.options.steps = action.payload
+    },
+    setCfg: (state, action: PayloadAction<number>) => {
+      state.options.cfg = action.payload
+    },
+    setSeed: (state, action: PayloadAction<number>) => {
+      state.options.seed = action.payload
+    },
+    setRestoreFaces: (state, action: PayloadAction<boolean>) => {
+      state.options.restoreFaces = action.payload
+    },
+    setSamplingMethod: (state, action: PayloadAction<string>) => {
+      state.options.samplingMethod = action.payload
+    }
   },
 })
 
@@ -120,6 +135,11 @@ export const {
   increaseTagStrength,
   decreaseTagStrength,
   setSize,
+  setSteps,
+  setCfg,
+  setSeed,
+  setRestoreFaces,
+  setSamplingMethod,
 } = inputsSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type

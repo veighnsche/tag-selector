@@ -11,4 +11,5 @@ export enum SocketEvent {
   FETCH_SD_MODELS = 'fetch-sd-models',
   FETCH_SD_OPTIONS = 'fetch-sd-options',
   SET_SD_OPTIONS = 'set-sd-options',
+  FETCH_SAMPLERS = 'fetch-samplers',
 }

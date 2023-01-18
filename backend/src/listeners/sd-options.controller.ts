@@ -3,13 +3,25 @@ import { SdOptionsType } from 'frontend/src/types/sd-options'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
-import { getCurrentOptions, getModelOptions, setSdOptions } from './sd-options'
+import { getCurrentOptions, getModelOptions, getSamplingMethods, setSdOptions } from './sd-options'
 
 export function fetchSdModelsController(socket: Socket) {
   return () => {
     getModelOptions()
     .then(models => {
       socket.emit(SocketEvent.FETCH_SD_MODELS, { models })
+    })
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
+  }
+}
+
+export function fetchSamplingMethodsController(socket: Socket) {
+  return () => {
+    getSamplingMethods()
+    .then(samplers => {
+      socket.emit(SocketEvent.FETCH_SAMPLERS, { samplers })
     })
     .catch((error: AxiosError) => {
       socket.emit(SocketEvent.ERROR, { error })

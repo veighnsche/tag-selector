@@ -12,5 +12,8 @@ export function useEmitters() {
     fetchSdModels: () => {
       socket.emit(SocketEvent.FETCH_SD_MODELS)
     },
+    fetchSamplingMethods: () => {
+      socket.emit(SocketEvent.FETCH_SAMPLERS)
+    }
   }
 }

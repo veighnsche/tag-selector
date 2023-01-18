@@ -4,15 +4,19 @@ import { SD_URL } from '../constants'
 
 export function generateImage({
   prompt: { scene },
-  options: { width, height}
+  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod },
 }: ImageInputsType): Promise<ImageOutputType> {
   console.time('generateImage')
 
   return axios.post(`${SD_URL}/sdapi/v1/txt2img`, {
     prompt: scene,
-    steps: 20,
+    steps,
     width,
     height,
+    cfg_scale: cfg,
+    seed,
+    restore_faces: restoreFaces,
+    sampler_index: samplingMethod,
   })
   .then(response => {
     console.timeEnd('generateImage')
