@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../index'
 
 export enum SocketStatus {
+  ESTABLISHING = 'ESTABLISHING',
   CONNECTED = 'CONNECTED',
   DISCONNECTED = 'DISCONNECTED',
 }
@@ -11,7 +12,7 @@ interface SocketStatusState {
 }
 
 const initialState: SocketStatusState = {
-  status: SocketStatus.DISCONNECTED,
+  status: SocketStatus.ESTABLISHING,
 }
 
 export const socketStatusSlice = createSlice({

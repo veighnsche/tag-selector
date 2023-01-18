@@ -131,5 +131,14 @@ export const selectSize = (state: RootState) => {
   return { width, height }
 }
 export const selectInputs = (state: RootState) => state.inputs
+export const selectSliders = (state: RootState) => {
+  return {
+    steps: state.inputs.options.steps,
+    cfg: state.inputs.options.cfg,
+    seed: state.inputs.options.seed,
+    samplingMethod: state.inputs.options.samplingMethod,
+    restoreFaces: state.inputs.options.restoreFaces,
+  }
+}
 
 export const inputsReducer = inputsSlice.reducer

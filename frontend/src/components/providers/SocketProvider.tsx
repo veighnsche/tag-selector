@@ -1,9 +1,8 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import socketio, { Socket } from 'socket.io-client'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { setSdStatus } from '../../store/reducers/sdStatus'
 import { selectSocketStatus, setSocketStatus, SocketStatus } from '../../store/reducers/socketStatus'
-import { SdStatus, SocketEvent } from '../../types'
+import { SocketEvent } from '../../types'
 
 interface SocketProviderProps {
   children: ReactNode
@@ -46,19 +45,11 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
     })
 
     /**
-     * Sd status event
-     */
-    socket.on(SocketEvent.SD_STATUS, (status: SdStatus ) => {
-      dispatch(setSdStatus(status))
-    })
-
-    /**
      * Close socket connection on unmount
      */
     return () => {
       socket.off(SocketEvent.CONNECT)
       socket.off(SocketEvent.DISCONNECT)
-      socket.off(SocketEvent.SD_STATUS)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
