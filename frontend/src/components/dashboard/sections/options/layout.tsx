@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { ImageRatio } from './ImageRatio'
+import { Sliders } from './Sliders'
 
 const LayoutFlex = styled.div`
   width: 100%;
@@ -14,7 +15,7 @@ const ImageRatioArea = styled(ImageRatio)`
   grid-area: image-ratio;
 `
 
-const SlidersArea = styled.div`
+const SlidersArea = styled(Sliders)`
   grid-area: sliders;
 `
 

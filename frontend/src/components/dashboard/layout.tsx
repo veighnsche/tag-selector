@@ -8,12 +8,13 @@ import { PromptLayout } from './sections/prompt/layout'
 
 const LayoutGrid = styled.main`
   width: 100%;
+  height: 100%;
   
   display: grid;
   gap: 1rem;
 
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: min-content 1fr 1fr;
+  grid-template-rows: min-content auto 1fr;
   grid-template-areas:
     'header header'
     'prompt output'

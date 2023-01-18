@@ -3,6 +3,7 @@ import { PromptScene } from './PromptScene'
 
 const LayoutFlex = styled.div`
   width: 100%;
+  height: 100%;
   
   display: flex;
   flex-direction: column;

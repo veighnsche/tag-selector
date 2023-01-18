@@ -72,7 +72,7 @@ export const ImageRatio = () => {
         </RatioButton>
       ))}
 
-      {Object.values(imageSizes).map(({ width, height }) => {
+      {imageSizes.map(({ width, height }) => {
         const isSelected = selectedSize.width === width && selectedSize.height === height
 
         const handleClick = () => {

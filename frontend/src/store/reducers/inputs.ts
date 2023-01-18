@@ -11,6 +11,11 @@ const initialState: ImageInputsType = {
   options: {
     width: 512,
     height: 512,
+    steps: 30,
+    cfg: 7,
+    seed: -1,
+    samplingMethod: 'Euler A',
+    restoreFaces: false,
   },
 }
 

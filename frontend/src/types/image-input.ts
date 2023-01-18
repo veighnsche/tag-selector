@@ -12,5 +12,10 @@ export interface ImageInputsType {
   options: {
     width: number,
     height: number,
+    steps: number,
+    cfg: number,
+    seed: number,
+    samplingMethod: string,
+    restoreFaces: boolean,
   }
 }
