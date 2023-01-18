@@ -23,9 +23,9 @@ const io = new Server(server, {
 
 // Socket.io event handling
 io.on(SocketEvent.CONNECT, (socket) => {
-  console.log('a user connected')
+  console.info('a user connected')
   socket.on(SocketEvent.DISCONNECT, () => {
-    console.log('user disconnected')
+    console.info('user disconnected')
   })
 
   socket.on(SocketEvent.GENERATE_IMAGE, generateImageController(socket))
@@ -41,4 +41,4 @@ io.on(SocketEvent.CONNECT, (socket) => {
 const outputDir = path.join(__dirname, '..', '..', 'outputs')
 app.use('/outputs', express.static(outputDir))
 
-server.listen(PORT, () => console.log(`Server started on port ${PORT}`))
+server.listen(PORT, () => console.info(`Server started on port ${PORT}`))

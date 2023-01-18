@@ -27,7 +27,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
      * Socket connection event
      */
     socket.on(SocketEvent.CONNECT, () => {
-      console.log('Connected to server')
+      console.info('Connected to server')
       dispatch(setSocketStatus(SocketStatus.CONNECTED))
 
       if (reconnectionTimer) {
@@ -40,7 +40,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
      * Socket disconnection event
      */
     socket.on(SocketEvent.DISCONNECT, () => {
-      console.log('Disconnected from server')
+      console.info('Disconnected from server')
       dispatch(setSocketStatus(SocketStatus.DISCONNECTED))
     })
 
@@ -57,7 +57,7 @@ export const SocketProvider = ({children}: SocketProviderProps) => {
   // attempt to reconnect if disconnected
   useEffect(() => {
     if (socketStatus === SocketStatus.DISCONNECTED) {
-      console.log('Attempting to reconnect with server...')
+      console.info('Attempting to reconnect with server...')
       const timer = setTimeout(() => {
         socket.connect()
       }, 5000)
