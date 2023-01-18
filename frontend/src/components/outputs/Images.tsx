@@ -1,12 +1,12 @@
 import styled from '@emotion/styled'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { IconButton } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../store'
-import { removeImage, selectImages } from '../../store/reducers/images'
-import { SocketEvent } from '../../types'
-import { useSocket } from '../providers/SocketProvider'
+import { useAppSelector } from '../../store'
+import { selectImages } from '../../store/reducers/images'
+import { ImageDataWrapper } from './ImageDataWrapper'
 
-const ImagesWrapper = styled.div`
+const ImageListWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -30,10 +30,8 @@ const StyledImage = styled.img`
   backface-visibility: hidden;
 `
 
-const DeleteButton = styled(IconButton)`
+const OverlayButton = styled(IconButton)`
   position: absolute;
-  top: 0;
-  right: 0;
 
   color: white;
   font-size: 1.5rem;
@@ -42,33 +40,54 @@ const DeleteButton = styled(IconButton)`
 
   &:hover {
     opacity: 1;
+  }
+`
+
+const DeleteButton = styled(OverlayButton)`
+  top: 0;
+  right: 0;
+
+  &:hover {
     color: red;
   }
 `
 
+const FetchDataButton = styled(OverlayButton)`
+  top: 0;
+  left: 0;
+
+  &:hover {
+    color: blue;
+  }
+`
+
 export const Images = () => {
-  const socket = useSocket()
-  const dispatch = useAppDispatch()
   const images = useAppSelector(selectImages)
   const url = process.env.REACT_APP_SERVER_URL + '/outputs/'
 
-  function handleDelete(index: number, image: string) {
-    dispatch(removeImage(index))
-    socket.emit(SocketEvent.REMOVE_IMAGE, { fileName: image })
-  }
-
   return (
-    <ImagesWrapper>
+    <ImageListWrapper>
       {images.map((image, index) => (
-        <ImageContainer key={image}>
-          <StyledImage src={url + image} alt={image}/>
-          <DeleteButton onClick={() => {
-            handleDelete(index, image)
-          }}>
-            <DeleteOutlinedIcon/>
-          </DeleteButton>
-        </ImageContainer>
+        <ImageDataWrapper key={image} filename={image} arrayIdx={index}>
+          {({ setSeed, handleDelete }) => {
+            return (
+              <ImageContainer>
+                <StyledImage src={url + image} alt={image}/>
+                <DeleteButton onClick={() => {
+                  handleDelete(index, image)
+                }}>
+                  <DeleteOutlinedIcon/>
+                </DeleteButton>
+                <FetchDataButton onClick={() =>
+                  setSeed()
+                }>
+                  <FileUploadIcon/>
+                </FetchDataButton>
+              </ImageContainer>
+            )
+          }}
+        </ImageDataWrapper>
       ))}
-    </ImagesWrapper>
+    </ImageListWrapper>
   )
 }

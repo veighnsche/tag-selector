@@ -1,5 +1,6 @@
 import { useSocket } from '../components/providers/SocketProvider'
 import { SocketEvent } from '../types'
+import { ImageDataRequestType } from '../types/image-data'
 import { SdOptionsType } from '../types/sd-options'
 
 export function useEmitters() {
@@ -14,6 +15,12 @@ export function useEmitters() {
     },
     fetchSamplingMethods: () => {
       socket.emit(SocketEvent.FETCH_SAMPLERS)
+    },
+    removeImage: (fileName: string) => {
+      socket.emit(SocketEvent.REMOVE_IMAGE, { fileName })
+    },
+    fetchImageData: (image: ImageDataRequestType) => {
+      socket.emit(SocketEvent.FETCH_IMAGE_DATA, image)
     }
   }
 }

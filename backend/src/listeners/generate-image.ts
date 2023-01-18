@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { ImageInputsType, ImageOutputType } from 'frontend/src/types'
+import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
 import { SD_URL } from '../constants'
 
 export function generateImage({
@@ -8,8 +9,9 @@ export function generateImage({
 }: ImageInputsType): Promise<ImageOutputType> {
   console.time('generateImage')
 
-  return axios.post(`${SD_URL}/sdapi/v1/txt2img`, {
+  const params: ImageGenerateParams = {
     prompt: scene,
+    negative_prompt: 'fat',
     steps,
     width,
     height,
@@ -17,7 +19,9 @@ export function generateImage({
     seed,
     restore_faces: restoreFaces,
     sampler_index: samplingMethod,
-  })
+  }
+
+  return axios.post(`${SD_URL}/sdapi/v1/txt2img`, params)
   .then(response => {
     console.timeEnd('generateImage')
     return response.data
