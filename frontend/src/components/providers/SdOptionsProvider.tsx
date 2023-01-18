@@ -24,7 +24,6 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
     })
 
     socket.on(SocketEvent.FETCH_SD_OPTIONS, ({ options }: { options: any }) => {
-      console.log("options", options)
       dispatch(setSdOptions({ options }))
     })
 
