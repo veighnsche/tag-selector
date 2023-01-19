@@ -1,8 +1,9 @@
 import { ReactNode, useEffect } from 'react'
 import { useEffectOnce } from '../../hooks/useEffectOnce'
-import { useAppDispatch } from '../../store'
+import { useGenerateImage } from '../../hooks/useGenerateImage'
+import { useAppDispatch, useAppSelector } from '../../store'
 import { setSdOptions } from '../../store/reducers/sdOptions'
-import { setSdStatus } from '../../store/reducers/sdStatus'
+import { selectIsPlaying, setSdStatus } from '../../store/reducers/sdStatus'
 import { SdStatus, SocketEvent } from '../../types'
 import { useSocket } from './SocketProvider'
 
@@ -13,6 +14,8 @@ interface SdOptionsProviderProps {
 export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   const socket = useSocket()
   const dispatch = useAppDispatch()
+  const isPlaying = useAppSelector(selectIsPlaying)
+  const generateImage = useGenerateImage()
 
   useEffectOnce(() => {
     socket.emit(SocketEvent.FETCH_SD_OPTIONS)
@@ -21,6 +24,9 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   useEffect(() => {
     socket.on(SocketEvent.SD_STATUS, (status: SdStatus ) => {
       dispatch(setSdStatus(status))
+      if (isPlaying && status === SdStatus.READY) {
+        generateImage()
+      }
     })
 
     socket.on(SocketEvent.FETCH_SD_OPTIONS, ({ options }: { options: any }) => {
@@ -31,7 +37,7 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
       socket.off(SocketEvent.SD_STATUS)
       socket.off(SocketEvent.FETCH_SD_OPTIONS)
     }
-  })
+  }, [isPlaying])
 
 
 
