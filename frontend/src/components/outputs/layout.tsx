@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { Paper } from '@mui/material'
 import { FetchImagesButton } from './FetchImagesButton'
-import { ImageListWrapper } from './ImageListWrapper'
-import { Images } from './Images'
+import { ImageListDataWrapper } from './ImageListDataWrapper'
+import { ImageList } from './ImageList'
 
 const StyledPaper = styled(Paper)`
   width: 100%;
@@ -14,11 +14,11 @@ const StyledPaper = styled(Paper)`
 
 export const OutputsLayout = () => {
   return (
-    <ImageListWrapper>
+    <ImageListDataWrapper>
       <StyledPaper>
-        <Images/>
+        <ImageList/>
         <FetchImagesButton/>
       </StyledPaper>
-    </ImageListWrapper>
+    </ImageListDataWrapper>
   )
 }

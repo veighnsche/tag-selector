@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ImageDataType } from '../../types/image-data'
 import { RootState } from '../index'
 
 export interface ImagesState {
   images: string[]
-  modalImage: string | null
+  imageModal: string | null
+  imageData: Record<string, ImageDataType>
 }
 
 export const initialState: ImagesState = {
   images: [],
-  modalImage: null,
+  imageModal: null,
+  imageData: {},
 }
 
 export const imagesSlice = createSlice({
@@ -25,21 +28,24 @@ export const imagesSlice = createSlice({
       state.images.splice(action.payload, 1)
     },
     setModalImage: (state, action: PayloadAction<string | null>) => {
-      state.modalImage = action.payload
+      state.imageModal = action.payload
     },
     nextModalImage: (state) => {
-      if (state.modalImage === null) return
-      const currentIndex = state.images.indexOf(state.modalImage)
+      if (state.imageModal === null) return
+      const currentIndex = state.images.indexOf(state.imageModal)
       const nextIndex = currentIndex + 1
       if (nextIndex >= state.images.length) return
-      state.modalImage = state.images[nextIndex]
+      state.imageModal = state.images[nextIndex]
     },
     previousModalImage: (state) => {
-      if (state.modalImage === null) return
-      const currentIndex = state.images.indexOf(state.modalImage)
+      if (state.imageModal === null) return
+      const currentIndex = state.images.indexOf(state.imageModal)
       const previousIndex = currentIndex - 1
       if (previousIndex < 0) return
-      state.modalImage = state.images[previousIndex]
+      state.imageModal = state.images[previousIndex]
+    },
+    setImageData: (state, action: PayloadAction<{ filename: string, imageData: ImageDataType }>) => {
+      state.imageData[action.payload.filename] = action.payload.imageData
     },
   },
 })
@@ -51,14 +57,17 @@ export const {
   setModalImage,
   nextModalImage,
   previousModalImage,
+  setImageData,
 } = imagesSlice.actions
 
 export const selectImages = (state: RootState) => state.images.images
-export const selectModalImage = (state: RootState) => state.images.modalImage
+export const selectModalImage = (state: RootState) => state.images.imageModal
 export const selectIsLastImage = (state: RootState) => {
-  if (state.images.modalImage === null) return false
-  const currentIndex = state.images.images.indexOf(state.images.modalImage)
+  if (state.images.imageModal === null) return false
+  const currentIndex = state.images.images.indexOf(state.images.imageModal)
   return currentIndex === state.images.images.length - 1
 }
+export const selectImageData = (state: RootState) =>
+  (filename: string): ImageDataType | undefined => state.images.imageData[filename]
 
 export const imagesReducer = imagesSlice.reducer

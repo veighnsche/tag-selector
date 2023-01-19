@@ -7,6 +7,7 @@ export enum SocketEvent {
   GENERATE_IMAGE = 'generate-image',
   IMAGE_OUTPUT = 'image-output',
   FETCH_IMAGES = 'fetch-images',
+  FETCH_IMAGES_MODAL = 'fetch-images-modal',
   REMOVE_IMAGE = 'remove-image',
   FETCH_SD_MODELS = 'fetch-sd-models',
   FETCH_SD_OPTIONS = 'fetch-sd-options',

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
-import { Backdrop } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Backdrop, Paper } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch, useAppSelector } from '../../store'
 import {
@@ -12,7 +12,9 @@ import {
 } from '../../store/reducers/images'
 import { SocketEvent } from '../../types'
 import { extractFileIndex, prefixWithImageUrl } from '../../utils/files'
+import { FlexCenter } from '../FlexCenter'
 import { useSocket } from '../providers/SocketProvider'
+import { ImageData } from './ImageData'
 
 enum ModelStatus {
   CLOSED = 'CLOSED',
@@ -25,6 +27,8 @@ const ImageContainer = styled.div`
 `
 
 const StyledImage = styled.img`
+  grid-area: image;
+
   height: 95vh;
   width: 95vw;
   object-fit: contain;
@@ -38,8 +42,8 @@ const OverlayBottomRight = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 50%;
-  height: 50%;
+  width: 33%;
+  height: 33%;
 `
 
 const OverlayBottomLeft = styled.div`
@@ -47,9 +51,19 @@ const OverlayBottomLeft = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 50%;
-  height: 50%;
+  width: 33%;
+  height: 33%;
 `
+
+const OverlayTopLeft = styled.div`
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 33%;
+  height: 33%;
+`
+
 
 export const ImageModal = () => {
   const modalImage = useAppSelector(selectModalImage)
@@ -59,6 +73,7 @@ export const ImageModal = () => {
   const dispatch = useAppDispatch()
   const emit = useEmitters()
   const socket = useSocket()
+  const [isInfoOpen, setIsInfoOpen] = useState(false)
 
   useEffect(() => {
     if (modalImage) {
@@ -99,6 +114,7 @@ export const ImageModal = () => {
       setStatus(ModelStatus.CLOSED)
       dispatch(setModalImage(null))
       setTimer(null)
+      // todo: replace magic number with time it takes for backdrop to close
     }, 1000))
   }
 
@@ -106,14 +122,14 @@ export const ImageModal = () => {
     if (!isLastImage) {
       dispatch(nextModalImage())
     } else if (modalImage) {
-      socket.on(SocketEvent.FETCH_IMAGES, ({ images }: { images: string[] }) => {
-        if (images.length > 0) {
-          dispatch(setModalImage(images[0]))
+      socket.on(SocketEvent.FETCH_IMAGES_MODAL, ({ nextImage }: { nextImage: string }) => {
+        if (nextImage) {
+          dispatch(setModalImage(nextImage))
         }
-        socket.off(SocketEvent.FETCH_IMAGES)
+        socket.off(SocketEvent.FETCH_IMAGES_MODAL)
       })
       // todo: toIndex should be the filename
-      emit.fetchImages({ amount: 10, toIndex: extractFileIndex(modalImage) })
+      emit.fetchImagesModal({ amount: 10, toIndex: extractFileIndex(modalImage) })
     }
   }
 
@@ -123,26 +139,31 @@ export const ImageModal = () => {
 
   return (
     <Backdrop
-      open={status === ModelStatus.OPEN}
+      open={status === ModelStatus.OPEN && modalImage !== null}
       onClick={handleClose}
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
-      {modalImage ? (
-        <ImageContainer>
+      <ImageContainer>
+        <FlexCenter>
+          <ImageData filename={modalImage!} open={isInfoOpen}/>
           <StyledImage
             src={prefixWithImageUrl(modalImage!)}
             alt="modal"
           />
-          <OverlayBottomRight onClick={(e) => {
-            e.stopPropagation()
-            handleNext()
-          }}/>
-          <OverlayBottomLeft onClick={(e) => {
-            e.stopPropagation()
-            handlePrevious()
-          }}/>
-        </ImageContainer>
-      ): null}
+        </FlexCenter>
+        <OverlayBottomRight onClick={(e) => {
+          e.stopPropagation()
+          handleNext()
+        }}/>
+        <OverlayBottomLeft onClick={(e) => {
+          e.stopPropagation()
+          handlePrevious()
+        }}/>
+        <OverlayTopLeft onClick={(e) => {
+          e.stopPropagation()
+          setIsInfoOpen(!isInfoOpen)
+        }}/>
+      </ImageContainer>
     </Backdrop>
   )
 }

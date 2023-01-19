@@ -25,6 +25,9 @@ export function useEmitters() {
     },
     fetchImages: (params: GetImagesPathsType) => {
       socket.emit(SocketEvent.FETCH_IMAGES, params)
+    },
+    fetchImagesModal: (params: GetImagesPathsType) => {
+      socket.emit(SocketEvent.FETCH_IMAGES_MODAL, params)
     }
   }
 }

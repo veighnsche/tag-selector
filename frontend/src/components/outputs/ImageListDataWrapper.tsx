@@ -11,7 +11,7 @@ interface OutputsContainerProps {
   children: ReactNode;
 }
 
-export const ImageListWrapper = ({ children }: OutputsContainerProps) => {
+export const ImageListDataWrapper = ({ children }: OutputsContainerProps) => {
   const socket = useSocket()
   const dispatch = useAppDispatch()
   const images = useAppSelector(selectImages)

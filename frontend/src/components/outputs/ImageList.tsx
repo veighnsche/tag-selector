@@ -61,7 +61,7 @@ const SetSeedButton = styled(OverlayButton)`
   left: 0;
 `
 
-export const Images = () => {
+export const ImageList = () => {
   const images = useAppSelector(selectImages)
 
   return (

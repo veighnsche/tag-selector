@@ -1,12 +1,12 @@
 import express from 'express'
-import {SocketEvent} from 'frontend/src/types'
+import { SocketEvent } from 'frontend/src/types'
 import * as http from 'http'
 import path from 'path'
-import {Server} from 'socket.io'
-import {CLIENT_URL, PORT} from './constants'
-import {fetchImageController, removeImageController} from './listeners/image-crud.controller'
-import {fetchImageDataController} from './listeners/image-data.controller'
-import {imageGenerateController} from './listeners/image-generate.controller'
+import { Server } from 'socket.io'
+import { CLIENT_URL, PORT } from './constants'
+import { fetchImageController, removeImageController } from './listeners/image-crud.controller'
+import { fetchImageDataController } from './listeners/image-data.controller'
+import { imageGenerateController } from './listeners/image-generate.controller'
 import {
   fetchOptionsController,
   fetchSamplingMethodsController,
@@ -28,6 +28,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
 
   socket.on(SocketEvent.GENERATE_IMAGE, imageGenerateController(socket))
   socket.on(SocketEvent.FETCH_IMAGES, fetchImageController(socket))
+  socket.on(SocketEvent.FETCH_IMAGES_MODAL, fetchImageController(socket, { isModal: true }))
   socket.on(SocketEvent.REMOVE_IMAGE, removeImageController(socket))
   socket.on(SocketEvent.FETCH_SD_MODELS, fetchSdModelsController(socket))
   socket.on(SocketEvent.FETCH_SD_OPTIONS, fetchOptionsController(socket))

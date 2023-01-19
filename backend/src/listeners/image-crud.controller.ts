@@ -3,13 +3,21 @@ import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
 import { getImagesPaths, removeImage } from './image-crud'
 
-export function fetchImageController(socket: Socket) {
+interface FetchImageControllerOptions {
+  isModal?: boolean
+}
+
+export function fetchImageController(socket: Socket, { isModal = false }: FetchImageControllerOptions = {}) {
   return async (data: GetImagesPathsType) => {
     const images = await getImagesPaths(data)
-    .catch((error: Error) => {
-      socket.emit(SocketEvent.ERROR, { error })
-    })
+      .catch((error: Error) => {
+        socket.emit(SocketEvent.ERROR, { error })
+      })
     socket.emit(SocketEvent.FETCH_IMAGES, { images })
+
+    if (isModal) {
+      socket.emit(SocketEvent.FETCH_IMAGES_MODAL, { nextImage: images?.[0] })
+    }
   }
 }
 

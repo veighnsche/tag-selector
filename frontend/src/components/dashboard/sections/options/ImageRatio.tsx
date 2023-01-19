@@ -11,7 +11,6 @@ const StyledPaper = styled(Paper)`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
 `
 
 const RatioButton = styled(Button)`
