@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch } from '../../store'
-import { removeImage } from '../../store/reducers/images'
+import { removeImage, setModalImage } from '../../store/reducers/images'
 import { setSeed } from '../../store/reducers/inputs'
 import { SocketEvent } from '../../types'
 import { ImageDataType } from '../../types/image-data'
-import { extractFileIndex } from '../../utils/files'
+import { extractFileIndex, prefixWithImageUrl } from '../../utils/files'
 import { useSocket } from '../providers/SocketProvider'
 
 interface ImageWrapperProps {
@@ -17,6 +17,7 @@ interface ImageWrapperProps {
 interface ImageWrapperChildrenProps {
   setSeed: () => void
   handleDelete: (index: number, filename: string) => void
+  openModal: () => void
 }
 
 export const ImageDataWrapper = ({ children, filename, arrayIdx }: ImageWrapperProps) => {
@@ -44,7 +45,7 @@ export const ImageDataWrapper = ({ children, filename, arrayIdx }: ImageWrapperP
       emit.fetchImageData({
         fileName: filename,
         fileIndex,
-        filePath: process.env.REACT_APP_SERVER_URL + '/outputs/' + filename,
+        filePath: prefixWithImageUrl(filename),
       })
     })
   }
@@ -59,11 +60,16 @@ export const ImageDataWrapper = ({ children, filename, arrayIdx }: ImageWrapperP
     dispatch(setSeed(data.seed))
   }
 
+  function openModal() {
+    dispatch(setModalImage(filename))
+  }
+
   return (
     <>
       {children({
         setSeed: setSeedFromImage,
         handleDelete,
+        openModal,
       })}
     </>
   )

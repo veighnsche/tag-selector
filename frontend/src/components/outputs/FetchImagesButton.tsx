@@ -1,18 +1,18 @@
 import BurstModeIcon from '@mui/icons-material/BurstMode'
 import { Button } from '@mui/material'
+import { useEmitters } from '../../hooks/useEmitters'
 import { useAppSelector } from '../../store'
 import { selectImages } from '../../store/reducers/images'
-import { SocketEvent } from '../../types'
 import { GetImagesPathsType } from '../../types/image-output'
-import { useSocket } from '../providers/SocketProvider'
 
 export const FetchImagesButton = () => {
-  const socket = useSocket()
   const images = useAppSelector(selectImages)
+  const emit = useEmitters()
 
   const handleClick = () => {
     // get last image name
-    const lastImageSplitSlash = images[images.length - 1].split('/')
+    const lastImage = images[images.length - 1]
+    const lastImageSplitSlash = lastImage.split('/')
     const lastImageNumber = Number(lastImageSplitSlash[lastImageSplitSlash.length - 1].split('-')[0])
 
     const params: GetImagesPathsType = {
@@ -20,7 +20,7 @@ export const FetchImagesButton = () => {
       toIndex: lastImageNumber,
     }
 
-    socket.emit(SocketEvent.FETCH_IMAGES, params)
+    emit.fetchImages(params)
   }
 
   // button with icon

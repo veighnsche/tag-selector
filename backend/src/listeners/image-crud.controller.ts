@@ -1,7 +1,7 @@
 import { GetImagesPathsType } from 'frontend/src/types/image-output'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
-import { getImagesPaths, removeImage } from './crud-image'
+import { getImagesPaths, removeImage } from './image-crud'
 
 export function fetchImageController(socket: Socket) {
   return async (data: GetImagesPathsType) => {

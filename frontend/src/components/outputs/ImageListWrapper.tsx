@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 import { useEffectOnce } from '../../hooks/useEffectOnce'
+import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { addImagesToEnd, selectImages } from '../../store/reducers/images'
 import { SocketEvent } from '../../types'
@@ -10,10 +11,11 @@ interface OutputsContainerProps {
   children: ReactNode;
 }
 
-export const OutputsContainer = ({ children }: OutputsContainerProps) => {
+export const ImageListWrapper = ({ children }: OutputsContainerProps) => {
   const socket = useSocket()
   const dispatch = useAppDispatch()
   const images = useAppSelector(selectImages)
+  const emit = useEmitters()
 
   useEffectOnce(() => {
     if (images.length === 0) {
@@ -21,7 +23,7 @@ export const OutputsContainer = ({ children }: OutputsContainerProps) => {
         amount: 15,
       }
 
-      socket.emit(SocketEvent.FETCH_IMAGES, params)
+      emit.fetchImages(params)
     }
   })
 

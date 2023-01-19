@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { Paper } from '@mui/material'
-import { OutputsContainer } from './container'
 import { FetchImagesButton } from './FetchImagesButton'
+import { ImageListWrapper } from './ImageListWrapper'
 import { Images } from './Images'
 
 const StyledPaper = styled(Paper)`
@@ -14,11 +14,11 @@ const StyledPaper = styled(Paper)`
 
 export const OutputsLayout = () => {
   return (
-    <OutputsContainer>
+    <ImageListWrapper>
       <StyledPaper>
         <Images/>
         <FetchImagesButton/>
       </StyledPaper>
-    </OutputsContainer>
+    </ImageListWrapper>
   )
 }

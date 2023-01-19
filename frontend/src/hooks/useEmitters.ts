@@ -1,6 +1,7 @@
 import { useSocket } from '../components/providers/SocketProvider'
 import { SocketEvent } from '../types'
 import { ImageDataRequestType } from '../types/image-data'
+import { GetImagesPathsType } from '../types/image-output'
 import { SdOptionsType } from '../types/sd-options'
 
 export function useEmitters() {
@@ -21,6 +22,9 @@ export function useEmitters() {
     },
     fetchImageData: (image: ImageDataRequestType) => {
       socket.emit(SocketEvent.FETCH_IMAGE_DATA, image)
+    },
+    fetchImages: (params: GetImagesPathsType) => {
+      socket.emit(SocketEvent.FETCH_IMAGES, params)
     }
   }
 }
