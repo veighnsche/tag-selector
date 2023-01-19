@@ -126,7 +126,6 @@ export const inputsSlice = createSlice({
     },
     setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
       const imageData = action.payload
-      console.log('setInputsFromImageData', imageData)
       if (imageData.prompt) {
         state.prompt.scene = imageData.prompt
       }
