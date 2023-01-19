@@ -14,18 +14,42 @@ import { SocketEvent } from '../../types'
 import { extractFileIndex, prefixWithImageUrl } from '../../utils/files'
 import { useSocket } from '../providers/SocketProvider'
 
-const StyledImage = styled.img`
-  height: 95vh;
-  width: 95vw;
-  object-fit: contain;
-`
-
 enum ModelStatus {
   CLOSED = 'CLOSED',
   CLOSING = 'CLOSING',
   OPEN = 'OPEN',
-
 }
+
+const ImageContainer = styled.div`
+  position: relative;
+`
+
+const StyledImage = styled.img`
+  height: 95vh;
+  width: 95vw;
+  object-fit: contain;
+
+  display: block;
+  backface-visibility: hidden;
+`
+
+const OverlayBottomRight = styled.div`
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 50%;
+`
+
+const OverlayBottomLeft = styled.div`
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+`
 
 export const ImageModal = () => {
   const modalImage = useAppSelector(selectModalImage)
@@ -35,17 +59,6 @@ export const ImageModal = () => {
   const dispatch = useAppDispatch()
   const emit = useEmitters()
   const socket = useSocket()
-
-  function handleClose() {
-    // closing takes 1s, so we set the status to CLOSING
-    // and then after 1s we set it to CLOSED
-    setStatus(ModelStatus.CLOSING)
-    setTimer(setTimeout(() => {
-      setStatus(ModelStatus.CLOSED)
-      dispatch(setModalImage(null))
-      setTimer(null)
-    }, 1000))
-  }
 
   useEffect(() => {
     if (modalImage) {
@@ -58,6 +71,36 @@ export const ImageModal = () => {
       handleClose()
     }
   }, [modalImage])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleClose()
+      }
+      if (event.key === 'ArrowRight') {
+        handleNext()
+      }
+      if (event.key === 'ArrowLeft') {
+        handlePrevious()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isLastImage, modalImage, status])
+
+  function handleClose() {
+    // closing takes 1s, so we set the status to CLOSING
+    // and then after 1s we set it to CLOSED
+    setStatus(ModelStatus.CLOSING)
+    setTimer(setTimeout(() => {
+      setStatus(ModelStatus.CLOSED)
+      dispatch(setModalImage(null))
+      setTimer(null)
+    }, 1000))
+  }
 
   function handleNext() {
     if (!isLastImage) {
@@ -74,24 +117,9 @@ export const ImageModal = () => {
     }
   }
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        handleClose()
-      }
-      if (event.key === 'ArrowRight') {
-        handleNext()
-      }
-      if (event.key === 'ArrowLeft') {
-        dispatch(previousModalImage())
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isLastImage, modalImage, status])
+  function handlePrevious() {
+    dispatch(previousModalImage())
+  }
 
   return (
     <Backdrop
@@ -99,12 +127,22 @@ export const ImageModal = () => {
       onClick={handleClose}
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
-      {modalImage && (
-        <StyledImage
-          src={prefixWithImageUrl(modalImage)}
-          alt="modal"
-        />
-      )}
+      {modalImage ? (
+        <ImageContainer>
+          <StyledImage
+            src={prefixWithImageUrl(modalImage!)}
+            alt="modal"
+          />
+          <OverlayBottomRight onClick={(e) => {
+            e.stopPropagation()
+            handleNext()
+          }}/>
+          <OverlayBottomLeft onClick={(e) => {
+            e.stopPropagation()
+            handlePrevious()
+          }}/>
+        </ImageContainer>
+      ): null}
     </Backdrop>
   )
 }
