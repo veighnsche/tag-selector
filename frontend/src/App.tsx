@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { DashboardLayout } from './components/dashboard'
 import { OutputsLayout } from './components/outputs/layout'
+import { ProgressBar } from './components/ProgressBar'
 import { SdOptionsProvider } from './components/providers/SdOptionsProvider'
 import { SocketProvider } from './components/providers/SocketProvider'
 
@@ -24,6 +25,7 @@ function App() {
   return (
     <SocketProvider>
       <SdOptionsProvider>
+        <ProgressBar/>
         <Wrapper>
           <MaxWidthWrapper>
             <DashboardLayout/>

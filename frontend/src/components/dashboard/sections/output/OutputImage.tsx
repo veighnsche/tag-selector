@@ -2,7 +2,9 @@ import styled from '@emotion/styled'
 import { useEffect, useState } from 'react'
 import { useAppDispatch } from '../../../../store'
 import { addImagesToStart } from '../../../../store/reducers/images'
+import { setProgress } from '../../../../store/reducers/sdStatus'
 import { ImageOutputType, SocketEvent } from '../../../../types'
+import { SdProgressType } from '../../../../types/sd-progress'
 import { useSocket } from '../../../providers/SocketProvider'
 
 const ImageWrapper = styled.div`
@@ -26,7 +28,10 @@ export const OutputImage = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    socket.on(SocketEvent.IMAGE_OUTPUT, ({ imageOutput, images }: { imageOutput: ImageOutputType, images: string[] }) => {
+    socket.on(SocketEvent.IMAGE_OUTPUT, ({
+      imageOutput,
+      images,
+    }: { imageOutput: ImageOutputType, images: string[] }) => {
       setGenerateImageData(imageOutput)
       dispatch(addImagesToStart(images))
     })
@@ -34,7 +39,22 @@ export const OutputImage = () => {
     return () => {
       socket.off(SocketEvent.IMAGE_OUTPUT)
     }
-  })
+  }, [])
+
+  useEffect(() => {
+    socket.on(SocketEvent.PROGRESS, ({ current_image, ...progress }: SdProgressType) => {
+      dispatch(setProgress(progress))
+      if (current_image !== null) {
+        setGenerateImageData({
+          images: [current_image],
+        } as ImageOutputType)
+      }
+    })
+
+    return () => {
+      socket.off(SocketEvent.PROGRESS)
+    }
+  }, [])
 
   return (
     <ImageWrapper>
@@ -42,7 +62,6 @@ export const OutputImage = () => {
         <StyledImage
           key={index}
           src={`data:image/png;base64,${image}`}
-          alt={generateImageData?.parameters.prompt}
         />
       ))}
     </ImageWrapper>
