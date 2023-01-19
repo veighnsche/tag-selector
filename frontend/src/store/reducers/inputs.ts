@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ImageInputsType, TagType } from '../../types'
+import { ImageDataType } from '../../types/image-data'
 import { RootState } from '../index'
 
 const initialState: ImageInputsType = {
@@ -122,7 +123,32 @@ export const inputsSlice = createSlice({
     },
     setSamplingMethod: (state, action: PayloadAction<string>) => {
       state.options.samplingMethod = action.payload
-    }
+    },
+    setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
+      const imageData = action.payload
+      console.log('setInputsFromImageData', imageData)
+      if (imageData.prompt) {
+        state.prompt.scene = imageData.prompt
+      }
+      if (imageData.width) {
+        state.options.width = imageData.width
+      }
+      if (imageData.height) {
+        state.options.height = imageData.height
+      }
+      if (imageData.steps) {
+        state.options.steps = imageData.steps
+      }
+      if (imageData.cfg) {
+        state.options.cfg = imageData.cfg
+      }
+      if (imageData.seed) {
+        state.options.seed = imageData.seed
+      }
+      if (imageData.samplingMethod) {
+        state.options.samplingMethod = imageData.samplingMethod
+      }
+    },
   },
 })
 
@@ -140,6 +166,7 @@ export const {
   setSeed,
   setRestoreFaces,
   setSamplingMethod,
+  setInputsFromImageData,
 } = inputsSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type

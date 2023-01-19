@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Backdrop, Paper } from '@mui/material'
+import { Backdrop } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch, useAppSelector } from '../../store'
@@ -12,7 +12,6 @@ import {
 } from '../../store/reducers/images'
 import { SocketEvent } from '../../types'
 import { extractFileIndex, prefixWithImageUrl } from '../../utils/files'
-import { FlexCenter } from '../FlexCenter'
 import { useSocket } from '../providers/SocketProvider'
 import { ImageData } from './ImageData'
 
@@ -23,18 +22,28 @@ enum ModelStatus {
 }
 
 const ImageContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
   position: relative;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
-const StyledImage = styled.img`
+const StyledImage = styled.img<{
+  isInfoOpen: boolean
+}>`
   grid-area: image;
 
   height: 95vh;
-  width: 95vw;
+  max-width: ${({ isInfoOpen }) => (isInfoOpen ? '75vw' : '95vw')};
   object-fit: contain;
 
   display: block;
   backface-visibility: hidden;
+  
+  transition: max-width 0.8s ease-in-out;
 `
 
 const OverlayBottomRight = styled.div`
@@ -64,6 +73,12 @@ const OverlayTopLeft = styled.div`
   height: 33%;
 `
 
+
+const ImageDataFlex = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+`
 
 export const ImageModal = () => {
   const modalImage = useAppSelector(selectModalImage)
@@ -144,13 +159,22 @@ export const ImageModal = () => {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <ImageContainer>
-        <FlexCenter>
-          <ImageData filename={modalImage!} open={isInfoOpen}/>
-          <StyledImage
-            src={prefixWithImageUrl(modalImage!)}
-            alt="modal"
-          />
-        </FlexCenter>
+        {modalImage ? (
+          <ImageDataFlex>
+            <ImageData
+              filename={modalImage!}
+              open={isInfoOpen}
+              onClose={() => {
+                setIsInfoOpen(false)
+              }}
+            />
+            <StyledImage
+              isInfoOpen={isInfoOpen}
+              src={prefixWithImageUrl(modalImage!)}
+              alt="modal"
+            />
+          </ImageDataFlex>
+        ) : null}
         <OverlayBottomRight onClick={(e) => {
           e.stopPropagation()
           handleNext()
@@ -159,10 +183,12 @@ export const ImageModal = () => {
           e.stopPropagation()
           handlePrevious()
         }}/>
-        <OverlayTopLeft onClick={(e) => {
-          e.stopPropagation()
-          setIsInfoOpen(!isInfoOpen)
-        }}/>
+        {!isInfoOpen ? (
+          <OverlayTopLeft onClick={(e) => {
+            e.stopPropagation()
+            setIsInfoOpen(!isInfoOpen)
+          }}/>
+        ) : null}
       </ImageContainer>
     </Backdrop>
   )
