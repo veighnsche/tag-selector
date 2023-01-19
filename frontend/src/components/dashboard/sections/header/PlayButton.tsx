@@ -1,6 +1,7 @@
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Button } from '@mui/material'
+import { useEffect } from 'react'
 import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppDispatch, useAppSelector } from '../../../../store'
 import { selectIsPlaying, selectSdStatus, toggleIsPlaying } from '../../../../store/reducers/sdStatus'
@@ -12,11 +13,14 @@ export const PlayButton = () => {
   const dispatch = useAppDispatch()
   const generateImage = useGenerateImage()
 
-  function handleClick() {
-    dispatch(toggleIsPlaying())
-    if (sdStatus === SdStatus.READY) {
+  useEffect(() => {
+    if (sdStatus === SdStatus.READY && isPlaying) {
       generateImage()
     }
+  }, [isPlaying, sdStatus])
+
+  function handleClick() {
+    dispatch(toggleIsPlaying())
   }
 
   return (
