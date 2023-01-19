@@ -16,8 +16,12 @@ export interface ImageOptionsType {
 export interface ImageInputsType {
   prompt: {
     scene: string,
-    tags: TagType[],
-    negativeTags: TagType[],
+    negativePrompt: string,
   }
   options: ImageOptionsType
+}
+
+export interface PromptTagsType {
+  tags: TagType[]
+  negativeTags: TagType[]
 }

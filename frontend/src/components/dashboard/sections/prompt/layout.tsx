@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { PromptScene } from './PromptScene'
+import { TempNegativePrompt } from './TempNegativePrompt'
 
 const LayoutFlex = styled.div`
   width: 100%;
@@ -15,6 +16,7 @@ export const PromptLayout = () => {
   return (
     <LayoutFlex>
       <PromptScene/>
+      <TempNegativePrompt/>
     </LayoutFlex>
   )
 }

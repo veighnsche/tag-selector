@@ -5,6 +5,7 @@ import { inputsReducer } from './reducers/inputs'
 import { sdOptionsReducer } from './reducers/sdOptions'
 import { sdStatusReducer } from './reducers/sdStatus'
 import { socketStatusReducer } from './reducers/socketStatus'
+import { tagsReducer } from './reducers/tags'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     sdStatus: sdStatusReducer,
     sdOptions: sdOptionsReducer,
     inputs: inputsReducer,
+    tags: tagsReducer,
     images: imagesReducer,
   },
 })

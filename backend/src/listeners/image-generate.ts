@@ -5,14 +5,14 @@ import { SdProgressType } from 'frontend/src/types/sd-progress'
 import { SD_URL } from '../constants'
 
 export function imageGenerate({
-  prompt: { scene },
+  prompt: { scene, negativePrompt },
   options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod },
 }: ImageInputsType): Promise<ImageOutputType> {
   console.time('generateImage')
 
   const params: ImageGenerateParams = {
     prompt: scene,
-    negative_prompt: 'fat',
+    negative_prompt: negativePrompt,
     steps,
     width,
     height,
