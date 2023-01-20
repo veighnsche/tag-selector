@@ -4,6 +4,11 @@ export interface ImageOutputType {
     prompt: string
     seed: number
   }
+  info: string
+}
+
+export interface ImageOutputInfoType {
+  seed: number
 }
 
 export interface GetImagesPathsType {

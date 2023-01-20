@@ -1,5 +1,5 @@
 import { ImageOutputType } from 'frontend/src/types'
-import { GetImagesPathsType } from 'frontend/src/types/image-output'
+import { GetImagesPathsType, ImageOutputInfoType } from 'frontend/src/types/image-output'
 import fs from 'fs'
 import path from 'path'
 import { promisify } from 'util'
@@ -76,7 +76,10 @@ function nameImage(index: number, imageOutput: ImageOutputType): string {
   const promptString = prompt.replace(/[^a-zA-Z0-9]/g, '_')
   // only one underscore in a row
   const promptStringClean = promptString.replace(/_+/g, '_').trim()
-  return `${indexString}-${promptStringClean}.png`
+
+  const info: ImageOutputInfoType = JSON.parse(imageOutput.info)
+
+  return `${indexString}-${info.seed}-${promptStringClean}.png`
 }
 
 async function getFiles(dir: string): Promise<ValidFile[]> {
