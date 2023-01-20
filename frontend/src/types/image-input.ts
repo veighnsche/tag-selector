@@ -24,4 +24,5 @@ export interface ImageInputsType {
 export interface PromptTagsType {
   tags: TagType[]
   negativeTags: TagType[]
+  tagPool: TagType[]
 }

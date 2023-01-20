@@ -5,6 +5,7 @@ import { RootState } from '../index'
 const initialState: PromptTagsType = {
   tags: [],
   negativeTags: [],
+  tagPool: [],
 }
 
 export const tagsSlice = createSlice({
@@ -13,11 +14,11 @@ export const tagsSlice = createSlice({
   reducers: {
     newTag: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
     }>) => {
-      const {name, isNegative} = action.payload
-      const tag = {name, strength: 1}
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location } = action.payload
+      const tags = state[location]
+      const tag = { name, strength: 1 }
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex === -1) {
         tags.push(tag)
@@ -25,35 +26,50 @@ export const tagsSlice = createSlice({
     },
     removeTag: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
     }>) => {
-      const {name, isNegative} = action.payload
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location } = action.payload
+      const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         tags.splice(tagIndex, 1)
       }
     },
-    moveTag: (state, action: PayloadAction<{
+    moveTagInLocation: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
       position: number,
     }>) => {
-      const {name, isNegative, position} = action.payload
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location, position } = action.payload
+      const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         const tag = tags.splice(tagIndex, 1)[0]
         tags.splice(position, 0, tag)
       }
     },
+    moveTagBetweenLocations: (state, action: PayloadAction<{
+      name: TagType['name'],
+      fromLocation: keyof PromptTagsType,
+      toLocation: keyof PromptTagsType,
+      position: number,
+    }>) => {
+      const { name, fromLocation, toLocation, position } = action.payload
+      const fromTags = state[fromLocation]
+      const toTags = state[toLocation]
+      const tagIndex = fromTags.findIndex(tag => tag.name === name)
+      if (tagIndex !== -1) {
+        const tag = fromTags.splice(tagIndex, 1)[0]
+        toTags.splice(position, 0, tag)
+      }
+    },
     setTagStrength: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
       strength: number,
     }>) => {
-      const {name, isNegative, strength} = action.payload
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location, strength } = action.payload
+      const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         tags[tagIndex].strength = strength
@@ -61,10 +77,10 @@ export const tagsSlice = createSlice({
     },
     increaseTagStrength: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
     }>) => {
-      const {name, isNegative} = action.payload
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location } = action.payload
+      const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         // add 10% to the strength
@@ -74,10 +90,10 @@ export const tagsSlice = createSlice({
     },
     decreaseTagStrength: (state, action: PayloadAction<{
       name: TagType['name'],
-      isNegative?: boolean,
+      location: keyof PromptTagsType,
     }>) => {
-      const { name, isNegative } = action.payload
-      const tags = isNegative ? state.negativeTags : state.tags
+      const { name, location } = action.payload
+      const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         // subtract 10% from the strength
@@ -91,7 +107,8 @@ export const tagsSlice = createSlice({
 export const {
   newTag,
   removeTag,
-  moveTag,
+  moveTagInLocation,
+  moveTagBetweenLocations,
   setTagStrength,
   increaseTagStrength,
   decreaseTagStrength,
