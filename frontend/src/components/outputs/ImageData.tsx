@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, Button, ButtonGroup, IconButton, Paper, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, IconButton, Paper, Tooltip, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
 import { FullImageDataType, ImageDataType } from '../../types/image-data'
 import { ImageTags } from './ImageTags'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -213,7 +214,13 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
             </Button>
           </Box>
         </Box>
-        <Box flex={1} p="0 1rem" sx={{
+        <Box px="1rem" display="flex" flexDirection="row" alignItems="center" gap="0.25rem">
+          <Typography variant="h6" sx={{ m: '0' }}>Tags</Typography>
+          <Tooltip title="Right-click to toggle tag in negative prompt.">
+            <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary' }}/>
+          </Tooltip>
+        </Box>
+        <Box flex={1} px="1rem" sx={{
           overflowY: 'auto',
         }}>
           <Paper elevation={3}>

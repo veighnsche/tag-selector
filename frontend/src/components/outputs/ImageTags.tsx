@@ -10,7 +10,6 @@ const TagContainer = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 0.25rem;
-  margin-top: 1rem;
   padding: 0.5rem;
 `
 

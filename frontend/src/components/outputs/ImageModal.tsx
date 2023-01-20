@@ -107,7 +107,7 @@ const ShowInfoButton = styled(OverlayButton)`
   left: 0;
 
   &:hover {
-    color: blue;
+    color: lightblue;
   }
 `
 
