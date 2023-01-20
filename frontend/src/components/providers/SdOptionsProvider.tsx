@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../store'
 import { setSdOptions } from '../../store/reducers/sdOptions'
 import { resetProgress, setSdStatus } from '../../store/reducers/sdStatus'
 import { SdStatus, SocketEvent } from '../../types'
+import { SdOptionsType } from '../../types/sd-options'
 import { useSocket } from './SocketProvider'
 
 interface SdOptionsProviderProps {
@@ -34,7 +35,7 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   })
 
   useEffect(() => {
-    socket.on(SocketEvent.FETCH_SD_OPTIONS, ({ options }: { options: any }) => {
+    socket.on(SocketEvent.FETCH_SD_OPTIONS, ({ options }: { options: SdOptionsType }) => {
       dispatch(setSdOptions({ options }))
     })
 
