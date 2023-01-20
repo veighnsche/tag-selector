@@ -158,7 +158,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
   }
 
   return (
-    <StyledPaper open={open} onClick={(e) => {
+    <StyledPaper square open={open} onClick={(e) => {
       e.stopPropagation()
     }}>
       <IconButton onClick={onClose} size="small" sx={{
@@ -174,12 +174,12 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
         justifyContent="space-between"
         height="100vh"
         max-height="100vh"
+        width="20vw"
       >
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
-          width="20vw"
           padding="1rem"
         >
           {data ? (
