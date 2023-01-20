@@ -4,18 +4,18 @@ import InfoIcon from '@mui/icons-material/Info'
 import { Backdrop, IconButton, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
+import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch, useAppSelector } from '../../store'
 import {
   nextModalImage,
   previousModalImage,
-  removeImage, selectArrayIdx,
+  removeImage,
+  selectArrayIdx,
   selectIsLastImage,
   selectModalImage,
   setModalImage,
 } from '../../store/reducers/images'
-import { SocketEvent } from '../../types'
-import { extractFileIndex, prefixWithImageUrl } from '../../utils/files'
-import { useSocket } from '../providers/SocketProvider'
+import { prefixWithImageUrl } from '../../utils/files'
 import { ImageData } from './ImageData'
 
 enum ModelStatus {
@@ -118,9 +118,9 @@ export const ImageModal = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
   const dispatch = useAppDispatch()
   const emit = useEmitters()
-  const socket = useSocket()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const getArrayIdx = useAppSelector(selectArrayIdx)
+  const { navigateNext, navigatePrevious } = useModalNavigation()
 
   useEffect(() => {
     if (modalImage) {
@@ -140,10 +140,10 @@ export const ImageModal = () => {
         handleClose()
       }
       if (event.key === 'ArrowRight') {
-        handleNext()
+        navigateNext()
       }
       if (event.key === 'ArrowLeft') {
-        handlePrevious()
+        navigatePrevious()
       }
     }
 
@@ -163,25 +163,6 @@ export const ImageModal = () => {
       setTimer(null)
       // todo: replace magic number with time it takes for backdrop to close
     }, 1000))
-  }
-
-  function handleNext() {
-    if (!isLastImage) {
-      dispatch(nextModalImage())
-    } else if (modalImage) {
-      socket.on(SocketEvent.FETCH_IMAGES_MODAL, ({ nextImage }: { nextImage: string }) => {
-        if (nextImage) {
-          dispatch(setModalImage(nextImage))
-        }
-        socket.off(SocketEvent.FETCH_IMAGES_MODAL)
-      })
-      // todo: toIndex should be the filename
-      emit.fetchImagesModal({ amount: 10, toIndex: extractFileIndex(modalImage) })
-    }
-  }
-
-  function handlePrevious() {
-    dispatch(previousModalImage())
   }
 
   function handleDelete() {
@@ -239,14 +220,16 @@ export const ImageModal = () => {
             </ImageButtonsContainer>
           </ImageDataFlex>
         ) : null}
-        <OverlayBottomRight onClick={(e) => {
-          e.stopPropagation()
-          handleNext()
-        }}/>
-        <OverlayBottomLeft onClick={(e) => {
-          e.stopPropagation()
-          handlePrevious()
-        }}/>
+        {isInfoOpen ? null : (<>
+          <OverlayBottomRight onClick={(e) => {
+            e.stopPropagation()
+            navigateNext()
+          }}/>
+          <OverlayBottomLeft onClick={(e) => {
+            e.stopPropagation()
+            navigatePrevious()
+          }}/>
+        </>)}
       </ImageContainer>
     </Backdrop>
   )

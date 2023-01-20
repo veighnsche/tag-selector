@@ -1,8 +1,11 @@
 import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
-import { Box, Button, IconButton, Paper, Typography } from '@mui/material'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import { Box, Button, ButtonGroup, IconButton, Paper, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
+import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
 import { ImageDataType } from '../../types/image-data'
@@ -37,7 +40,6 @@ interface ImageDataPropertyProps {
 }
 
 const DataContainer = styled.div`
-  padding: 1rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -91,6 +93,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
   const fetchImageData = useFetchImageData()
   const [selected, setSelected] = useState<(keyof ImageDataType)[]>([])
   const dispatch = useAppDispatch()
+  const { navigateNext, navigatePrevious } = useModalNavigation()
 
   useEffect(() => {
     if (filename && open) {
@@ -166,40 +169,57 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
       <Box
         display="flex"
         flexDirection="column"
+        height="100%"
         justifyContent="space-between"
-        alignItems="center"
-        width="20vw"
       >
-        {data ? (
-          <DataContainer>
-            {propertyList.map(({ fullWidth, name, property }) => data[property] ? (
-              <ImageDataProperty
-                key={property}
-                property={property}
-                name={name}
-                value={data[property]}
-                fullWidth={fullWidth}
-              />
-            ) : null)}
-          </DataContainer>
-        ) : null}
-        <Box display="flex" gap="0.5rem" width="100%" padding="1rem">
-          <Button
-            variant="outlined"
-            fullWidth
-            color="secondary"
-            onClick={selectAll}
-          >
-            Select All
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            color="secondary"
-            onClick={replaceSelected}
-          >
-            Replace Selected
-          </Button>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="20vw"
+          padding="1rem"
+        >
+          {data ? (
+            <DataContainer>
+              {propertyList.map(({ fullWidth, name, property }) => data[property] ? (
+                <ImageDataProperty
+                  key={property}
+                  property={property}
+                  name={name}
+                  value={data[property]}
+                  fullWidth={fullWidth}
+                />
+              ) : null)}
+            </DataContainer>
+          ) : null}
+          <Box display="flex" gap="0.5rem" width="100%" mt="1rem">
+            <Button
+              variant="outlined"
+              fullWidth
+              color="secondary"
+              onClick={selectAll}
+            >
+              Select All
+            </Button>
+            <Button
+              variant="contained"
+              fullWidth
+              color="secondary"
+              onClick={replaceSelected}
+            >
+              Replace Selected
+            </Button>
+          </Box>
+        </Box>
+        <Box p="1rem">
+          <ButtonGroup fullWidth variant="outlined">
+            <Button onClick={navigatePrevious}>
+              <NavigateBeforeIcon/>
+            </Button>
+            <Button onClick={navigateNext}>
+              <NavigateNextIcon/>
+            </Button>
+          </ButtonGroup>
         </Box>
       </Box>
     </StyledPaper>
