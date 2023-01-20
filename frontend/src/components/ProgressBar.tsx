@@ -10,11 +10,10 @@ const StyledProgress = styled.progress`
   z-index: 100;
   margin: 0 1rem;
   border: none;
-  transform: translateX(6px);
+  transform: translateX(0.25%);
 `
 
 export function ProgressBar() {
   const progress = useAppSelector(selectProgress)
-
   return <StyledProgress value={progress} max="1"/>
 }

@@ -69,5 +69,7 @@ export const selectIsLastImage = (state: RootState) => {
 }
 export const selectImageData = (state: RootState) =>
   (filename: string): ImageDataType | undefined => state.images.imageData[filename]
+export const selectArrayIdx = (state: RootState) =>
+  (filename: string): number => state.images.images.indexOf(filename)
 
 export const imagesReducer = imagesSlice.reducer

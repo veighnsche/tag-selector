@@ -18,7 +18,7 @@ const ImageListWrapper = styled.div`
   gap: 1rem;
 `
 
-const ImageContainer = styled.div`
+const ImageButtonsContainer = styled.div`
   position: relative;
   cursor: pointer;
 
@@ -71,8 +71,8 @@ export const ImageList = () => {
         {images.map((image, index) => (
           <ImageDataWrapper key={image} filename={image} arrayIdx={index}>
             {({ setSeed, handleDelete, openModal }) => (
-              <ImageContainer onClick={openModal}>
-                <StyledImage src={prefixWithImageUrl(image)} alt={image}/>
+              <ImageButtonsContainer onClick={openModal}>
+                <StyledImage src={prefixWithImageUrl(image)}/>
                 <Tooltip title={'Set seed from image'}>
                   <SetSeedButton onClick={(e) => {
                     e.stopPropagation()
@@ -84,12 +84,12 @@ export const ImageList = () => {
                 <Tooltip title={'Delete image'}>
                   <DeleteButton onClick={(e) => {
                     e.stopPropagation()
-                    handleDelete(index, image)
+                    handleDelete()
                   }}>
                     <DeleteOutlinedIcon/>
                   </DeleteButton>
                 </Tooltip>
-              </ImageContainer>
+              </ImageButtonsContainer>
             )}
           </ImageDataWrapper>
         ))}

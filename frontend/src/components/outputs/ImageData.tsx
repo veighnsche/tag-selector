@@ -13,7 +13,7 @@ const StyledPaper = styled(Paper, {
   open: boolean
 }>`
   width: ${(props) => (props.open ? '20vw' : '0vw')};
-  height: 100%;
+  height: 100vh;
   transition: width 0.8s ease-in-out;
   overflow: hidden;
   position: relative;
@@ -51,7 +51,7 @@ const propertyList: ImageDataPropertyProps[] = [
     fullWidth: true,
   },
   {
-    name: 'Negatove Prompt',
+    name: 'Negative Prompt',
     property: 'negativePrompt',
     fullWidth: true,
   },
@@ -108,10 +108,8 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     return isSelected(property) ? 'contained' : 'outlined'
   }
 
-  function replaceAll() {
-    if (data) {
-      dispatch(setInputsFromImageData(data))
-    }
+  function selectAll() {
+    setSelected(propertyList.map((property) => property.property))
   }
 
   function replaceSelected() {
@@ -165,36 +163,44 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
       }}>
         <CloseIcon fontSize="small"/>
       </IconButton>
-      {data ? (
-        <DataContainer>
-          {propertyList.map(({ fullWidth, name, property }) => data[property] ? (
-            <ImageDataProperty
-              key={property}
-              property={property}
-              name={name}
-              value={data[property]}
-              fullWidth={fullWidth}
-            />
-          ) : null)}
-        </DataContainer>
-      ) : null}
-      <Box display="flex" gap="0.5rem" padding="1rem">
-        <Button
-          variant="contained"
-          fullWidth
-          color="secondary"
-          onClick={replaceSelected}
-        >
-          Replace Selected
-        </Button>
-        <Button
-          variant="outlined"
-          fullWidth
-          color="secondary"
-          onClick={replaceAll}
-        >
-          Replace All
-        </Button>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        alignItems="center"
+        width="20vw"
+      >
+        {data ? (
+          <DataContainer>
+            {propertyList.map(({ fullWidth, name, property }) => data[property] ? (
+              <ImageDataProperty
+                key={property}
+                property={property}
+                name={name}
+                value={data[property]}
+                fullWidth={fullWidth}
+              />
+            ) : null)}
+          </DataContainer>
+        ) : null}
+        <Box display="flex" gap="0.5rem" width="100%" padding="1rem">
+          <Button
+            variant="outlined"
+            fullWidth
+            color="secondary"
+            onClick={selectAll}
+          >
+            Select All
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            color="secondary"
+            onClick={replaceSelected}
+          >
+            Replace Selected
+          </Button>
+        </Box>
       </Box>
     </StyledPaper>
   )

@@ -54,8 +54,12 @@ export const inputsSlice = createSlice({
     },
     setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
       const imageData = action.payload
+
       if (imageData.prompt) {
         state.prompt.scene = imageData.prompt
+      }
+      if (imageData.negativePrompt) {
+        state.prompt.negativePrompt = imageData.negativePrompt
       }
       if (imageData.width) {
         state.options.width = imageData.width

@@ -7,7 +7,9 @@ import { useAppSelector } from '../../../../store'
 import { selectEtaRelative, selectSdStatus } from '../../../../store/reducers/sdStatus'
 import { SdStatus } from '../../../../types'
 
-const StyledButton = styled(Button)<{
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'busy',
+})<{
   busy: boolean
 }>`
   width: 10rem;

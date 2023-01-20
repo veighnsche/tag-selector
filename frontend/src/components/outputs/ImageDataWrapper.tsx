@@ -13,7 +13,7 @@ interface ImageWrapperProps {
 
 interface ImageWrapperChildrenProps {
   setSeed: () => void
-  handleDelete: (index: number, filename: string) => void
+  handleDelete: () => void
   openModal: () => void
 }
 

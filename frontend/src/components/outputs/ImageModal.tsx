@@ -1,11 +1,14 @@
 import styled from '@emotion/styled'
-import { Backdrop } from '@mui/material'
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import InfoIcon from '@mui/icons-material/Info'
+import { Backdrop, IconButton, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch, useAppSelector } from '../../store'
 import {
   nextModalImage,
   previousModalImage,
+  removeImage, selectArrayIdx,
   selectIsLastImage,
   selectModalImage,
   setModalImage,
@@ -36,8 +39,8 @@ const StyledImage = styled.img<{
 }>`
   grid-area: image;
 
-  height: 95vh;
-  max-width: ${({ isInfoOpen }) => (isInfoOpen ? '75vw' : '95vw')};
+  height: 100vh;
+  max-width: ${({ isInfoOpen }) => (isInfoOpen ? '80vw' : '100vw')};
   object-fit: contain;
 
   display: block;
@@ -64,20 +67,48 @@ const OverlayBottomLeft = styled.div`
   height: 33%;
 `
 
-const OverlayTopLeft = styled.div`
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 33%;
-  height: 33%;
-`
-
-
 const ImageDataFlex = styled.div`
   display: flex;
   justify-content: center;
-  gap: 1rem;
+`
+
+const ImageButtonsContainer = styled.div`
+  position: relative;
+
+  &:hover button {
+    opacity: 0.5;
+  }
+`
+
+const OverlayButton = styled(IconButton)`
+  position: absolute;
+
+  color: white;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1 !important;
+  }
+`
+
+const DeleteButton = styled(OverlayButton)`
+  top: 0;
+  right: 0;
+
+  &:hover {
+    color: red;
+  }
+`
+
+const ShowInfoButton = styled(OverlayButton)`
+  top: 0;
+  left: 0;
+
+  &:hover {
+    color: blue;
+  }
 `
 
 export const ImageModal = () => {
@@ -89,6 +120,7 @@ export const ImageModal = () => {
   const emit = useEmitters()
   const socket = useSocket()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
+  const getArrayIdx = useAppSelector(selectArrayIdx)
 
   useEffect(() => {
     if (modalImage) {
@@ -152,6 +184,21 @@ export const ImageModal = () => {
     dispatch(previousModalImage())
   }
 
+  function handleDelete() {
+    if (modalImage) {
+      emit.removeImage(modalImage)
+
+      if (isLastImage) {
+        dispatch(previousModalImage())
+      } else {
+        dispatch(nextModalImage())
+      }
+
+      const arrayIdx = getArrayIdx(modalImage)
+      dispatch(removeImage(arrayIdx))
+    }
+  }
+
   return (
     <Backdrop
       open={status === ModelStatus.OPEN && modalImage !== null}
@@ -168,11 +215,28 @@ export const ImageModal = () => {
                 setIsInfoOpen(false)
               }}
             />
-            <StyledImage
-              isInfoOpen={isInfoOpen}
-              src={prefixWithImageUrl(modalImage!)}
-              alt="modal"
-            />
+            <ImageButtonsContainer>
+              <StyledImage
+                isInfoOpen={isInfoOpen}
+                src={prefixWithImageUrl(modalImage!)}
+              />
+              <Tooltip title={'Show info'}>
+                <ShowInfoButton onClick={(e) => {
+                  e.stopPropagation()
+                  setIsInfoOpen(!isInfoOpen)
+                }}>
+                  <InfoIcon/>
+                </ShowInfoButton>
+              </Tooltip>
+              <Tooltip title={'Delete image'}>
+                <DeleteButton onClick={(e) => {
+                  e.stopPropagation()
+                  handleDelete()
+                }}>
+                  <DeleteOutlinedIcon/>
+                </DeleteButton>
+              </Tooltip>
+            </ImageButtonsContainer>
           </ImageDataFlex>
         ) : null}
         <OverlayBottomRight onClick={(e) => {
@@ -183,12 +247,6 @@ export const ImageModal = () => {
           e.stopPropagation()
           handlePrevious()
         }}/>
-        {!isInfoOpen ? (
-          <OverlayTopLeft onClick={(e) => {
-            e.stopPropagation()
-            setIsInfoOpen(!isInfoOpen)
-          }}/>
-        ) : null}
       </ImageContainer>
     </Backdrop>
   )
