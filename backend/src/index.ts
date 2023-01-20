@@ -6,7 +6,7 @@ import { Server } from 'socket.io'
 import { CLIENT_URL, PORT } from './constants'
 import { fetchImageController, removeImageController } from './listeners/image-crud.controller'
 import { fetchImageDataController } from './listeners/image-data.controller'
-import { imageGenerateController } from './listeners/image-generate.controller'
+import { generateImageInterruptController, imageGenerateController } from './listeners/image-generate.controller'
 import {
   fetchOptionsController,
   fetchSamplingMethodsController,
@@ -35,6 +35,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.SET_SD_OPTIONS, setOptionsController(socket))
   socket.on(SocketEvent.FETCH_SAMPLERS, fetchSamplingMethodsController(socket))
   socket.on(SocketEvent.FETCH_IMAGE_DATA, fetchImageDataController(socket))
+  socket.on(SocketEvent.GENERATE_IMAGE_INTERRUPT, generateImageInterruptController(socket))
 
   socket.on(SocketEvent.DISCONNECT, () => {
     console.info('user disconnected')

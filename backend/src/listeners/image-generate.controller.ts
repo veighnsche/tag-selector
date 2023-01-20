@@ -4,7 +4,7 @@ import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
 import { getNextIndex, saveImages } from './image-crud'
-import { getProgress, imageGenerate } from './image-generate'
+import { getProgress, imageGenerate, interruptImageGenerate } from './image-generate'
 
 export function imageGenerateController(socket: Socket) {
   return async (reqData: { inputs: ImageInputsType }) => {
@@ -34,5 +34,14 @@ export function imageGenerateController(socket: Socket) {
       socket.emit(SocketEvent.ERROR, { error })
     })
     socket.emit(SocketEvent.IMAGE_OUTPUT, { imageOutput, images })
+  }
+}
+
+export function generateImageInterruptController(socket: Socket) {
+  return async () => {
+    interruptImageGenerate()
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
   }
 }

@@ -5,6 +5,7 @@ export enum SocketEvent {
 
   SD_STATUS = 'sd-status',
   GENERATE_IMAGE = 'generate-image',
+  GENERATE_IMAGE_INTERRUPT = 'generate-image-interrupt',
   IMAGE_OUTPUT = 'image-output',
   FETCH_IMAGES = 'fetch-images',
   FETCH_IMAGES_MODAL = 'fetch-images-modal',

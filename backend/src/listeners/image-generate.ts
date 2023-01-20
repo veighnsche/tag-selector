@@ -38,3 +38,7 @@ export function getProgress(): Promise<SdProgressType> {
   return axios.get(`${SD_URL}/sdapi/v1/progress`)
   .then(response => response.data)
 }
+
+export function interruptImageGenerate(): Promise<void> {
+  return axios.post(`${SD_URL}/sdapi/v1/interrupt`)
+}

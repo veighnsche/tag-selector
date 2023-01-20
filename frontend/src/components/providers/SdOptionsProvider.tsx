@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 import { useEffectOnce } from '../../hooks/useEffectOnce'
+import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch } from '../../store'
 import { setSdOptions } from '../../store/reducers/sdOptions'
 import { resetProgress, setSdStatus } from '../../store/reducers/sdStatus'
@@ -13,6 +14,7 @@ interface SdOptionsProviderProps {
 export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   const socket = useSocket()
   const dispatch = useAppDispatch()
+  const emit = useEmitters()
 
   useEffect(() => {
     socket.on(SocketEvent.SD_STATUS, (status: SdStatus) => {
@@ -28,7 +30,7 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   }, [])
 
   useEffectOnce(() => {
-    socket.emit(SocketEvent.FETCH_SD_OPTIONS)
+    emit.fetchSdOptions()
   })
 
   useEffect(() => {

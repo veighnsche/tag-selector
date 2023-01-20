@@ -1,5 +1,5 @@
 import { useSocket } from '../components/providers/SocketProvider'
-import { SocketEvent } from '../types'
+import { ImageInputsType, SocketEvent } from '../types'
 import { ImageDataRequestType } from '../types/image-data'
 import { GetImagesPathsType } from '../types/image-output'
 import { SdOptionsType } from '../types/sd-options'
@@ -8,18 +8,6 @@ export function useEmitters() {
   const socket = useSocket()
 
   return {
-    setSdOptions: (options: Partial<SdOptionsType>) => {
-      socket.emit(SocketEvent.SET_SD_OPTIONS, { options })
-    },
-    fetchSdModels: () => {
-      socket.emit(SocketEvent.FETCH_SD_MODELS)
-    },
-    fetchSamplingMethods: () => {
-      socket.emit(SocketEvent.FETCH_SAMPLERS)
-    },
-    removeImage: (fileName: string) => {
-      socket.emit(SocketEvent.REMOVE_IMAGE, { fileName })
-    },
     fetchImageData: (image: ImageDataRequestType) => {
       socket.emit(SocketEvent.FETCH_IMAGE_DATA, image)
     },
@@ -28,6 +16,27 @@ export function useEmitters() {
     },
     fetchImagesModal: (params: GetImagesPathsType) => {
       socket.emit(SocketEvent.FETCH_IMAGES_MODAL, params)
-    }
+    },
+    fetchSamplingMethods: () => {
+      socket.emit(SocketEvent.FETCH_SAMPLERS)
+    },
+    fetchSdModels: () => {
+      socket.emit(SocketEvent.FETCH_SD_MODELS)
+    },
+    fetchSdOptions: () => {
+      socket.emit(SocketEvent.FETCH_SD_OPTIONS)
+    },
+    generateImage: (inputs: ImageInputsType) => {
+      socket.emit(SocketEvent.GENERATE_IMAGE, { inputs })
+    },
+    generateImageInterrupt: () => {
+      socket.emit(SocketEvent.GENERATE_IMAGE_INTERRUPT)
+    },
+    removeImage: (fileName: string) => {
+      socket.emit(SocketEvent.REMOVE_IMAGE, { fileName })
+    },
+    setSdOptions: (options: Partial<SdOptionsType>) => {
+      socket.emit(SocketEvent.SET_SD_OPTIONS, { options })
+    },
   }
 }
