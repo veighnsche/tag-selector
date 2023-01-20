@@ -16,4 +16,5 @@ export enum SocketEvent {
   FETCH_SAMPLERS = 'fetch-samplers',
   FETCH_IMAGE_DATA = 'fetch-image-data',
   PROGRESS = 'progress',
+  IMAGE_OUTPUT_BASE64 = 'image-output-base64',
 }

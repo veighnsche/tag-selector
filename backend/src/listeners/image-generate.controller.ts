@@ -3,8 +3,11 @@ import { ImageInputsType } from 'frontend/src/types/image-input'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
-import { getNextIndex, saveImages } from './image-crud'
+import { INTERROGATE_URL, SD_URL } from '../constants'
+import { getNextIndex, saveImage } from './image-crud'
 import { getProgress, imageGenerate, interruptImageGenerate } from './image-generate'
+import { imageInterrogate } from './image-interrogate'
+import { addMetadataToImage } from './image-metadata'
 
 export function imageGenerateController(socket: Socket) {
   return async (reqData: { inputs: ImageInputsType }) => {
@@ -20,20 +23,31 @@ export function imageGenerateController(socket: Socket) {
     .catch((error: AxiosError) => {
       socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
       socket.emit(SocketEvent.ERROR, { error })
+      throw error
     })
 
     clearInterval(progressInterval)
 
-    if (!imageOutput) return
+    socket.emit(SocketEvent.IMAGE_OUTPUT_BASE64, { imageOutput })
+    if (SD_URL !== INTERROGATE_URL) {
+      socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
+    }
 
-    socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
+    const imagePathsPromise = Promise.all(imageOutput.images.map(async (uri, index) => {
+      const tags = await imageInterrogate(uri)
+      const uint8ArrayWithTags = addMetadataToImage(uri, { tags })
+      const buffer = Buffer.from(uint8ArrayWithTags)
 
-    const nextIndex = await nextIndexPromise
-    const images = await saveImages(imageOutput, nextIndex)
-    .catch((error: Error) => {
-      socket.emit(SocketEvent.ERROR, { error })
-    })
-    socket.emit(SocketEvent.IMAGE_OUTPUT, { imageOutput, images })
+      const nextIndex = await nextIndexPromise
+      const imageIndex = nextIndex + index
+      const imageFilename = await saveImage({ buffer, index: imageIndex, imageOutput })
+      socket.emit(SocketEvent.IMAGE_OUTPUT, { images: [imageFilename] })
+    }))
+
+    if (SD_URL === INTERROGATE_URL) {
+      await imagePathsPromise
+      socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
+    }
   }
 }
 

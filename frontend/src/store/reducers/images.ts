@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { FetchImageDataType } from '../../types/fetch-image-data'
+import { ImageCustomDataType } from '../../types/image-custom-data'
 import { ImageDataType } from '../../types/image-data'
 import { RootState } from '../index'
 
@@ -6,12 +8,14 @@ export interface ImagesState {
   images: string[]
   imageModal: string | null
   imageData: Record<string, ImageDataType>
+  imageCustomData: Record<string, ImageCustomDataType>
 }
 
 export const initialState: ImagesState = {
   images: [],
   imageModal: null,
   imageData: {},
+  imageCustomData: {},
 }
 
 export const imagesSlice = createSlice({
@@ -44,8 +48,9 @@ export const imagesSlice = createSlice({
       if (previousIndex < 0) return
       state.imageModal = state.images[previousIndex]
     },
-    setImageData: (state, action: PayloadAction<{ filename: string, imageData: ImageDataType }>) => {
+    setImageData: (state, action: PayloadAction<{ filename: string } & FetchImageDataType>) => {
       state.imageData[action.payload.filename] = action.payload.imageData
+      state.imageCustomData[action.payload.filename] = action.payload.tagSelectorData
     },
   },
 })
@@ -69,6 +74,8 @@ export const selectIsLastImage = (state: RootState) => {
 }
 export const selectImageData = (state: RootState) =>
   (filename: string): ImageDataType | undefined => state.images.imageData[filename]
+export const selectImageCustomData = (state: RootState) =>
+  (filename: string): ImageCustomDataType | undefined => state.images.imageCustomData[filename]
 export const selectArrayIdx = (state: RootState) =>
   (filename: string): number => state.images.images.indexOf(filename)
 

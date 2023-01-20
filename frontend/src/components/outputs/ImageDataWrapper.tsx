@@ -29,7 +29,7 @@ export const ImageDataWrapper = ({ children, filename, arrayIdx }: ImageWrapperP
 
   async function setSeedFromImage() {
     const data = await fetchImageData(filename)
-    dispatch(setSeed(data.seed))
+    dispatch(setSeed(data.imageData.seed))
   }
 
   function openModal() {

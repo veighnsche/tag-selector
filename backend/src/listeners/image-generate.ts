@@ -27,6 +27,10 @@ export function imageGenerate({
     console.timeEnd('generateImage')
     return response.data
   })
+  .then((imageOutput: ImageOutputType) => ({
+    ...imageOutput,
+    info: JSON.parse(imageOutput.info as unknown as string),
+  }))
   .catch((error: AxiosError) => {
     console.error('Error while generating image:', error)
     console.timeEnd('generateImage')

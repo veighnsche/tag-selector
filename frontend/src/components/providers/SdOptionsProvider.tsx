@@ -44,6 +44,16 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    socket.on(SocketEvent.ERROR, (error: any) => {
+      console.error(error)
+    })
+
+    return () => {
+      socket.off(SocketEvent.ERROR)
+    }
+  }, [])
+
   return (
     <>
       {children}

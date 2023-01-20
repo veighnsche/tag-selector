@@ -22,24 +22,15 @@ const StyledImage = styled.img`
   object-fit: contain;
 `
 
+interface ImageOutputResponseType {
+  imageOutput: ImageOutputType
+  images: string[]
+}
+
 export const OutputImage = () => {
   const socket = useSocket()
   const [generateImageData, setGenerateImageData] = useState<ImageOutputType | null>(null)
   const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    socket.on(SocketEvent.IMAGE_OUTPUT, ({
-      imageOutput,
-      images,
-    }: { imageOutput: ImageOutputType, images: string[] }) => {
-      setGenerateImageData(imageOutput)
-      dispatch(addImagesToStart(images))
-    })
-
-    return () => {
-      socket.off(SocketEvent.IMAGE_OUTPUT)
-    }
-  }, [])
 
   useEffect(() => {
     socket.on(SocketEvent.PROGRESS, ({ current_image, ...progress }: SdProgressType) => {
@@ -53,6 +44,26 @@ export const OutputImage = () => {
 
     return () => {
       socket.off(SocketEvent.PROGRESS)
+    }
+  }, [])
+
+  useEffect(() => {
+    socket.on(SocketEvent.IMAGE_OUTPUT_BASE64, ({imageOutput}) => {
+      setGenerateImageData(imageOutput)
+    })
+
+    return () => {
+      socket.off(SocketEvent.IMAGE_OUTPUT_BASE64)
+    }
+  }, [])
+
+  useEffect(() => {
+    socket.on(SocketEvent.IMAGE_OUTPUT, ({ images}: ImageOutputResponseType) => {
+      dispatch(addImagesToStart(images))
+    })
+
+    return () => {
+      socket.off(SocketEvent.IMAGE_OUTPUT)
     }
   }, [])
 

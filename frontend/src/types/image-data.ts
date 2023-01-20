@@ -1,3 +1,4 @@
+import { ImageCustomDataType } from './image-custom-data'
 import { ImageOptionsType } from './image-input'
 
 export interface ImageDataType extends Partial<ImageOptionsType> {
@@ -15,4 +16,9 @@ export interface ImageDataRequestType {
   fileName: string,
   fileIndex: number,
   filePath: string
+}
+
+export interface FullImageDataType {
+  imageData: ImageDataType;
+  customData: ImageCustomDataType
 }

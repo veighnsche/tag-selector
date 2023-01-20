@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ImageDataRequestType, ImageDataType } from 'frontend/src/types/image-data'
+import { ImageDataType } from 'frontend/src/types/image-data'
 import { SD_URL } from '../constants'
 
 interface ImageDataRawType {
@@ -9,7 +9,7 @@ interface ImageDataRawType {
   }
 }
 
-export async function fetchImageData({ filePath }: ImageDataRequestType): Promise<unknown> {
+export async function fetchImageData(filePath: string): Promise<unknown> {
   // first get the base64 encoded image data
   const imageBase64 = await fetch(filePath)
   .then(response => response.arrayBuffer())

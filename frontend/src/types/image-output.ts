@@ -4,7 +4,7 @@ export interface ImageOutputType {
     prompt: string
     seed: number
   }
-  info: string
+  info: ImageOutputInfoType
 }
 
 export interface ImageOutputInfoType {

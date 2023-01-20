@@ -8,7 +8,8 @@ import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
-import { ImageDataType } from '../../types/image-data'
+import { FullImageDataType, ImageDataType } from '../../types/image-data'
+import { ImageTags } from './ImageTags'
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -89,7 +90,7 @@ const propertyList: ImageDataPropertyProps[] = [
 ]
 
 export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
-  const [data, setData] = useState<ImageDataType | null>(null)
+  const [data, setData] = useState<FullImageDataType | null>(null)
   const fetchImageData = useFetchImageData()
   const [selected, setSelected] = useState<(keyof ImageDataType)[]>([])
   const dispatch = useAppDispatch()
@@ -118,7 +119,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
   function replaceSelected() {
     if (data) {
       const selectedData = selected.reduce((acc, curr) => {
-        acc[curr] = data[curr] as any
+        acc[curr] = data.imageData[curr] as any
         return acc
       }, {} as Partial<ImageDataType>)
       dispatch(setInputsFromImageData(selectedData))
@@ -169,8 +170,9 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
       <Box
         display="flex"
         flexDirection="column"
-        height="100%"
         justifyContent="space-between"
+        height="100vh"
+        max-height="100vh"
       >
         <Box
           display="flex"
@@ -181,12 +183,12 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
         >
           {data ? (
             <DataContainer>
-              {propertyList.map(({ fullWidth, name, property }) => data[property] ? (
+              {propertyList.map(({ fullWidth, name, property }) => data?.imageData[property] ? (
                 <ImageDataProperty
                   key={property}
                   property={property}
                   name={name}
-                  value={data[property]}
+                  value={data?.imageData[property]}
                   fullWidth={fullWidth}
                 />
               ) : null)}
@@ -211,7 +213,14 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
             </Button>
           </Box>
         </Box>
-        <Box p="1rem">
+        <Box flex={1} p="0 1rem" sx={{
+          overflowY: 'auto',
+        }}>
+          <Paper elevation={3}>
+            <ImageTags tags={data?.customData.tags}/>
+          </Paper>
+        </Box>
+        <Box p="1rem" mt="1rem">
           <ButtonGroup fullWidth variant="outlined">
             <Button onClick={navigatePrevious}>
               <NavigateBeforeIcon/>
