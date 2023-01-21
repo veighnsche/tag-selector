@@ -3,7 +3,7 @@ import { ChangeEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../../store'
 import { selectNegativePrompt, setNegativePrompt } from '../../../../store/reducers/inputs'
 
-export const TempNegativePrompt = () => {
+export const NegativePrompt = () => {
   const negativePrompt = useAppSelector(selectNegativePrompt)
   const dispatch = useAppDispatch()
 
@@ -12,6 +12,11 @@ export const TempNegativePrompt = () => {
   }
 
   return (
-    <TextField label="Negative prompt" value={negativePrompt} onChange={handleChange}/>
+    <TextField
+      label="Negative prompt"
+      value={negativePrompt}
+      onChange={handleChange}
+      color="secondary"
+    />
   )
 }

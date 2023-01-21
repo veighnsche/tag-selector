@@ -1,22 +1,27 @@
 import styled from '@emotion/styled'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import { PromptScene } from './PromptScene'
-import { TempNegativePrompt } from './TempNegativePrompt'
+import { TagList } from './TagList'
 
 const LayoutFlex = styled.div`
   width: 100%;
   height: 100%;
-  
+
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 `
 
 
 export const PromptLayout = () => {
   return (
-    <LayoutFlex>
-      <PromptScene/>
-      <TempNegativePrompt/>
-    </LayoutFlex>
+    <DndProvider backend={HTML5Backend}>
+      <LayoutFlex>
+        <PromptScene/>
+        <TagList location="tags"/>
+        <TagList location="negativeTags"/>
+        <TagList location="tagPool"/>
+      </LayoutFlex>
+    </DndProvider>
   )
 }

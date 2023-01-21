@@ -1,11 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PromptTagsType, TagType } from '../../types/image-input'
+import { ImageInputsType, PromptTagsType, TagType } from '../../types/image-input'
 import { RootState } from '../index'
 
 const initialState: PromptTagsType = {
-  tags: [],
-  negativeTags: [],
+  tags: ['face', 'shoulders', 'arms', 'legs', 'feet', 'hair', 'clothes', 'background'].map((tag) => ({
+    name: tag,
+    strength: 1,
+  })),
+  negativeTags: ['car', 'building', 'tree', 'sky', 'water', 'ground'].map((tag) => ({
+    name: tag,
+    strength: 1,
+  })),
   tagPool: [],
+}
+
+function findTag(state: PromptTagsType, name: TagType['name']): keyof PromptTagsType {
+  const locations = ['tags', 'negativeTags', 'tagPool'] as const
+  for (const location of locations) {
+    const index = state[location].findIndex((tag) => tag.name === name)
+    if (index !== -1) {
+      return location
+    }
+  }
+  throw new Error(`Tag ${name} not found`)
 }
 
 export const tagsSlice = createSlice({
@@ -24,6 +41,25 @@ export const tagsSlice = createSlice({
         tags.push(tag)
       }
     },
+    moveTagBetweenLocations: (state, action: PayloadAction<{
+      name: TagType['name'],
+      to: keyof PromptTagsType,
+      position?: number,
+    }>) => {
+      const { name, to, position } = action.payload
+      const fromTags = state[findTag(state, name)]
+      const toTags = state[to]
+      const tagIndex = fromTags.findIndex(tag => tag.name === name)
+      if (tagIndex !== -1) {
+        const tag = fromTags.splice(tagIndex, 1)[0]
+        if (position === undefined) {
+          toTags.push(tag)
+        }
+        else {
+          toTags.splice(position, 0, tag)
+        }
+      }
+    },
     removeTag: (state, action: PayloadAction<{
       name: TagType['name'],
       location: keyof PromptTagsType,
@@ -33,34 +69,6 @@ export const tagsSlice = createSlice({
       const tagIndex = tags.findIndex(tag => tag.name === name)
       if (tagIndex !== -1) {
         tags.splice(tagIndex, 1)
-      }
-    },
-    moveTagInLocation: (state, action: PayloadAction<{
-      name: TagType['name'],
-      location: keyof PromptTagsType,
-      position: number,
-    }>) => {
-      const { name, location, position } = action.payload
-      const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.name === name)
-      if (tagIndex !== -1) {
-        const tag = tags.splice(tagIndex, 1)[0]
-        tags.splice(position, 0, tag)
-      }
-    },
-    moveTagBetweenLocations: (state, action: PayloadAction<{
-      name: TagType['name'],
-      fromLocation: keyof PromptTagsType,
-      toLocation: keyof PromptTagsType,
-      position: number,
-    }>) => {
-      const { name, fromLocation, toLocation, position } = action.payload
-      const fromTags = state[fromLocation]
-      const toTags = state[toLocation]
-      const tagIndex = fromTags.findIndex(tag => tag.name === name)
-      if (tagIndex !== -1) {
-        const tag = fromTags.splice(tagIndex, 1)[0]
-        toTags.splice(position, 0, tag)
       }
     },
     setTagStrength: (state, action: PayloadAction<{
@@ -106,9 +114,8 @@ export const tagsSlice = createSlice({
 
 export const {
   newTag,
-  removeTag,
-  moveTagInLocation,
   moveTagBetweenLocations,
+  removeTag,
   setTagStrength,
   increaseTagStrength,
   decreaseTagStrength,
@@ -116,5 +123,32 @@ export const {
 
 export const selectTags = (state: RootState) => state.tags.tags
 export const selectNegativeTags = (state: RootState) => state.tags.negativeTags
+export const selectTagPool = (state: RootState) => state.tags.tagPool
+export const selectLocateTag = (state: RootState) =>
+  (name: TagType['name']): Record<`is${Capitalize<keyof PromptTagsType>}`, boolean> & { found: boolean } => {
+    const { tags, negativeTags, tagPool } = state.tags
+    const isTags = tags.some(tag => tag.name === name)
+    const isNegativeTags = negativeTags.some(tag => tag.name === name)
+    const isTagPool = tagPool.some(tag => tag.name === name)
+    return {
+      isTags,
+      isNegativeTags,
+      isTagPool,
+      found: isTags || isNegativeTags || isTagPool,
+    }
+  }
+
+export const selectTagsForInputs = (state: RootState) =>
+  (inputs: ImageInputsType): ImageInputsType => {
+    const { tags, negativeTags } = state.tags
+    const { prompt: { negativePrompt, scene } } = inputs
+    return {
+      ...inputs,
+      prompt: {
+        scene: [scene.trim(), ...tags.map(tag => tag.name)].join(', '),
+        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tag => tag.name)].join(', '),
+      },
+    }
+  }
 
 export const tagsReducer = tagsSlice.reducer
