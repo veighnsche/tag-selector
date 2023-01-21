@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { Chip } from '@mui/material'
 import { MouseEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { moveTagBetweenLocations, newTag, selectLocateTag } from '../../store/reducers/tags'
+import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTag } from '../../store/reducers/tags'
 
 interface ImageTagsProps {
   tags?: string[]
@@ -18,6 +18,7 @@ const TagContainer = styled.div`
 
 export const ImageTags = ({ tags = [] }: ImageTagsProps) => {
   const locateTag = useAppSelector(selectLocateTag)
+  const getId = useAppSelector(selectGetId)
   const dispatch = useAppDispatch()
 
   return (
@@ -55,30 +56,25 @@ export const ImageTags = ({ tags = [] }: ImageTagsProps) => {
         function handleLeftClick() {
           if (!found) {
             dispatch(newTag({ name: tag, location: 'tagPool' }))
+            return
           }
-          else if (isTagPool) {
-            dispatch(moveTagBetweenLocations({ name: tag, to: 'tags' }))
-          }
-          else if (isTags) {
-            dispatch(moveTagBetweenLocations({ name: tag, to: 'tagPool' }))
-          }
-          else if (isNegativeTags) {
-            dispatch(moveTagBetweenLocations({ name: tag, to: 'tags' }))
-          }
+          dispatch(moveTagBetweenLocations({
+            id: getId(tag) as string,
+            to: isTagPool || isNegativeTags
+              ? 'tags'
+              : 'tagPool'
+          }))
         }
 
         function handleRightClick(e: MouseEvent<HTMLDivElement>) {
           if (found) {
             e.preventDefault()
-            if (isTagPool) {
-              dispatch(moveTagBetweenLocations({ name: tag, to: 'negativeTags' }))
-            }
-            else if (isTags) {
-              dispatch(moveTagBetweenLocations({ name: tag, to: 'negativeTags' }))
-            }
-            else if (isNegativeTags) {
-              dispatch(moveTagBetweenLocations({ name: tag, to: 'tagPool' }))
-            }
+            dispatch(moveTagBetweenLocations({
+              id: getId(tag) as string,
+              to: isTagPool || isTags
+                ? 'negativeTags'
+                : 'tagPool'
+            }))
           }
         }
 

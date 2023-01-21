@@ -1,4 +1,5 @@
 export interface TagType {
+  id: string
   name: string
   strength: number
 }

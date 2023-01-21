@@ -12,17 +12,12 @@ import {
   removeImage,
   selectArrayIdx,
   selectIsLastImage,
+  selectIsModalOpen,
   selectModalImage,
-  setModalImage,
+  toggleModal,
 } from '../../store/reducers/images'
 import { prefixWithImageUrl } from '../../utils/files'
 import { ImageData } from './ImageData'
-
-enum ModelStatus {
-  CLOSED = 'CLOSED',
-  CLOSING = 'CLOSING',
-  OPEN = 'OPEN',
-}
 
 const ImageContainer = styled.div`
   width: 100vw;
@@ -113,9 +108,8 @@ const ShowInfoButton = styled(OverlayButton)`
 
 export const ImageModal = () => {
   const modalImage = useAppSelector(selectModalImage)
+  const isModalOpen = useAppSelector(selectIsModalOpen)
   const isLastImage = useAppSelector(selectIsLastImage)
-  const [status, setStatus] = useState<ModelStatus>(ModelStatus.CLOSED)
-  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
   const dispatch = useAppDispatch()
   const emit = useEmitters()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
@@ -123,46 +117,28 @@ export const ImageModal = () => {
   const { navigateNext, navigatePrevious } = useModalNavigation()
 
   useEffect(() => {
-    if (modalImage) {
-      setStatus(ModelStatus.OPEN)
-      if (timer) {
-        clearTimeout(timer)
-        setTimer(null)
+    if (isModalOpen && modalImage) {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          handleClose()
+        }
+        if (event.key === 'ArrowRight') {
+          navigateNext()
+        }
+        if (event.key === 'ArrowLeft') {
+          navigatePrevious()
+        }
       }
-    } else {
-      handleClose()
-    }
-  }, [modalImage])
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        handleClose()
-      }
-      if (event.key === 'ArrowRight') {
-        navigateNext()
-      }
-      if (event.key === 'ArrowLeft') {
-        navigatePrevious()
+      window.addEventListener('keydown', handleKeyDown)
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown)
       }
     }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isLastImage, modalImage, status])
+  }, [isLastImage, modalImage, isModalOpen])
 
   function handleClose() {
-    // closing takes 1s, so we set the status to CLOSING
-    // and then after 1s we set it to CLOSED
-    setStatus(ModelStatus.CLOSING)
-    setTimer(setTimeout(() => {
-      setStatus(ModelStatus.CLOSED)
-      dispatch(setModalImage(null))
-      setTimer(null)
-      // todo: replace magic number with time it takes for backdrop to close
-    }, 1000))
+    dispatch(toggleModal())
   }
 
   function handleDelete() {
@@ -182,7 +158,7 @@ export const ImageModal = () => {
 
   return (
     <Backdrop
-      open={status === ModelStatus.OPEN && modalImage !== null}
+      open={isModalOpen}
       onClick={handleClose}
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >

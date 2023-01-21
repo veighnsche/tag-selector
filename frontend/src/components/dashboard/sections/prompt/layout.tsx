@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { PromptScene } from './PromptScene'
+import { TagBin } from './TagBin'
 import { TagList } from './TagList'
 
 const LayoutFlex = styled.div`
@@ -12,7 +13,6 @@ const LayoutFlex = styled.div`
   flex-direction: column;
 `
 
-
 export const PromptLayout = () => {
   return (
     <DndProvider backend={HTML5Backend}>
@@ -21,6 +21,7 @@ export const PromptLayout = () => {
         <TagList location="tags"/>
         <TagList location="negativeTags"/>
         <TagList location="tagPool"/>
+        <TagBin/>
       </LayoutFlex>
     </DndProvider>
   )

@@ -3,6 +3,7 @@ import { ComponentProps, useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { useAppDispatch } from '../../../../store'
 import { moveTagBetweenLocations } from '../../../../store/reducers/tags'
+import { setIsDragging } from '../../../../store/reducers/tagsState'
 import { PromptTagsType, TagType } from '../../../../types/image-input'
 
 const colorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
@@ -25,18 +26,19 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   // if a tag is dragged over another tag, it will be moved to the index of the tag it is dragged over
   const [, drop] = useDrop({
     accept: 'tag',
-    drop: (item: { name: string }) => {
+    drop: (item: { id: string }) => {
       dispatch(moveTagBetweenLocations({
-        name: item.name,
+        id: item.id,
         to: location,
         position: arrayIdx,
       }))
+      dispatch(setIsDragging(false))
     },
   })
 
   const [, drag] = useDrag({
     type: 'tag',
-    item: () => ({ name: tag.name }),
+    item: () => ({ id: tag.id }),
   })
 
   drag(drop(ref))
@@ -48,6 +50,12 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
       label={label}
       color={colorMap[location]}
       variant="outlined"
+      onDragStart={() => {
+        dispatch(setIsDragging(true))
+      }}
+      onDragEnd={() => {
+        dispatch(setIsDragging(false))
+      }}
       onContextMenu={(e) => {
         e.preventDefault()
         console.log('right click')

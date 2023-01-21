@@ -7,6 +7,7 @@ import { RootState } from '../index'
 export interface ImagesState {
   images: string[]
   imageModal: string | null
+  isModalOpen: boolean
   imageData: Record<string, ImageDataType>
   imageCustomData: Record<string, ImageCustomDataType>
 }
@@ -14,6 +15,7 @@ export interface ImagesState {
 export const initialState: ImagesState = {
   images: [],
   imageModal: null,
+  isModalOpen: false,
   imageData: {},
   imageCustomData: {},
 }
@@ -30,6 +32,9 @@ export const imagesSlice = createSlice({
     },
     removeImage: (state, action: PayloadAction<number>) => {
       state.images.splice(action.payload, 1)
+    },
+    toggleModal: (state) => {
+      state.isModalOpen = !state.isModalOpen
     },
     setModalImage: (state, action: PayloadAction<string | null>) => {
       state.imageModal = action.payload
@@ -60,6 +65,7 @@ export const {
   addImagesToStart,
   removeImage,
   setModalImage,
+  toggleModal,
   nextModalImage,
   previousModalImage,
   setImageData,
@@ -67,6 +73,7 @@ export const {
 
 export const selectImages = (state: RootState) => state.images.images
 export const selectModalImage = (state: RootState) => state.images.imageModal
+export const selectIsModalOpen = (state: RootState) => state.images.isModalOpen
 export const selectIsLastImage = (state: RootState) => {
   if (state.images.imageModal === null) return false
   const currentIndex = state.images.images.indexOf(state.images.imageModal)

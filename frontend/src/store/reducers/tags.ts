@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { v4 as uuid } from 'uuid'
 import { ImageInputsType, PromptTagsType, TagType } from '../../types/image-input'
 import { RootState } from '../index'
 
@@ -8,15 +9,15 @@ const initialState: PromptTagsType = {
   tagPool: [],
 }
 
-function findTag(state: PromptTagsType, name: TagType['name']): keyof PromptTagsType {
-  const locations = ['tags', 'negativeTags', 'tagPool'] as const
+function findTag(state: PromptTagsType, id: TagType['id']): keyof PromptTagsType {
+  const locations: Readonly<(keyof PromptTagsType)[]> = ['tags', 'negativeTags', 'tagPool'] as const
   for (const location of locations) {
-    const index = state[location].findIndex((tag) => tag.name === name)
+    const index = state[location].findIndex((tag) => tag.id === id)
     if (index !== -1) {
       return location
     }
   }
-  throw new Error(`Tag ${name} not found`)
+  throw new Error(`Tag ${id} not found`)
 }
 
 export const tagsSlice = createSlice({
@@ -28,62 +29,59 @@ export const tagsSlice = createSlice({
       location: keyof PromptTagsType,
     }>) => {
       const { name, location } = action.payload
-      const tags = state[location]
-      const tag = { name, strength: 1 }
-      const tagIndex = tags.findIndex(tag => tag.name === name)
-      if (tagIndex === -1) {
-        tags.push(tag)
-      }
+      state[location].push({ name, strength: 1, id: uuid() })
+    },
+    newTags: (state, action: PayloadAction<{
+      names: TagType['name'][],
+      location: keyof PromptTagsType,
+    }>) => {
+      const { names, location } = action.payload
+      state[location].push(...names.map(name => ({ name, strength: 1, id: uuid() })))
     },
     moveTagBetweenLocations: (state, action: PayloadAction<{
-      name: TagType['name'],
+      id: TagType['id'],
       to: keyof PromptTagsType,
       position?: number,
     }>) => {
-      const { name, to, position } = action.payload
-      const fromTags = state[findTag(state, name)]
-      const toTags = state[to]
-      const tagIndex = fromTags.findIndex(tag => tag.name === name)
-      if (tagIndex !== -1) {
-        const tag = fromTags.splice(tagIndex, 1)[0]
-        if (position === undefined) {
-          toTags.push(tag)
+      const { id, to, position } = action.payload
+      const from = findTag(state, id)
+      const tag = state[from].find(tag => tag.id === id)
+      if (tag) {
+        state[from] = state[from].filter(tag => tag.id !== id)
+        if (position !== undefined) {
+          state[to].splice(position, 0, tag)
         }
         else {
-          toTags.splice(position, 0, tag)
+          state[to].push(tag)
         }
       }
     },
     removeTag: (state, action: PayloadAction<{
-      name: TagType['name'],
-      location: keyof PromptTagsType,
+      id: TagType['id'],
     }>) => {
-      const { name, location } = action.payload
-      const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.name === name)
-      if (tagIndex !== -1) {
-        tags.splice(tagIndex, 1)
-      }
+      const { id } = action.payload
+      const location = findTag(state, id)
+      state[location] = state[location].filter(tag => tag.id !== id)
     },
     setTagStrength: (state, action: PayloadAction<{
-      name: TagType['name'],
+      id: TagType['id'],
       location: keyof PromptTagsType,
       strength: number,
     }>) => {
-      const { name, location, strength } = action.payload
+      const { id, location, strength } = action.payload
       const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.name === name)
+      const tagIndex = tags.findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
         tags[tagIndex].strength = strength
       }
     },
     increaseTagStrength: (state, action: PayloadAction<{
-      name: TagType['name'],
+      id: TagType['id'],
       location: keyof PromptTagsType,
     }>) => {
-      const { name, location } = action.payload
+      const { id, location } = action.payload
       const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.name === name)
+      const tagIndex = tags.findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
         // add 10% to the strength
         const strength = tags[tagIndex].strength
@@ -91,12 +89,12 @@ export const tagsSlice = createSlice({
       }
     },
     decreaseTagStrength: (state, action: PayloadAction<{
-      name: TagType['name'],
+      id: TagType['id'],
       location: keyof PromptTagsType,
     }>) => {
-      const { name, location } = action.payload
+      const { id, location } = action.payload
       const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.name === name)
+      const tagIndex = tags.findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
         // subtract 10% from the strength
         const strength = tags[tagIndex].strength
@@ -108,6 +106,7 @@ export const tagsSlice = createSlice({
 
 export const {
   newTag,
+  newTags,
   moveTagBetweenLocations,
   removeTag,
   setTagStrength,
@@ -130,6 +129,13 @@ export const selectLocateTag = (state: RootState) =>
       isTagPool,
       found: isTags || isNegativeTags || isTagPool,
     }
+  }
+
+export const selectGetId = (state: RootState) =>
+  (name: TagType['name']): TagType['id'] | undefined => {
+    const { tags, negativeTags, tagPool } = state.tags
+    const tag = [...tags, ...negativeTags, ...tagPool].find(tag => tag.name === name)
+    return tag?.id
   }
 
 export const selectTagsForInputs = (state: RootState) =>

@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useAppDispatch } from '../../store'
-import { removeImage, setModalImage } from '../../store/reducers/images'
+import { removeImage, setModalImage, toggleModal } from '../../store/reducers/images'
 import { setSeed } from '../../store/reducers/inputs'
 
 interface ImageWrapperProps {
@@ -34,6 +34,7 @@ export const ImageDataWrapper = ({ children, filename, arrayIdx }: ImageWrapperP
 
   function openModal() {
     dispatch(setModalImage(filename))
+    dispatch(toggleModal())
   }
 
   return (

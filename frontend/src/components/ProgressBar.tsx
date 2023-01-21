@@ -18,7 +18,7 @@ export function ProgressBar() {
   const socket = useSocket()
 
   useEffect(() => {
-    socket.on(SocketEvent.PROGRESS_PERCENT, ({ progress }) => {
+    socket.on(SocketEvent.PROGRESS_PERCENT, progress => {
       setProgress(progress)
     })
 
