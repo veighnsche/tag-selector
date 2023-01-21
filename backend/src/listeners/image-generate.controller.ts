@@ -16,7 +16,9 @@ export function imageGenerateController(socket: Socket) {
 
     const progressInterval = setInterval(async () => {
       const progress = await getProgress()
-      socket.emit(SocketEvent.PROGRESS, progress)
+      socket.emit(SocketEvent.PROGRESS_IMAGE, progress.current_image)
+      socket.emit(SocketEvent.PROGRESS_ETA, progress.eta_relative)
+      socket.emit(SocketEvent.PROGRESS_PERCENT, progress.progress)
     }, 800)
 
     const imageOutput = await imageGenerate(reqData.inputs)
@@ -27,8 +29,10 @@ export function imageGenerateController(socket: Socket) {
     })
 
     clearInterval(progressInterval)
-
     socket.emit(SocketEvent.IMAGE_OUTPUT_BASE64, { imageOutput })
+    socket.emit(SocketEvent.PROGRESS_ETA, 0)
+    socket.emit(SocketEvent.PROGRESS_PERCENT, 0)
+
     if (SD_URL !== INTERROGATE_URL) {
       socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
     }

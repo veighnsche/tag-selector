@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
-import { useAppSelector } from '../store'
-import { selectProgress } from '../store/reducers/sdStatus'
-
+import { useEffect, useState } from 'react'
+import { SocketEvent } from '../types'
+import { useSocket } from './providers/SocketProvider'
 
 const StyledProgress = styled.progress`
   width: 97vw;
@@ -14,6 +14,18 @@ const StyledProgress = styled.progress`
 `
 
 export function ProgressBar() {
-  const progress = useAppSelector(selectProgress)
+  const [progress, setProgress] = useState(0)
+  const socket = useSocket()
+
+  useEffect(() => {
+    socket.on(SocketEvent.PROGRESS_PERCENT, ({ progress }) => {
+      setProgress(progress)
+    })
+
+    return () => {
+      socket.off(SocketEvent.PROGRESS_PERCENT)
+    }
+  }, [])
+
   return <StyledProgress value={progress} max="1"/>
 }

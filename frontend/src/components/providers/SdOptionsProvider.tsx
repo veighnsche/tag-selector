@@ -3,7 +3,7 @@ import { useEffectOnce } from '../../hooks/useEffectOnce'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppDispatch } from '../../store'
 import { setSdOptions } from '../../store/reducers/sdOptions'
-import { resetProgress, setSdStatus } from '../../store/reducers/sdStatus'
+import { setSdStatus } from '../../store/reducers/sdStatus'
 import { SdStatus, SocketEvent } from '../../types'
 import { SdOptionsType } from '../../types/sd-options'
 import { useSocket } from './SocketProvider'
@@ -20,9 +20,6 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   useEffect(() => {
     socket.on(SocketEvent.SD_STATUS, (status: SdStatus) => {
       dispatch(setSdStatus(status))
-      if (status === SdStatus.READY) {
-        dispatch(resetProgress())
-      }
     })
 
     return () => {

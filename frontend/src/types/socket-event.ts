@@ -15,6 +15,8 @@ export enum SocketEvent {
   SET_SD_OPTIONS = 'set-sd-options',
   FETCH_SAMPLERS = 'fetch-samplers',
   FETCH_IMAGE_DATA = 'fetch-image-data',
-  PROGRESS = 'progress',
   IMAGE_OUTPUT_BASE64 = 'image-output-base64',
+  PROGRESS_IMAGE = 'progress-image',
+  PROGRESS_ETA = 'progress-eta',
+  PROGRESS_PERCENT = 'progress-percent',
 }

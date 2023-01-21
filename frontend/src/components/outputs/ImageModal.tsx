@@ -40,7 +40,7 @@ const StyledImage = styled.img<{
   grid-area: image;
 
   height: 100vh;
-  max-width: ${({ isInfoOpen }) => (isInfoOpen ? '80vw' : '100vw')};
+  max-width: ${({ isInfoOpen }) => (isInfoOpen ? '70vw' : '100vw')};
   object-fit: contain;
 
   display: block;

@@ -1,11 +1,12 @@
 import styled from '@emotion/styled'
 import { Button } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useGenerateImage } from '../../../../hooks/useGenerateImage'
 import { useAppSelector } from '../../../../store'
-import { selectEtaRelative, selectSdStatus } from '../../../../store/reducers/sdStatus'
-import { SdStatus } from '../../../../types'
+import { selectSdStatus } from '../../../../store/reducers/sdStatus'
+import { SdStatus, SocketEvent } from '../../../../types'
+import { useSocket } from '../../../providers/SocketProvider'
 
 const StyledButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== 'busy',
@@ -19,7 +20,25 @@ const StyledButton = styled(Button, {
 export const GenerateButton = () => {
   const sdStatus = useAppSelector(selectSdStatus)
   const generateImage = useGenerateImage()
-  const eta = useAppSelector(selectEtaRelative)
+  const socket = useSocket()
+  const [eta, setEta] = useState<string | null>()
+
+  useEffect(() => {
+    socket.on(SocketEvent.PROGRESS_ETA, seconds => {
+      if (seconds === 0) {
+        setEta(null)
+        return
+      }
+
+      const minutes = Math.floor(seconds / 60)
+      const secondsLeft = Math.floor(seconds % 60)
+      setEta(`${minutes}m ${secondsLeft}s`)
+    })
+
+    return () => {
+      socket.off('progressPercent')
+    }
+  }, [])
 
   function handleClick() {
     generateImage()
@@ -27,12 +46,12 @@ export const GenerateButton = () => {
 
   return (
     <StyledButton
-      busy={eta !== null}
+      busy={!!eta}
       variant="contained"
       onClick={handleClick}
       disabled={sdStatus === SdStatus.BUSY}
     >
-      {eta !== null ? `${eta}` : 'Generate one'}
+      {eta ? `${eta}` : 'Generate one'}
     </StyledButton>
   )
 }

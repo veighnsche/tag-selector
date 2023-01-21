@@ -1,32 +1,35 @@
 import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Box, Button, ButtonGroup, IconButton, Paper, Tooltip, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
 import { FullImageDataType, ImageDataType } from '../../types/image-data'
 import { ImageTags } from './ImageTags'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<{
   open: boolean
 }>`
-  width: ${(props) => (props.open ? '20vw' : '0vw')};
+  width: ${(props) => (props.open ? '30vw' : '0vw')};
   height: 100vh;
   transition: width 0.8s ease-in-out;
   overflow: hidden;
   position: relative;
 `
 
-//  - not capitalized and align text to the left
+// text only on 1 line and ellipsis
 const StyledButton = styled(Button)`
   text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 interface ImageDataProps {
@@ -136,23 +139,40 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     }
   }
 
+
   const ImageDataProperty = ({ name, value, property, fullWidth }: ImageDataPropertyProps & { value: any }) => {
+    const display = value.toString().slice(0, 50)
+    const isLonger = value.toString().length > 50
+
+    const TooltipWrapper = ({ children }: { children: ReactElement }) => {
+      if (isLonger) {
+        return (
+          <Tooltip title={value.toString()}>
+            {children}
+          </Tooltip>
+        )
+      }
+      return <>{children}</>
+    }
+
     return (
       <Box display="flex" flexDirection="column" width={fullWidth ? '100%' : '48.5%'}>
         <Typography variant="caption">
           {name}
         </Typography>
-        <StyledButton
-          fullWidth={fullWidth}
-          size="small"
-          variant={buttonVariant(property)}
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleProperty(property)
-          }}
-        >
-          {value}
-        </StyledButton>
+        <TooltipWrapper>
+          <StyledButton
+            fullWidth={fullWidth}
+            size="small"
+            variant={buttonVariant(property)}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleProperty(property)
+            }}
+          >
+            {`${display}${isLonger ? '...' : ''}`}
+          </StyledButton>
+        </TooltipWrapper>
       </Box>
     )
   }
@@ -174,13 +194,14 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
         justifyContent="space-between"
         height="100vh"
         max-height="100vh"
-        width="20vw"
+        width="30vw"
       >
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
           padding="1rem"
+          overflow="auto"
         >
           {data ? (
             <DataContainer>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Paper } from '@mui/material'
+import { Button, Paper } from '@mui/material'
 import { useRef } from 'react'
 import { useDrop } from 'react-dnd'
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store'
@@ -52,6 +52,7 @@ export const TagList = ({ location }: TagPaperProps) => {
   return (
     <div ref={ref}>
       <StyledPaper elevation={isOver ? 4 : 2}>
+        {location === "tagPool" ? <Button>New</Button> : null}
         {tags.map((tag, idx) => (
           <Tag
             key={tag.name}

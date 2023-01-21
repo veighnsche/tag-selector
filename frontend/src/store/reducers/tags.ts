@@ -3,14 +3,8 @@ import { ImageInputsType, PromptTagsType, TagType } from '../../types/image-inpu
 import { RootState } from '../index'
 
 const initialState: PromptTagsType = {
-  tags: ['face', 'shoulders', 'arms', 'legs', 'feet', 'hair', 'clothes', 'background'].map((tag) => ({
-    name: tag,
-    strength: 1,
-  })),
-  negativeTags: ['car', 'building', 'tree', 'sky', 'water', 'ground'].map((tag) => ({
-    name: tag,
-    strength: 1,
-  })),
+  tags: [],
+  negativeTags: [],
   tagPool: [],
 }
 
@@ -145,8 +139,8 @@ export const selectTagsForInputs = (state: RootState) =>
     return {
       ...inputs,
       prompt: {
-        scene: [scene.trim(), ...tags.map(tag => tag.name)].join(', '),
-        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tag => tag.name)].join(', '),
+        scene: [scene.trim(), ...tags.map(tag => tag.name)].filter(Boolean).join(', '),
+        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tag => tag.name)].filter(Boolean).join(', '),
       },
     }
   }
