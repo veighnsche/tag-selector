@@ -170,14 +170,6 @@ export const ImageModal = () => {
                 isInfoOpen={isInfoOpen}
                 src={prefixWithImageUrl(modalImage!)}
               />
-              {/*<Tooltip title={'Show info'}>*/}
-              {/*  <ShowInfoButton onClick={(e) => {*/}
-              {/*    e.stopPropagation()*/}
-              {/*    setIsInfoOpen(!isInfoOpen)*/}
-              {/*  }}>*/}
-              {/*    <InfoIcon/>*/}
-              {/*  </ShowInfoButton>*/}
-              {/*</Tooltip>*/}
               <Tooltip title={'Delete image'}>
                 <DeleteButton onClick={(e) => {
                   e.stopPropagation()
