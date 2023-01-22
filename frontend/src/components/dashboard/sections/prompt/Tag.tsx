@@ -1,10 +1,11 @@
 import { Chip } from '@mui/material'
-import { ComponentProps, useRef } from 'react'
+import { ComponentProps, useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { useAppDispatch } from '../../../../store'
 import { moveTagBetweenLocations } from '../../../../store/reducers/tags'
 import { setIsDragging } from '../../../../store/reducers/tagsState'
 import { PromptTagsType, TagType } from '../../../../types/image-input'
+import { TagEditMenu } from './TagEditMenu'
 
 const colorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
   tags: 'primary',
@@ -20,8 +21,10 @@ interface TagsProps {
 
 export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  const label = tag.name + (tag.strength === 1 ? '' : `:${tag.strength}`)
+  const label = tag.name + (tag.strength === 100 || !tag.strength ? '' : `:${tag.strength / 100}`)
   const dispatch = useAppDispatch()
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const isMenuOpen = Boolean(menuAnchorEl)
 
   // if a tag is dragged over another tag, it will be moved to the index of the tag it is dragged over
   const [, drop] = useDrop({
@@ -44,22 +47,33 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   drag(drop(ref))
 
   return (
-    <Chip
-      ref={ref}
-      key={tag.name}
-      label={label}
-      color={colorMap[location]}
-      variant="outlined"
-      onDragStart={() => {
-        dispatch(setIsDragging(true))
-      }}
-      onDragEnd={() => {
-        dispatch(setIsDragging(false))
-      }}
-      onContextMenu={(e) => {
-        e.preventDefault()
-        console.log('right click')
-      }}
-    />
+    <>
+      <Chip
+        ref={ref}
+        key={tag.name}
+        label={label}
+        color={tag.muted ? 'default' : colorMap[location]}
+        sx={{ opacity: tag.muted ? 0.5 : 1 }}
+        variant="outlined"
+        onDragStart={() => {
+          dispatch(setIsDragging(true))
+        }}
+        onDragEnd={() => {
+          dispatch(setIsDragging(false))
+        }}
+        onClick={(e) => {
+          setMenuAnchorEl(e.currentTarget)
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault()
+        }}
+      />
+      <TagEditMenu
+        isOpen={isMenuOpen}
+        handleClose={() => setMenuAnchorEl(null)}
+        anchorEl={menuAnchorEl}
+        tag={tag}
+      />
+    </>
   )
 }

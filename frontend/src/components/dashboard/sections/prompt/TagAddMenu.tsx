@@ -1,5 +1,5 @@
 import { SendOutlined } from '@mui/icons-material'
-import { Box, FormControl, IconButton, InputAdornment, InputLabel, Menu, OutlinedInput } from '@mui/material'
+import { Box, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Popover } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch } from '../../../../store'
 import { newTags } from '../../../../store/reducers/tags'
@@ -31,7 +31,18 @@ export const TagAddMenu = ({ isOpen, handleClose, anchorEl }: TagAddMenuProps) =
   }, [isOpen])
 
   return (
-    <Menu open={isOpen} onClose={handleClose} anchorEl={anchorEl}>
+    <Popover
+      open={isOpen}
+      onClose={() => {
+        handleAdd()
+        handleClose()
+      }}
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+    >
       <Box width="40rem" p={1}>
         <FormControl variant="outlined" fullWidth size="small">
           <InputLabel>Comma separated</InputLabel>
@@ -46,17 +57,24 @@ export const TagAddMenu = ({ isOpen, handleClose, anchorEl }: TagAddMenuProps) =
               if (e.key === 'Enter') {
                 handleAdd()
               }
+              if (e.key === 'Escape') {
+                handleClose()
+              }
+              if (e.key === 'c') {
+                e.preventDefault()
+                setValue(value + 'c')
+              }
             }}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton edge="end" onClick={handleAdd}>
-                  <SendOutlined />
+                  <SendOutlined/>
                 </IconButton>
               </InputAdornment>
             }
           />
         </FormControl>
       </Box>
-    </Menu>
+    </Popover>
   )
 }

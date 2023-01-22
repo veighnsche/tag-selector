@@ -29,14 +29,16 @@ export const tagsSlice = createSlice({
       location: keyof PromptTagsType,
     }>) => {
       const { name, location } = action.payload
-      state[location].push({ name, strength: 1, id: uuid() })
+      state[location].push({ name, id: uuid() })
     },
     newTags: (state, action: PayloadAction<{
       names: TagType['name'][],
       location: keyof PromptTagsType,
     }>) => {
       const { names, location } = action.payload
-      state[location].push(...names.map(name => ({ name, strength: 1, id: uuid() })))
+      const filtered = names.filter(Boolean)
+      if (filtered.length === 0) return
+      state[location].push(...filtered.map(name => ({ name, id: uuid() })))
     },
     moveTagBetweenLocations: (state, action: PayloadAction<{
       id: TagType['id'],
@@ -63,16 +65,15 @@ export const tagsSlice = createSlice({
       const location = findTag(state, id)
       state[location] = state[location].filter(tag => tag.id !== id)
     },
-    setTagStrength: (state, action: PayloadAction<{
+    editTag: (state, action: PayloadAction<{
       id: TagType['id'],
-      location: keyof PromptTagsType,
-      strength: number,
+      name: TagType['name'],
     }>) => {
-      const { id, location, strength } = action.payload
-      const tags = state[location]
-      const tagIndex = tags.findIndex(tag => tag.id === id)
+      const { id, name } = action.payload
+      const location = findTag(state, id)
+      const tagIndex = state[location].findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
-        tags[tagIndex].strength = strength
+        state[location][tagIndex].name = name
       }
     },
     increaseTagStrength: (state, action: PayloadAction<{
@@ -83,9 +84,12 @@ export const tagsSlice = createSlice({
       const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
-        // add 10% to the strength
         const strength = tags[tagIndex].strength
-        tags[tagIndex].strength += strength * 0.1
+        if (strength === undefined) {
+          tags[tagIndex].strength = 110
+        } else {
+          tags[tagIndex].strength! += 10
+        }
       }
     },
     decreaseTagStrength: (state, action: PayloadAction<{
@@ -96,11 +100,26 @@ export const tagsSlice = createSlice({
       const tags = state[location]
       const tagIndex = tags.findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
-        // subtract 10% from the strength
+        // subtract 0.1 from the strength
         const strength = tags[tagIndex].strength
-        tags[tagIndex].strength -= strength * 0.1
+        if (strength === undefined) {
+          tags[tagIndex].strength = 90
+        } else {
+          tags[tagIndex].strength! -= 10
+        }
       }
     },
+    toggleMuteTag: (state, action: PayloadAction<{
+      id: TagType['id'],
+      location: keyof PromptTagsType,
+    }>) => {
+      const { id, location } = action.payload
+      const tags = state[location]
+      const tagIndex = tags.findIndex(tag => tag.id === id)
+      if (tagIndex !== -1) {
+        tags[tagIndex].muted = !tags[tagIndex].muted
+      }
+    }
   }
 })
 
@@ -109,15 +128,16 @@ export const {
   newTags,
   moveTagBetweenLocations,
   removeTag,
-  setTagStrength,
+  editTag,
   increaseTagStrength,
   decreaseTagStrength,
+  toggleMuteTag,
 } = tagsSlice.actions
 
 export const selectTags = (state: RootState) => state.tags.tags
 export const selectNegativeTags = (state: RootState) => state.tags.negativeTags
 export const selectTagPool = (state: RootState) => state.tags.tagPool
-export const selectLocateTag = (state: RootState) =>
+export const selectLocateTagByName = (state: RootState) =>
   (name: TagType['name']): Record<`is${Capitalize<keyof PromptTagsType>}`, boolean> & { found: boolean } => {
     const { tags, negativeTags, tagPool } = state.tags
     const isTags = tags.some(tag => tag.name === name)
@@ -131,12 +151,25 @@ export const selectLocateTag = (state: RootState) =>
     }
   }
 
+export const selectLocateTag = (state: RootState) =>
+  (id: TagType['id']): keyof PromptTagsType => findTag(state.tags, id)
+
 export const selectGetId = (state: RootState) =>
   (name: TagType['name']): TagType['id'] | undefined => {
     const { tags, negativeTags, tagPool } = state.tags
     const tag = [...tags, ...negativeTags, ...tagPool].find(tag => tag.name === name)
     return tag?.id
   }
+
+function tagToPrompt(tag: TagType): string {
+  if (tag.muted) {
+    return ''
+  }
+  if (tag.strength === undefined || tag.strength === 100) {
+    return tag.name
+  }
+  return `(${tag.name}:${tag.strength / 100})`
+}
 
 export const selectTagsForInputs = (state: RootState) =>
   (inputs: ImageInputsType): ImageInputsType => {
@@ -145,8 +178,8 @@ export const selectTagsForInputs = (state: RootState) =>
     return {
       ...inputs,
       prompt: {
-        scene: [scene.trim(), ...tags.map(tag => tag.name)].filter(Boolean).join(', '),
-        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tag => tag.name)].filter(Boolean).join(', '),
+        scene: [scene.trim(), ...tags.map(tagToPrompt)].filter(Boolean).join(', '),
+        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tagToPrompt)].filter(Boolean).join(', '),
       },
     }
   }

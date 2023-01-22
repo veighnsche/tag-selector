@@ -1,7 +1,8 @@
 export interface TagType {
   id: string
   name: string
-  strength: number
+  strength?: number
+  muted?: boolean
 }
 
 export interface ImageOptionsType {

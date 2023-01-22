@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { Chip } from '@mui/material'
 import { MouseEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
-import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTag } from '../../store/reducers/tags'
+import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTagByName } from '../../store/reducers/tags'
 
 interface ImageTagsProps {
   tags?: string[]
@@ -17,7 +17,7 @@ const TagContainer = styled.div`
 `
 
 export const ImageTags = ({ tags = [] }: ImageTagsProps) => {
-  const locateTag = useAppSelector(selectLocateTag)
+  const locateTag = useAppSelector(selectLocateTagByName)
   const getId = useAppSelector(selectGetId)
   const dispatch = useAppDispatch()
 
