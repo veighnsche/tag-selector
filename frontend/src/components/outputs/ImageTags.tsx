@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import { Chip } from '@mui/material'
-import { MouseEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store'
 import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTagByName } from '../../store/reducers/tags'
 
