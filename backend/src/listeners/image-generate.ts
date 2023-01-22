@@ -1,18 +1,54 @@
 import axios, { AxiosError } from 'axios'
-import { ImageInputsType, ImageOutputType } from 'frontend/src/types'
+import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types'
 import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
+import { PromptTagsType } from 'frontend/src/types/image-input'
 import { SdProgressType } from 'frontend/src/types/sd-progress'
 import { SD_URL } from '../constants'
+
+function tagToPrompt(tag: TagType): string {
+  if (tag.muted) {
+    return ''
+  }
+  if (tag.strength === undefined || tag.strength === 100) {
+    return tag.name
+  }
+  return `(${tag.name}:${tag.strength / 100})`
+}
+
+export const selectTagsForInputs = ({
+  tags, negativeTags, scene, negativePrompt,
+}: {
+  tags: TagType[]
+  negativeTags: TagType[]
+  scene: string
+  negativePrompt: string
+}) => {
+  return {
+    prompt: [scene.trim(), ...tags.map(tagToPrompt)].filter(Boolean).join(', '),
+    negative: [negativePrompt.trim(), ...negativeTags.map(tagToPrompt)].filter(Boolean).join(', '),
+  }
+}
+
 
 export function imageGenerate({
   prompt: { scene, negativePrompt },
   options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod },
-}: ImageInputsType): Promise<ImageOutputType> {
+}: ImageInputsType, {
+  tags,
+  negativeTags,
+}: PromptTagsType): Promise<ImageOutputType> {
   console.time('generateImage')
 
+  const { prompt, negative } = selectTagsForInputs({
+    tags,
+    negativeTags,
+    scene: scene,
+    negativePrompt: negativePrompt,
+  })
+
   const params: ImageGenerateParams = {
-    prompt: scene,
-    negative_prompt: negativePrompt,
+    prompt,
+    negative_prompt: negative,
     steps,
     width,
     height,

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios'
-import { ImageInputsType } from 'frontend/src/types/image-input'
+import { ImageInputsType, PromptTagsType } from 'frontend/src/types/image-input'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
@@ -10,7 +10,8 @@ import { imageInterrogate } from './image-interrogate'
 import { addMetadataToImage } from './image-metadata'
 
 export function imageGenerateController(socket: Socket) {
-  return async (reqData: { inputs: ImageInputsType }) => {
+  return async ({ inputs, tags: promptTags }: { inputs: ImageInputsType, tags: PromptTagsType }) => {
+
     socket.emit(SocketEvent.SD_STATUS, SdStatus.BUSY)
     const nextIndexPromise = getNextIndex()
 
@@ -21,7 +22,7 @@ export function imageGenerateController(socket: Socket) {
       socket.emit(SocketEvent.PROGRESS_PERCENT, progress.progress)
     }, 800)
 
-    const imageOutput = await imageGenerate(reqData.inputs)
+    const imageOutput = await imageGenerate(inputs, promptTags)
     .catch((error: AxiosError) => {
       socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
       socket.emit(SocketEvent.ERROR, { error })
@@ -39,7 +40,7 @@ export function imageGenerateController(socket: Socket) {
 
     const imagePathsPromise = Promise.all(imageOutput.images.map(async (uri, index) => {
       const tags = await imageInterrogate(uri)
-      const uint8ArrayWithTags = addMetadataToImage(uri, { tags })
+      const uint8ArrayWithTags = addMetadataToImage(uri, { tags, inputs, promptTags })
       const buffer = Buffer.from(uint8ArrayWithTags)
 
       const nextIndex = await nextIndexPromise

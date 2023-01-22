@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { v4 as uuid } from 'uuid'
-import { ImageInputsType, PromptTagsType, TagType } from '../../types/image-input'
+import { PromptTagsType, TagType } from '../../types/image-input'
 import { RootState } from '../index'
 
-const initialState: PromptTagsType = {
+export const initialPromptTagsState: PromptTagsType = {
   tags: [],
   negativeTags: [],
   tagPool: [],
@@ -22,7 +22,7 @@ function findTag(state: PromptTagsType, id: TagType['id']): keyof PromptTagsType
 
 export const tagsSlice = createSlice({
   name: 'tags',
-  initialState,
+  initialState: initialPromptTagsState,
   reducers: {
     newTag: (state, action: PayloadAction<{
       name: TagType['name'],
@@ -119,7 +119,13 @@ export const tagsSlice = createSlice({
       if (tagIndex !== -1) {
         tags[tagIndex].muted = !tags[tagIndex].muted
       }
-    }
+    },
+    setTagsFromImageData: (state, action: PayloadAction<Partial<PromptTagsType>>) => {
+      const { tags, negativeTags, tagPool } = action.payload
+      if (tags) state.tags = tags
+      if (negativeTags) state.negativeTags = negativeTags
+      if (tagPool) state.tagPool = tagPool
+    },
   }
 })
 
@@ -132,8 +138,10 @@ export const {
   increaseTagStrength,
   decreaseTagStrength,
   toggleMuteTag,
+  setTagsFromImageData,
 } = tagsSlice.actions
 
+export const selectAllTags = (state: RootState) => state.tags
 export const selectTags = (state: RootState) => state.tags.tags
 export const selectNegativeTags = (state: RootState) => state.tags.negativeTags
 export const selectTagPool = (state: RootState) => state.tags.tagPool
@@ -159,29 +167,6 @@ export const selectGetId = (state: RootState) =>
     const { tags, negativeTags, tagPool } = state.tags
     const tag = [...tags, ...negativeTags, ...tagPool].find(tag => tag.name === name)
     return tag?.id
-  }
-
-function tagToPrompt(tag: TagType): string {
-  if (tag.muted) {
-    return ''
-  }
-  if (tag.strength === undefined || tag.strength === 100) {
-    return tag.name
-  }
-  return `(${tag.name}:${tag.strength / 100})`
-}
-
-export const selectTagsForInputs = (state: RootState) =>
-  (inputs: ImageInputsType): ImageInputsType => {
-    const { tags, negativeTags } = state.tags
-    const { prompt: { negativePrompt, scene } } = inputs
-    return {
-      ...inputs,
-      prompt: {
-        scene: [scene.trim(), ...tags.map(tagToPrompt)].filter(Boolean).join(', '),
-        negativePrompt: [negativePrompt.trim(), ...negativeTags.map(tagToPrompt)].filter(Boolean).join(', '),
-      },
-    }
   }
 
 export const tagsReducer = tagsSlice.reducer

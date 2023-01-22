@@ -1,6 +1,7 @@
 import { useSocket } from '../components/providers/SocketProvider'
 import { ImageInputsType, SocketEvent } from '../types'
 import { ImageDataRequestType } from '../types/image-data'
+import { PromptTagsType } from '../types/image-input'
 import { GetImagesPathsType } from '../types/image-output'
 import { SdOptionsType } from '../types/sd-options'
 
@@ -26,8 +27,9 @@ export function useEmitters() {
     fetchSdOptions: () => {
       socket.emit(SocketEvent.FETCH_SD_OPTIONS)
     },
-    generateImage: (inputs: ImageInputsType) => {
-      socket.emit(SocketEvent.GENERATE_IMAGE, { inputs })
+    generateImage: (inputs: ImageInputsType, tags: PromptTagsType) => {
+      // tags are also being emitted to be saved in the image metadata
+      socket.emit(SocketEvent.GENERATE_IMAGE, { inputs, tags })
     },
     generateImageInterrupt: () => {
       socket.emit(SocketEvent.GENERATE_IMAGE_INTERRUPT)

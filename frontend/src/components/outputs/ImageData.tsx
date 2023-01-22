@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import FirstPageIcon from '@mui/icons-material/FirstPage'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { Box, Button, ButtonGroup, IconButton, Paper, Tooltip, Typography } from '@mui/material'
@@ -9,9 +9,12 @@ import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
+import { setTagsFromImageData } from '../../store/reducers/tags'
+import { ImageCustomData } from '../../types/image-custom-data'
 import { FullImageDataType, ImageDataType } from '../../types/image-data'
+import { PromptTagsType } from '../../types/image-input'
+import { makeTagLabelWrapped } from '../../utils/tags'
 import { ImageTagList } from './ImageTagList'
-import FirstPageIcon from '@mui/icons-material/FirstPage';
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -54,16 +57,6 @@ const DataContainer = styled.div`
 
 const propertyList: ImageDataPropertyProps[] = [
   {
-    name: 'Prompt',
-    property: 'prompt',
-    fullWidth: true,
-  },
-  {
-    name: 'Negative Prompt',
-    property: 'negativePrompt',
-    fullWidth: true,
-  },
-  {
     name: 'Model',
     property: 'model',
     fullWidth: true,
@@ -94,12 +87,18 @@ const propertyList: ImageDataPropertyProps[] = [
   },
 ]
 
+type SelectableProperties = keyof ImageDataType | 'scene' | 'tags' | 'negativeTags'
+
 export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
   const [data, setData] = useState<FullImageDataType | null>(null)
   const fetchImageData = useFetchImageData()
-  const [selected, setSelected] = useState<(keyof ImageDataType)[]>([])
+  const [selected, setSelected] = useState<SelectableProperties[]>([])
   const dispatch = useAppDispatch()
   const { navigateFirst, navigateNext, navigatePrevious } = useModalNavigation()
+
+  const negativeTags = data?.customData[ImageCustomData.PROMPT_TAGS].negativeTags
+  const promptTags = data?.customData[ImageCustomData.PROMPT_TAGS].tags
+  const scene = data?.customData[ImageCustomData.INPUTS].prompt.scene
 
   useEffect(() => {
     if (filename && open) {
@@ -109,29 +108,47 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     }
   }, [filename, open])
 
-  function isSelected(property: keyof ImageDataType) {
+  function isSelected(property: SelectableProperties) {
     return selected.includes(property)
   }
 
-  function buttonVariant(property: keyof ImageDataType) {
+  function buttonVariant(property: SelectableProperties) {
     return isSelected(property) ? 'contained' : 'outlined'
   }
 
   function selectAll() {
-    setSelected(propertyList.map((property) => property.property))
+    const allProperties = propertyList.map((property) => property.property)
+    setSelected([...allProperties, 'scene', 'tags', 'negativeTags'])
   }
 
   function replaceSelected() {
     if (data) {
-      const selectedData = selected.reduce((acc, curr) => {
-        acc[curr] = data.imageData[curr] as any
+      const selectedData = selected.filter(
+        selected => propertyList.some(property => property.property === selected),
+      ).reduce((acc, curr) => {
+        const prop = curr as keyof ImageDataType
+        acc[prop] = data.imageData[prop] as any
         return acc
       }, {} as Partial<ImageDataType>)
+
+      if (isSelected('scene')) {
+        selectedData.prompt = scene
+      }
+
       dispatch(setInputsFromImageData(selectedData))
+
+      let selectedTags: Partial<PromptTagsType> = {}
+      if (isSelected('tags')) {
+        selectedTags.tags = promptTags
+      }
+      if (isSelected('negativeTags')) {
+        selectedTags.negativeTags = negativeTags
+      }
+      dispatch(setTagsFromImageData(selectedTags))
     }
   }
 
-  function toggleProperty(property: keyof ImageDataType) {
+  function toggleProperty(property: SelectableProperties) {
     if (isSelected(property)) {
       setSelected(selected.filter((p) => p !== property))
     }
@@ -140,20 +157,22 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     }
   }
 
-
-  const ImageDataProperty = ({ name, value, property, fullWidth }: ImageDataPropertyProps & { value: any }) => {
+  const ImageDataProperty = ({ name, value, property, fullWidth }: Omit<ImageDataPropertyProps, 'property'> & {
+    value: any;
+    property: SelectableProperties;
+  }) => {
     const display = value.toString().slice(0, 50)
     const isLonger = value.toString().length > 50
 
     const TooltipWrapper = ({ children }: { children: ReactElement }) => {
-      if (isLonger) {
-        return (
-          <Tooltip title={value.toString()}>
-            {children}
-          </Tooltip>
-        )
+      if (!isLonger) {
+        return <>{children}</>
       }
-      return <>{children}</>
+      return (
+        <Tooltip title={value.toString()}>
+          {children}
+        </Tooltip>
+      )
     }
 
     return (
@@ -206,15 +225,41 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
         >
           {data ? (
             <DataContainer>
-              {propertyList.map(({ fullWidth, name, property }) => data?.imageData[property] ? (
+              {scene ? (
                 <ImageDataProperty
-                  key={property}
-                  property={property}
-                  name={name}
-                  value={data?.imageData[property]}
-                  fullWidth={fullWidth}
+                  name="Scene"
+                  property="scene"
+                  value={scene}
+                  fullWidth
                 />
-              ) : null)}
+              ) : null}
+              {promptTags?.length ? (
+                <ImageDataProperty
+                  name="Tags"
+                  property="tags"
+                  value={promptTags?.map(makeTagLabelWrapped).join(', ')}
+                  fullWidth
+                />
+              ) : null}
+              {negativeTags?.length ? (
+                <ImageDataProperty
+                  name="Negative tags"
+                  property="negativeTags"
+                  value={negativeTags?.map(makeTagLabelWrapped).join(', ')}
+                  fullWidth
+                />
+              ) : null}
+              {propertyList.map(({ fullWidth, name, property }) => {
+                return data?.imageData[property] ? (
+                  <ImageDataProperty
+                    key={property}
+                    property={property}
+                    name={name}
+                    value={data?.imageData[property]}
+                    fullWidth={fullWidth}
+                  />
+                ) : null
+              })}
             </DataContainer>
           ) : null}
           <Box display="flex" gap="0.5rem" width="100%" mt="1rem">
@@ -236,23 +281,11 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
             </Button>
           </Box>
         </Box>
-        <Box pl="1.5rem" display="flex" flexDirection="row" alignItems="center" gap="0.25rem">
-          <Typography variant="h6" sx={{ m: '0' }}>Tags</Typography>
-          <Tooltip title="Left-click to add to the tags pool, then keep clicking to cycle through the pools">
-            <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary' }}/>
-          </Tooltip>
-        </Box>
-        <Box flex={1} px="1rem" sx={{
-          overflowY: 'auto',
-        }}>
-          <Paper elevation={3}>
-            <ImageTagList tags={data?.customData.tags}/>
-          </Paper>
-        </Box>
+        <ImageTagList tags={data?.customData.tags} promptTags={data?.customData.promptTags}/>
         <Box p="1rem" mt="1rem">
           <ButtonGroup fullWidth variant="outlined">
             <Button onClick={navigateFirst} sx={{
-              width: '20%'
+              width: '20%',
             }}>
               <FirstPageIcon/>
             </Button>

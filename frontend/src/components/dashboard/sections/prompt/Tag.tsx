@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../../../store'
 import { moveTagBetweenLocations } from '../../../../store/reducers/tags'
 import { setIsDragging } from '../../../../store/reducers/tagsState'
 import { PromptTagsType, TagType } from '../../../../types/image-input'
+import { makeTagLabel } from '../../../../utils/tags'
 import { ClipRetrievalPopover } from '../../../clipRetrieval/ClipRetrievalPopover'
 import { TagEditMenu } from './TagEditMenu'
 
@@ -22,7 +23,7 @@ interface TagsProps {
 
 export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  const label = tag.name + (tag.strength === 100 || !tag.strength ? '' : `:${tag.strength / 100}`)
+  const label = makeTagLabel(tag)
   const dispatch = useAppDispatch()
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
   const [clipAnchorEl, setClipAnchorEl] = useState<null | HTMLElement>(null)

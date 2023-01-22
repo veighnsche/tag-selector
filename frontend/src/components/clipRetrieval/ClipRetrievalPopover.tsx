@@ -1,8 +1,6 @@
-import styled from '@emotion/styled'
 import { Box, Popover, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { fetchClipRetrieval } from './api'
-import { ClipType } from './type'
 
 interface ClipRetrievalPopoverProps {
   anchorEl: HTMLElement | null
@@ -11,27 +9,32 @@ interface ClipRetrievalPopoverProps {
   prompt: string
 }
 
-const StyledImage = styled.img`
-  display: none;
-  height: 100%;
-  width: auto;
-`
-
 export const ClipRetrievalPopover = ({
   anchorEl,
   handleClose,
   isOpen,
   prompt,
 }: ClipRetrievalPopoverProps) => {
-  const [clips, setClips] = useState<ClipType[]>([])
   const boxRef = useRef<HTMLDivElement>(null)
-  const [loadedAmount, setLoadedAmount] = useState(0)
+  const [images, setImages] = useState<HTMLImageElement[]>([])
 
   useEffect(() => {
-    if (isOpen && clips.length === 0) {
+    if (isOpen && images.length === 0) {
       fetchClipRetrieval({ prompt })
       .then((clips) => {
-        setClips(clips)
+        clips.forEach((clip) => {
+          const img = new Image()
+          img.src = clip.url
+          img.alt = clip.caption
+          img.onload = () => {
+            setImages((prev) => [...prev, img])
+          }
+          img.onerror = (e) => {
+            if (e instanceof Event) {
+              e.preventDefault()
+            }
+          }
+        })
       })
     }
   }, [isOpen])
@@ -51,7 +54,7 @@ export const ClipRetrievalPopover = ({
     return () => {
       clearInterval(interval)
     }
-  }, [isOpen, boxRef.current, loadedAmount])
+  }, [isOpen, images.length])
 
   return (
     <Popover
@@ -74,15 +77,12 @@ export const ClipRetrievalPopover = ({
         overflow="auto"
         ref={boxRef}
       >
-        {clips.map((clip) => (
-          <StyledImage
-            src={clip.url}
-            alt={clip.caption}
-            key={clip.url}
-            onLoad={(e) => {
-              e.currentTarget.style.display = 'block'
-              setLoadedAmount((prev) => prev + 1)
-            }}
+        {images.map((img) => (
+          <img
+            key={img.src}
+            src={img.src}
+            alt={img.alt}
+            style={{ width: 'auto', height: '100%' }}
           />
         ))}
       </Box>

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import InfoIcon from '@mui/icons-material/Info'
 import { Backdrop, IconButton, Tooltip } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../hooks/useEmitters'
@@ -23,7 +22,7 @@ const ImageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   position: relative;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,6 +68,7 @@ const ImageDataFlex = styled.div`
 
 const ImageButtonsContainer = styled.div`
   position: relative;
+  cursor: pointer;
 
   &:hover button {
     opacity: 0.5;
@@ -94,15 +94,6 @@ const DeleteButton = styled(OverlayButton)`
 
   &:hover {
     color: red;
-  }
-`
-
-const ShowInfoButton = styled(OverlayButton)`
-  top: 0;
-  left: 0;
-
-  &:hover {
-    color: lightblue;
   }
 `
 
@@ -172,19 +163,24 @@ export const ImageModal = () => {
                 setIsInfoOpen(false)
               }}
             />
-            <ImageButtonsContainer>
+            <ImageButtonsContainer
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsInfoOpen(!isInfoOpen)
+              }}
+            >
               <StyledImage
                 isInfoOpen={isInfoOpen}
                 src={prefixWithImageUrl(modalImage!)}
               />
-              <Tooltip title={'Show info'}>
-                <ShowInfoButton onClick={(e) => {
-                  e.stopPropagation()
-                  setIsInfoOpen(!isInfoOpen)
-                }}>
-                  <InfoIcon/>
-                </ShowInfoButton>
-              </Tooltip>
+              {/*<Tooltip title={'Show info'}>*/}
+              {/*  <ShowInfoButton onClick={(e) => {*/}
+              {/*    e.stopPropagation()*/}
+              {/*    setIsInfoOpen(!isInfoOpen)*/}
+              {/*  }}>*/}
+              {/*    <InfoIcon/>*/}
+              {/*  </ShowInfoButton>*/}
+              {/*</Tooltip>*/}
               <Tooltip title={'Delete image'}>
                 <DeleteButton onClick={(e) => {
                   e.stopPropagation()
