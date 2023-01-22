@@ -2,7 +2,7 @@ import { useSocket } from '../components/providers/SocketProvider'
 import { useAppDispatch, useAppSelector } from '../store'
 import {
   nextModalImage,
-  previousModalImage,
+  previousModalImage, selectImages,
   selectIsLastImage,
   selectModalImage,
   setModalImage,
@@ -12,11 +12,16 @@ import { extractFileIndex } from '../utils/files'
 import { useEmitters } from './useEmitters'
 
 export function useModalNavigation() {
+  const images = useAppSelector(selectImages)
   const modalImage = useAppSelector(selectModalImage)
   const isLastImage = useAppSelector(selectIsLastImage)
   const dispatch = useAppDispatch()
   const emit = useEmitters()
   const socket = useSocket()
+
+  function navigateFirst() {
+    dispatch(setModalImage(images[0]))
+  }
 
   function navigateNext() {
     if (!isLastImage) {
@@ -39,6 +44,7 @@ export function useModalNavigation() {
   }
 
   return {
+    navigateFirst,
     navigateNext,
     navigatePrevious,
   }

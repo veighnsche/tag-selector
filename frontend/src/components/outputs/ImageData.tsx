@@ -10,7 +10,8 @@ import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
 import { setInputsFromImageData } from '../../store/reducers/inputs'
 import { FullImageDataType, ImageDataType } from '../../types/image-data'
-import { ImageTags } from './ImageTags'
+import { ImageTagList } from './ImageTagList'
+import FirstPageIcon from '@mui/icons-material/FirstPage';
 
 const StyledPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -98,7 +99,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
   const fetchImageData = useFetchImageData()
   const [selected, setSelected] = useState<(keyof ImageDataType)[]>([])
   const dispatch = useAppDispatch()
-  const { navigateNext, navigatePrevious } = useModalNavigation()
+  const { navigateFirst, navigateNext, navigatePrevious } = useModalNavigation()
 
   useEffect(() => {
     if (filename && open) {
@@ -245,11 +246,16 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
           overflowY: 'auto',
         }}>
           <Paper elevation={3}>
-            <ImageTags tags={data?.customData.tags}/>
+            <ImageTagList tags={data?.customData.tags}/>
           </Paper>
         </Box>
         <Box p="1rem" mt="1rem">
           <ButtonGroup fullWidth variant="outlined">
+            <Button onClick={navigateFirst} sx={{
+              width: '20%'
+            }}>
+              <FirstPageIcon/>
+            </Button>
             <Button onClick={navigatePrevious}>
               <NavigateBeforeIcon/>
             </Button>

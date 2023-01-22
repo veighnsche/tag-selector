@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../../../store'
 import { moveTagBetweenLocations } from '../../../../store/reducers/tags'
 import { setIsDragging } from '../../../../store/reducers/tagsState'
 import { PromptTagsType, TagType } from '../../../../types/image-input'
+import { ClipRetrievalPopover } from '../../../clipRetrieval/ClipRetrievalPopover'
 import { TagEditMenu } from './TagEditMenu'
 
 const colorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
@@ -24,7 +25,9 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   const label = tag.name + (tag.strength === 100 || !tag.strength ? '' : `:${tag.strength / 100}`)
   const dispatch = useAppDispatch()
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const [clipAnchorEl, setClipAnchorEl] = useState<null | HTMLElement>(null)
   const isMenuOpen = Boolean(menuAnchorEl)
+  const isClipOpen = Boolean(clipAnchorEl)
 
   // if a tag is dragged over another tag, it will be moved to the index of the tag it is dragged over
   const [, drop] = useDrop({
@@ -66,6 +69,7 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
         }}
         onContextMenu={(e) => {
           e.preventDefault()
+          setClipAnchorEl(e.currentTarget)
         }}
       />
       <TagEditMenu
@@ -73,6 +77,12 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
         handleClose={() => setMenuAnchorEl(null)}
         anchorEl={menuAnchorEl}
         tag={tag}
+      />
+      <ClipRetrievalPopover
+        anchorEl={clipAnchorEl}
+        handleClose={() => setClipAnchorEl(null)}
+        isOpen={isClipOpen}
+        prompt={tag.name}
       />
     </>
   )
