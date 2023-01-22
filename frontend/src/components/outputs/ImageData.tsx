@@ -237,7 +237,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
         </Box>
         <Box pl="1.5rem" display="flex" flexDirection="row" alignItems="center" gap="0.25rem">
           <Typography variant="h6" sx={{ m: '0' }}>Tags</Typography>
-          <Tooltip title="Right-click to toggle tag in negative prompt.">
+          <Tooltip title="Left-click to add to the tags pool, then keep clicking to cycle through the pools">
             <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary' }}/>
           </Tooltip>
         </Box>
