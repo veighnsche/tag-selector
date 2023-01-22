@@ -1,9 +1,8 @@
 import styled from '@emotion/styled'
-import CloseIcon from '@mui/icons-material/Close'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, Button, ButtonGroup, IconButton, Paper, Tooltip, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Divider, Paper, Tooltip } from '@mui/material'
 import React, { ReactElement, useEffect, useState } from 'react'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
@@ -29,17 +28,18 @@ const StyledPaper = styled(Paper, {
 `
 
 // text only on 1 line and ellipsis
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button)<{
+  fullWidth?: boolean
+}>`
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : '50%')};
+  font-weight: normal;
   text-transform: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  border-radius: 0;
 `
 
 interface ImageDataProps {
   filename: string
   open: boolean
-  onClose: () => void
 }
 
 interface ImageDataPropertyProps {
@@ -51,8 +51,6 @@ interface ImageDataPropertyProps {
 const DataContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
 `
 
 const propertyList: ImageDataPropertyProps[] = [
@@ -89,7 +87,7 @@ const propertyList: ImageDataPropertyProps[] = [
 
 type SelectableProperties = keyof ImageDataType | 'scene' | 'tags' | 'negativeTags'
 
-export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
+export const ImageData = ({ filename, open }: ImageDataProps) => {
   const [data, setData] = useState<FullImageDataType | null>(null)
   const fetchImageData = useFetchImageData()
   const [selected, setSelected] = useState<SelectableProperties[]>([])
@@ -176,24 +174,21 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     }
 
     return (
-      <Box display="flex" flexDirection="column" width={fullWidth ? '100%' : '48.5%'}>
-        <Typography variant="caption">
-          {name}
-        </Typography>
-        <TooltipWrapper>
-          <StyledButton
-            fullWidth={fullWidth}
-            size="small"
-            variant={buttonVariant(property)}
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleProperty(property)
-            }}
-          >
-            {`${display}${isLonger ? '...' : ''}`}
-          </StyledButton>
-        </TooltipWrapper>
-      </Box>
+      <TooltipWrapper>
+        <StyledButton
+          fullWidth={fullWidth}
+          size="small"
+          variant={buttonVariant(property)}
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleProperty(property)
+          }}
+        >
+          <span style={{fontWeight: 500 }}>{name}:</span>
+          {' '}
+          {display}{isLonger ? '...' : ''}
+        </StyledButton>
+      </TooltipWrapper>
     )
   }
 
@@ -201,13 +196,6 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
     <StyledPaper square open={open} onClick={(e) => {
       e.stopPropagation()
     }}>
-      <IconButton onClick={onClose} size="small" sx={{
-        position: 'absolute',
-        top: '1rem',
-        right: '1rem',
-      }}>
-        <CloseIcon fontSize="small"/>
-      </IconButton>
       <Box
         display="flex"
         flexDirection="column"
@@ -262,7 +250,7 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
               })}
             </DataContainer>
           ) : null}
-          <Box display="flex" gap="0.5rem" width="100%" mt="1rem">
+          <ButtonGroup fullWidth>
             <Button
               variant="outlined"
               fullWidth
@@ -279,8 +267,9 @@ export const ImageData = ({ filename, open, onClose }: ImageDataProps) => {
             >
               Replace Selected
             </Button>
-          </Box>
+          </ButtonGroup>
         </Box>
+        <Divider flexItem sx={{ mb: 2 }}/>
         <ImageTagList tags={data?.customData.tags} promptTags={data?.customData.promptTags}/>
         <Box p="1rem" mt="1rem">
           <ButtonGroup fullWidth variant="outlined">

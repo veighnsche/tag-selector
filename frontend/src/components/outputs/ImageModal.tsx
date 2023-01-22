@@ -159,9 +159,6 @@ export const ImageModal = () => {
             <ImageData
               filename={modalImage!}
               open={isInfoOpen}
-              onClose={() => {
-                setIsInfoOpen(false)
-              }}
             />
             <ImageButtonsContainer
               onClick={(e) => {

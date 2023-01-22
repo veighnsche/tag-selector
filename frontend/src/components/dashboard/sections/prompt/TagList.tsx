@@ -73,7 +73,7 @@ export const TagList = ({ location }: TagPaperProps) => {
   return (
     <Box ref={dropRef}>
       <Paper elevation={isOver ? 4 : 2} sx={{ minHeight: '48px', p: '0.5rem' }} square>
-        <Typography variant="caption" sx={{ ml: '1rem', opacity: 0.5 }} color={colorMap[location]}>
+        <Typography variant="caption" sx={{ ml: '0.5rem', opacity: 0.5 }} color={colorMap[location]}>
           {displayMap[location]}
         </Typography>
         <Box display="flex" flexWrap="wrap" gap="0.25rem">

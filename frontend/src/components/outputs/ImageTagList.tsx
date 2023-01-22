@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { Box, FormControlLabel, Paper, Switch, Tooltip, Typography } from '@mui/material'
+import { Box, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material'
 import React, { useCallback, useMemo, useState } from 'react'
 import { initialPromptTagsState } from '../../store/reducers/tags'
 import { PromptTagsType, TagType } from '../../types/image-input'
@@ -16,7 +16,6 @@ const TagContainer = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 0.25rem;
-  padding: 0.5rem;
 `
 
 export const ImageTagList = ({
@@ -66,8 +65,14 @@ export const ImageTagList = ({
 
   return (
     <>
-      <Box pl="1.5rem" display="flex" flexDirection="row" alignItems="center" gap="0.25rem">
-        <Typography variant="h6" sx={{ m: '0' }}>Tags</Typography>
+      <Box
+        pl="1.5rem"
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        gap="0.25rem"
+      >
+        <Typography sx={{ m: '0' }}>Tags</Typography>
         <Tooltip title="Left-click to add to the tags pool, then keep clicking to cycle through the pools">
           <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary', mr: '1rem' }}/>
         </Tooltip>
@@ -75,6 +80,7 @@ export const ImageTagList = ({
           control={<Switch
             onChange={(e) => setShowAI(e.target.checked)}
             checked={showAI}
+            size="small"
           />}
           label="AI"
         />
@@ -82,6 +88,7 @@ export const ImageTagList = ({
           control={<Switch
             onChange={(e) => setShowPrompt(e.target.checked)}
             checked={showPrompt}
+            size="small"
           />}
           label="Prompt"
         />
@@ -89,20 +96,23 @@ export const ImageTagList = ({
           control={<Switch
             onChange={(e) => setShowNegative(e.target.checked)}
             checked={showNegative}
+            size="small"
+            color="secondary"
           />}
           label="Negative"
+          componentsProps={{
+            typography: {
+              color: 'text.secondary',
+            },
+          }}
         />
       </Box>
-      <Box flex={1} px="1rem" sx={{
-        overflowY: 'auto',
-      }}>
-        <Paper elevation={3}>
-          <TagContainer>
-            {viewTags.map((tag) => (
-              <ImageTag tag={tag} key={tag.name}/>
-            ))}
-          </TagContainer>
-        </Paper>
+      <Box flex={1} px="1rem" sx={{ overflowY: 'auto' }}>
+        <TagContainer>
+          {viewTags.map((tag) => (
+            <ImageTag tag={tag} key={tag.name}/>
+          ))}
+        </TagContainer>
       </Box>
     </>
   )
