@@ -14,6 +14,7 @@ import {
   OutlinedInput,
   Popover,
   TextField,
+  Tooltip,
 } from '@mui/material'
 import React, { ComponentProps, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../../store'
@@ -21,12 +22,14 @@ import {
   decreaseTagStrength,
   editTag,
   increaseTagStrength,
-  selectLocateTag,
+  selectLocateTag, toggleHideTag,
   toggleMuteTag,
 } from '../../../../store/reducers/tags'
 import { TagType } from '../../../../types'
 import { PromptTagsType } from '../../../../types/image-input'
 import { makeTagLabelWrapped } from '../../../../utils/tags'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 const inputColorMap: Record<keyof PromptTagsType, ComponentProps<typeof TextField>['color']> = {
   tags: 'primary',
@@ -48,8 +51,10 @@ interface TagAddMenuProps {
 }
 
 export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuProps) => {
+  const tagPrompt = makeTagLabelWrapped(tag)
+
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [value, setValue] = useState<string>(makeTagLabelWrapped(tag))
+  const [value, setValue] = useState<string>(tagPrompt)
   const dispatch = useAppDispatch()
   const location = useAppSelector(selectLocateTag)(tag.id)
   const inputColor = inputColorMap[location]
@@ -77,12 +82,12 @@ export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuPr
         horizontal: 'left',
       }}
     >
-      <Box width="15rem" p={1} display="flex" flexDirection="column" gap={1}>
+      <Box width="20rem" p={1} display="flex" flexDirection="column" gap={1}>
         <FormControl variant="outlined" fullWidth size="small" color={inputColor}>
-          <InputLabel>{tag.name}</InputLabel>
+          <InputLabel>{tagPrompt}</InputLabel>
           <OutlinedInput
             inputRef={inputRef}
-            label={tag.name}
+            label={tagPrompt}
             value={value}
             onChange={(e) => {
               setValue(e.target.value)
@@ -97,10 +102,10 @@ export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuPr
                 <IconButton
                   edge="end"
                   onClick={() => {
-                    setValue(tag.name)
+                    setValue(tagPrompt)
                   }}
                   color={buttonColorMap[location]}
-                  disabled={value === tag.name}
+                  disabled={value === tagPrompt}
                 >
                   <ReplayIcon/>
                 </IconButton>
@@ -112,24 +117,40 @@ export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuPr
           />
         </FormControl>
         <ButtonGroup fullWidth color={buttonColorMap[location]}>
-          <Button
-            variant={tag.muted ? 'contained' : 'outlined'}
-            onClick={() => {
-              dispatch(toggleMuteTag({ id: tag.id, location }))
-            }}
-          >
-            <VolumeMuteIcon/>
-          </Button>
-          <Button onClick={() => {
-            dispatch(decreaseTagStrength({ id: tag.id, location }))
-          }}>
-            <VolumeDownIcon/>
-          </Button>
-          <Button onClick={() => {
-            dispatch(increaseTagStrength({ id: tag.id, location }))
-          }}>
-            <VolumeUpIcon/>
-          </Button>
+          <Tooltip title={'Hiding will add this tag to the prompt, but will not show it'}>
+            <Button
+              variant={tag.hidden ? 'contained' : 'outlined'}
+              onClick={() => {
+                dispatch(toggleHideTag({ id: tag.id, location }))
+              }}
+            >
+              {tag.hidden ? <VisibilityOffIcon/> : <VisibilityIcon/>}
+            </Button>
+          </Tooltip>
+          <Tooltip title={'Muting will prevent this tag from being added to the prompt'}>
+            <Button
+              variant={tag.muted ? 'contained' : 'outlined'}
+              onClick={() => {
+                dispatch(toggleMuteTag({ id: tag.id, location }))
+              }}
+            >
+              <VolumeMuteIcon/>
+            </Button>
+          </Tooltip>
+          <Tooltip title={'add 0.1 to strength'}>
+            <Button onClick={() => {
+              dispatch(decreaseTagStrength({ id: tag.id, location }))
+            }}>
+              <VolumeDownIcon/>
+            </Button>
+          </Tooltip>
+          <Tooltip title={'subtract 0.1 from strength'}>
+            <Button onClick={() => {
+              dispatch(increaseTagStrength({ id: tag.id, location }))
+            }}>
+              <VolumeUpIcon/>
+            </Button>
+          </Tooltip>
         </ButtonGroup>
       </Box>
     </Popover>

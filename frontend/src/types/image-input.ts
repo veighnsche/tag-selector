@@ -3,6 +3,7 @@ export interface TagType {
   name: string
   strength?: number
   muted?: boolean
+  hidden?: boolean
 }
 
 export interface ImageOptionsType {

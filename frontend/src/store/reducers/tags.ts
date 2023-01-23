@@ -123,6 +123,17 @@ export const tagsSlice = createSlice({
         tags[tagIndex].muted = !tags[tagIndex].muted
       }
     },
+    toggleHideTag: (state, action: PayloadAction<{
+      id: TagType['id'],
+      location: keyof PromptTagsType,
+    }>) => {
+      const { id, location } = action.payload
+      const tags = state[location]
+      const tagIndex = tags.findIndex(tag => tag.id === id)
+      if (tagIndex !== -1) {
+        tags[tagIndex].hidden = !tags[tagIndex].hidden
+      }
+    },
     setTagsFromImageData: (state, action: PayloadAction<Partial<PromptTagsType>>) => {
       const { tags, negativeTags, tagPool } = action.payload
       if (tags) state.tags = tags
@@ -141,6 +152,7 @@ export const {
   increaseTagStrength,
   decreaseTagStrength,
   toggleMuteTag,
+  toggleHideTag,
   setTagsFromImageData,
 } = tagsSlice.actions
 
