@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { PromptScene } from './PromptScene'
+import { Scene } from './Scene'
 import { TagBin } from './TagBin'
 import { TagList } from './TagList'
 
@@ -17,7 +17,7 @@ export const PromptLayout = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <LayoutFlex>
-        <PromptScene/>
+        <Scene/>
         <TagList location="tags"/>
         <TagList location="negativeTags"/>
         <TagList location="tagPool"/>

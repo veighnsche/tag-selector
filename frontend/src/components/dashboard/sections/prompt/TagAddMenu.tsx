@@ -38,9 +38,18 @@ export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuPr
   const [doNotSeparate, setDoNotSeparate] = useState(false)
   const [addAsHidden, setAddAsHidden] = useState(false)
 
+  const doNotSeparateText = doNotSeparate
+    ? 'Add single tag (for adding long negative tags)'
+    : 'Add comma separated tags'
+
   function handleAdd() {
+    const newTagsParams = { names: [], location, hidden: addAsHidden }
+    if (doNotSeparate) {
+      dispatch(newTags({ ...newTagsParams, names: [value] }))
+      return
+    }
     const tags = value.split(',').map((tag) => tag.trim())
-    dispatch(newTags({ names: tags, location }))
+    dispatch(newTags({ ...newTagsParams, names: tags }))
   }
 
   function handleClose() {
@@ -77,10 +86,12 @@ export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuPr
           size="small"
           color={formControlColorMap[location]}
         >
-          <InputLabel>{doNotSeparate ? 'Add single tag' : 'Add comma separated tags'}</InputLabel>
+          <InputLabel>
+            {doNotSeparateText}
+          </InputLabel>
           <OutlinedInput
             inputRef={inputRef}
-            label={doNotSeparate ? 'Add single tag' : 'Add comma separated tags'}
+            label={doNotSeparateText}
             value={value}
             onChange={(e) => {
               setValue(e.target.value)

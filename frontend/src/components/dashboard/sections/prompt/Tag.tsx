@@ -57,7 +57,7 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
         key={tag.name}
         label={label}
         color={tag.muted ? 'default' : colorMap[location]}
-        sx={{ opacity: tag.muted ? 0.5 : 1 }}
+        sx={{ opacity: tag.muted || tag.hidden ? 0.5 : 1 }}
         variant="outlined"
         onDragStart={() => {
           dispatch(setIsDragging(true))

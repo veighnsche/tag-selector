@@ -1,10 +1,10 @@
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Chip, IconButton, Paper, Typography } from '@mui/material'
-import { ComponentProps, MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
+import { ComponentProps, MouseEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store'
 import { moveTagBetweenLocations, selectNegativeTags, selectTagPool, selectTags } from '../../../../store/reducers/tags'
-import { setIsDragging } from '../../../../store/reducers/tagsState'
+import { selectShowHiddenTags, setIsDragging } from '../../../../store/reducers/tagsState'
 import { TagType } from '../../../../types'
 import { PromptTagsType } from '../../../../types/image-input'
 import { Tag } from './Tag'
@@ -49,6 +49,13 @@ export const TagList = ({ location }: TagPaperProps) => {
   const dropRef = useRef<HTMLDivElement>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isOpen = Boolean(anchorEl)
+  const showHidden = useAppSelector(selectShowHiddenTags)
+  const viewedTags = useMemo(() => {
+    if (showHidden) {
+      return tags
+    }
+    return tags.filter((tag) => !tag.hidden)
+  }, [showHidden, tags])
 
   useEffect(() => {
     console.log('isOpen', isOpen)
@@ -102,7 +109,7 @@ export const TagList = ({ location }: TagPaperProps) => {
             <AddIcon/>
           </IconButton>
           <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} onClose={handleClose} location={location}/>
-          {tags.filter(tag => !tag.hidden).map((tag, idx) => (
+          {viewedTags.map((tag, idx) => (
             <Tag
               key={tag.id}
               location={location}

@@ -35,11 +35,16 @@ export const tagsSlice = createSlice({
     newTags: (state, action: PayloadAction<{
       names: TagType['name'][],
       location: keyof PromptTagsType,
+      hidden?: boolean,
     }>) => {
       const { names, location } = action.payload
       const filtered = names.filter(Boolean)
       if (filtered.length === 0) return
-      state[location].push(...filtered.map(name => ({ ...getNameAndStrength(name), id: uuid() })))
+      state[location].push(...filtered.map(name => ({
+        ...getNameAndStrength(name),
+        id: uuid(),
+        hidden: action.payload.hidden,
+      })))
     },
     moveTagBetweenLocations: (state, action: PayloadAction<{
       id: TagType['id'],
@@ -140,6 +145,9 @@ export const tagsSlice = createSlice({
       if (negativeTags) state.negativeTags = negativeTags
       if (tagPool) state.tagPool = tagPool
     },
+    resetTags: (state) => {
+      Object.assign(state, initialPromptTagsState)
+    }
   }
 })
 
@@ -154,6 +162,7 @@ export const {
   toggleMuteTag,
   toggleHideTag,
   setTagsFromImageData,
+  resetTags,
 } = tagsSlice.actions
 
 export const selectAllTags = (state: RootState) => state.tags
