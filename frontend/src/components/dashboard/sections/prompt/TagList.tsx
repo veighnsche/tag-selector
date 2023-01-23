@@ -1,5 +1,6 @@
-import { Box, Chip, Paper, Typography } from '@mui/material'
-import { MouseEvent, ReactNode, useRef, useState } from 'react'
+import AddIcon from '@mui/icons-material/Add'
+import { Box, Chip, IconButton, Paper, Typography } from '@mui/material'
+import { ComponentProps, MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store'
 import { moveTagBetweenLocations, selectNegativeTags, selectTagPool, selectTags } from '../../../../store/reducers/tags'
@@ -15,6 +16,18 @@ const selectMap: Record<keyof PromptTagsType, (state: RootState) => TagType[]> =
   tagPool: selectTagPool,
 }
 
+const typographyColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Typography>['color']> = {
+  tags: 'primary',
+  negativeTags: 'secondary',
+  tagPool: 'default',
+}
+
+const chipColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
+  tags: 'primary',
+  negativeTags: 'secondary',
+  tagPool: 'default',
+}
+
 const displayMap: Record<keyof PromptTagsType, ReactNode> = {
   tags: 'Tags',
   negativeTags: 'Negative Tags',
@@ -24,12 +37,6 @@ const displayMap: Record<keyof PromptTagsType, ReactNode> = {
       <span style={{ opacity: 0.5, fontSize: '0.75rem' }}> (unused in prompt)</span>
     </>
   ),
-}
-
-const colorMap: Record<keyof PromptTagsType, 'primary' | 'secondary' | 'default'> = {
-  tags: 'primary',
-  negativeTags: 'secondary',
-  tagPool: 'default',
 }
 
 interface TagPaperProps {
@@ -43,9 +50,15 @@ export const TagList = ({ location }: TagPaperProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isOpen = Boolean(anchorEl)
 
+  useEffect(() => {
+    console.log('isOpen', isOpen)
+  }, [isOpen])
+
   const handleClick = (event: MouseEvent<HTMLElement>) => {
+    console.log('handleClick', event.currentTarget)
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -73,16 +86,22 @@ export const TagList = ({ location }: TagPaperProps) => {
   return (
     <Box ref={dropRef}>
       <Paper elevation={isOver ? 4 : 2} sx={{ minHeight: '48px', p: '0.5rem' }} square>
-        <Typography variant="caption" sx={{ ml: '0.5rem', opacity: 0.5 }} color={colorMap[location]}>
+        <Typography variant="caption" sx={{ ml: '0.5rem', opacity: 0.5 }} color={typographyColorMap[location]}>
           {displayMap[location]}
         </Typography>
-        <Box display="flex" flexWrap="wrap" gap="0.25rem">
-          {location === 'tagPool' ? (
-            <>
-              <Chip label="add" onClick={handleClick}/>
-              <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} handleClose={handleClose}/>
-            </>
-          ) : null}
+        <Box display="flex" flexWrap="wrap" gap="0.25rem" alignItems="center">
+          <IconButton
+            onClick={handleClick}
+            color={chipColorMap[location]}
+            sx={{ opacity: 0.75 }}
+            size="small"
+            onKeyPress={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <AddIcon/>
+          </IconButton>
+          <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} handleClose={handleClose} location={location}/>
           {tags.map((tag, idx) => (
             <Tag
               key={tag.id}
