@@ -26,6 +26,7 @@ import {
 } from '../../../../store/reducers/tags'
 import { TagType } from '../../../../types'
 import { PromptTagsType } from '../../../../types/image-input'
+import { makeTagLabelWrapped } from '../../../../utils/tags'
 
 const inputColorMap: Record<keyof PromptTagsType, ComponentProps<typeof TextField>['color']> = {
   tags: 'primary',
@@ -48,7 +49,7 @@ interface TagAddMenuProps {
 
 export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [value, setValue] = useState<string>(tag.name)
+  const [value, setValue] = useState<string>(makeTagLabelWrapped(tag))
   const dispatch = useAppDispatch()
   const location = useAppSelector(selectLocateTag)(tag.id)
   const inputColor = inputColorMap[location]

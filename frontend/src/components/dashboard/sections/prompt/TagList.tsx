@@ -101,7 +101,7 @@ export const TagList = ({ location }: TagPaperProps) => {
           >
             <AddIcon/>
           </IconButton>
-          <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} handleClose={handleClose} location={location}/>
+          <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} onClose={handleClose} location={location}/>
           {tags.map((tag, idx) => (
             <Tag
               key={tag.id}

@@ -1,5 +1,18 @@
-import { SendOutlined } from '@mui/icons-material'
-import { Box, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Popover } from '@mui/material'
+import JoinFullIcon from '@mui/icons-material/JoinFull'
+import JoinInnerIcon from '@mui/icons-material/JoinInner'
+import SendOutlined from '@mui/icons-material/SendOutlined'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Popover,
+  Tooltip,
+} from '@mui/material'
 import React, { ComponentProps, useEffect, useState } from 'react'
 import { useAppDispatch } from '../../../../store'
 import { newTags } from '../../../../store/reducers/tags'
@@ -13,20 +26,28 @@ const formControlColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Fo
 
 interface TagAddMenuProps {
   isOpen: boolean
-  handleClose: () => void
+  onClose: () => void
   anchorEl: HTMLElement | null
   location: keyof PromptTagsType
 }
 
-export const TagAddMenu = ({ isOpen, handleClose, anchorEl, location }: TagAddMenuProps) => {
+export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [value, setValue] = useState<string>('')
   const dispatch = useAppDispatch()
+  const [doNotSeparate, setDoNotSeparate] = useState(false)
+  const [addAsHidden, setAddAsHidden] = useState(false)
 
   function handleAdd() {
     const tags = value.split(',').map((tag) => tag.trim())
     dispatch(newTags({ names: tags, location }))
+  }
+
+  function handleClose() {
+    setAddAsHidden(false)
+    setDoNotSeparate(false)
     setValue('')
+    onClose()
   }
 
   useEffect(() => {
@@ -41,7 +62,7 @@ export const TagAddMenu = ({ isOpen, handleClose, anchorEl, location }: TagAddMe
     <Popover
       open={isOpen}
       onClose={() => {
-        handleClose()
+        onClose()
       }}
       anchorEl={anchorEl}
       anchorOrigin={{
@@ -56,10 +77,10 @@ export const TagAddMenu = ({ isOpen, handleClose, anchorEl, location }: TagAddMe
           size="small"
           color={formControlColorMap[location]}
         >
-          <InputLabel>Comma separated</InputLabel>
+          <InputLabel>{doNotSeparate ? 'Add single tag' : 'Add comma separated tags'}</InputLabel>
           <OutlinedInput
             inputRef={inputRef}
-            label="Comma separated"
+            label={doNotSeparate ? 'Add single tag' : 'Add comma separated tags'}
             value={value}
             onChange={(e) => {
               setValue(e.target.value)
@@ -75,12 +96,34 @@ export const TagAddMenu = ({ isOpen, handleClose, anchorEl, location }: TagAddMe
             }}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton edge="end" onClick={() => {
-                  handleAdd()
-                  handleClose()
-                }}>
-                  <SendOutlined/>
-                </IconButton>
+                <Tooltip title={doNotSeparate ? 'Separate tags' : 'Do not separate tags'}>
+                  <IconButton
+                    edge="end"
+                    onClick={() => {
+                      setDoNotSeparate(!doNotSeparate)
+                    }}
+                  >
+                    {doNotSeparate ? <JoinFullIcon/> : <JoinInnerIcon/>}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={addAsHidden ? 'Add as visible' : 'Add as hidden'}>
+                  <IconButton
+                    edge="end"
+                    onClick={() => {
+                      setAddAsHidden(!addAsHidden)
+                    }}
+                  >
+                    {addAsHidden ? <VisibilityOffIcon/> : <VisibilityIcon/>}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={`Add to ${location}`}>
+                  <IconButton edge="end" onClick={() => {
+                    handleAdd()
+                    handleClose()
+                  }}>
+                    <SendOutlined/>
+                  </IconButton>
+                </Tooltip>
               </InputAdornment>
             }
           />

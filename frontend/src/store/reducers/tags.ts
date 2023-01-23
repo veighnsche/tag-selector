@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { v4 as uuid } from 'uuid'
 import { PromptTagsType, TagType } from '../../types/image-input'
+import { getNameAndStrength } from '../../utils/tags'
 import { RootState } from '../index'
 
 export const initialPromptTagsState: PromptTagsType = {
@@ -38,7 +39,7 @@ export const tagsSlice = createSlice({
       const { names, location } = action.payload
       const filtered = names.filter(Boolean)
       if (filtered.length === 0) return
-      state[location].push(...filtered.map(name => ({ name, id: uuid() })))
+      state[location].push(...filtered.map(name => ({ ...getNameAndStrength(name), id: uuid() })))
     },
     moveTagBetweenLocations: (state, action: PayloadAction<{
       id: TagType['id'],
@@ -73,7 +74,9 @@ export const tagsSlice = createSlice({
       const location = findTag(state, id)
       const tagIndex = state[location].findIndex(tag => tag.id === id)
       if (tagIndex !== -1) {
-        state[location][tagIndex].name = name
+        const { name: newName, strength } = getNameAndStrength(name)
+        state[location][tagIndex].name = newName
+        state[location][tagIndex].strength = strength
       }
     },
     increaseTagStrength: (state, action: PayloadAction<{
