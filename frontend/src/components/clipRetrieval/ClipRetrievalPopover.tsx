@@ -37,7 +37,7 @@ export const ClipRetrievalPopover = ({
         })
       })
     }
-  }, [isOpen])
+  }, [isOpen, prompt])
 
   useEffect(() => {
     // automatically scroll from left to right

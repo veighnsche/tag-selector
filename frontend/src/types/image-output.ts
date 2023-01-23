@@ -9,6 +9,8 @@ export interface ImageOutputType {
 
 export interface ImageOutputInfoType {
   seed: number
+  width: number
+  height: number
 }
 
 export interface GetImagesPathsType {

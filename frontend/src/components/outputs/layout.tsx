@@ -1,24 +1,13 @@
-import styled from '@emotion/styled'
-import { Paper } from '@mui/material'
-import { FetchImagesButton } from './FetchImagesButton'
+import { Box } from '@mui/material'
 import { ImageListDataWrapper } from './ImageListDataWrapper'
 import { ImageList } from './ImageList'
-
-const StyledPaper = styled(Paper)`
-  width: 100%;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`
 
 export const OutputsLayout = () => {
   return (
     <ImageListDataWrapper>
-      <StyledPaper>
+      <Box width="100%" display="flex" flexDirection="column" gap="1rem">
         <ImageList/>
-        <FetchImagesButton/>
-      </StyledPaper>
+      </Box>
     </ImageListDataWrapper>
   )
 }

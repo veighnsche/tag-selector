@@ -76,8 +76,9 @@ function nameImage(index: number, imageOutput: ImageOutputType): string {
   const promptString = prompt.replace(/[^a-zA-Z0-9]/g, '_')
   // only one underscore in a row
   const promptStringClean = promptString.replace(/_+/g, '_').trim()
+  const size = `${imageOutput.info.width}x${imageOutput.info.height}`
 
-  return `${indexString}-${imageOutput.info.seed}-${promptStringClean}.png`
+  return `${indexString}-${size}-${imageOutput.info.seed}-${promptStringClean}.png`
 }
 
 async function getFiles(dir: string): Promise<ValidFile[]> {

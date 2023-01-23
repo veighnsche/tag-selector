@@ -1,11 +1,20 @@
-import BurstModeIcon from '@mui/icons-material/BurstMode'
+import styled from '@emotion/styled'
 import { Button } from '@mui/material'
 import { useEmitters } from '../../hooks/useEmitters'
 import { useAppSelector } from '../../store'
 import { selectImages } from '../../store/reducers/images'
 import { GetImagesPathsType } from '../../types/image-output'
 
-export const FetchImagesButton = () => {
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'rowsPerPage',
+})<{
+  rowsPerPage: number
+}>`
+  width: ${({ rowsPerPage }) => (2 / 3) * (90 / rowsPerPage)}vh;
+  height: ${({ rowsPerPage }) => 90 / rowsPerPage}vh;
+`
+
+export const FetchImagesButton = ({ rowsPerPage }: { rowsPerPage: number }) => {
   const images = useAppSelector(selectImages)
   const emit = useEmitters()
 
@@ -25,15 +34,14 @@ export const FetchImagesButton = () => {
 
   // button with icon
   return (
-    <Button
+    <StyledButton
+      rowsPerPage={rowsPerPage}
       onClick={handleClick}
-      fullWidth
       size="large"
       variant="outlined"
       color="primary"
-      startIcon={<BurstModeIcon/>}
     >
-      Fetch images
-    </Button>
+      More images
+    </StyledButton>
   )
 }

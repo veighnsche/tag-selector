@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Chip, IconButton, Paper, Typography } from '@mui/material'
-import { ComponentProps, MouseEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ComponentProps, MouseEvent, ReactNode, useMemo, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store'
 import { moveTagBetweenLocations, selectNegativeTags, selectTagPool, selectTags } from '../../../../store/reducers/tags'
@@ -57,12 +57,7 @@ export const TagList = ({ location }: TagPaperProps) => {
     return tags.filter((tag) => !tag.hidden)
   }, [showHidden, tags])
 
-  useEffect(() => {
-    console.log('isOpen', isOpen)
-  }, [isOpen])
-
   const handleClick = (event: MouseEvent<HTMLElement>) => {
-    console.log('handleClick', event.currentTarget)
     setAnchorEl(event.currentTarget)
   }
 
