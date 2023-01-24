@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SdStatus } from '../../types'
-import { SdProgressType } from '../../types/sd-progress'
 import { RootState } from '../index'
 
 interface SdStatusState {

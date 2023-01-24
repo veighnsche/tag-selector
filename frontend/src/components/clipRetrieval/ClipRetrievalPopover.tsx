@@ -70,7 +70,7 @@ export const ClipRetrievalPopover = ({
         {prompt}
       </Typography>
       <Box
-        height="33vh"
+        height="30vh"
         width="100%"
         display="flex"
         flexWrap="nowrap"

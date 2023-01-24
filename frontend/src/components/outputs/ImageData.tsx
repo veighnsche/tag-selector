@@ -2,8 +2,8 @@ import styled from '@emotion/styled'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, Button, ButtonGroup, Divider, Paper, Tooltip } from '@mui/material'
-import React, { ReactElement, useEffect, useState } from 'react'
+import { Box, Button, ButtonGroup, Divider, Paper } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { useFetchImageData } from '../../hooks/useFetchImageData'
 import { useModalNavigation } from '../../hooks/useModalNavigation'
 import { useAppDispatch } from '../../store'
@@ -13,6 +13,7 @@ import { ImageCustomData } from '../../types/image-custom-data'
 import { FullImageDataType, ImageDataType } from '../../types/image-data'
 import { PromptTagsType } from '../../types/image-input'
 import { makeTagLabelWrapped } from '../../utils/tags'
+import { ImageDataProperty } from './ImageDataProperty'
 import { ImageTagList } from './ImageTagList'
 
 const StyledPaper = styled(Paper, {
@@ -27,22 +28,12 @@ const StyledPaper = styled(Paper, {
   position: relative;
 `
 
-// text only on 1 line and ellipsis
-const StyledButton = styled(Button)<{
-  fullWidth?: boolean
-}>`
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : '50%')};
-  font-weight: normal;
-  text-transform: none;
-  border-radius: 0;
-`
-
 interface ImageDataProps {
   filename: string
   open: boolean
 }
 
-interface ImageDataPropertyProps {
+interface ImageDataPropertyType {
   name: string
   property: keyof ImageDataType
   fullWidth?: boolean
@@ -53,7 +44,7 @@ const DataContainer = styled.div`
   flex-wrap: wrap;
 `
 
-const propertyList: ImageDataPropertyProps[] = [
+const propertyList: ImageDataPropertyType[] = [
   {
     name: 'Model',
     property: 'model',
@@ -143,6 +134,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
         selectedTags.negativeTags = negativeTags
       }
       dispatch(setTagsFromImageData(selectedTags))
+
+      setSelected([])
     }
   }
 
@@ -153,43 +146,6 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
     else {
       setSelected([...selected, property])
     }
-  }
-
-  const ImageDataProperty = ({ name, value, property, fullWidth }: Omit<ImageDataPropertyProps, 'property'> & {
-    value: any;
-    property: SelectableProperties;
-  }) => {
-    const display = value.toString().slice(0, 50)
-    const isLonger = value.toString().length > 50
-
-    const TooltipWrapper = ({ children }: { children: ReactElement }) => {
-      if (!isLonger) {
-        return <>{children}</>
-      }
-      return (
-        <Tooltip title={value.toString()}>
-          {children}
-        </Tooltip>
-      )
-    }
-
-    return (
-      <TooltipWrapper>
-        <StyledButton
-          fullWidth={fullWidth}
-          size="small"
-          variant={buttonVariant(property)}
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleProperty(property)
-          }}
-        >
-          <span style={{fontWeight: 500 }}>{name}:</span>
-          {' '}
-          {display}{isLonger ? '...' : ''}
-        </StyledButton>
-      </TooltipWrapper>
-    )
   }
 
   return (
@@ -216,7 +172,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
               {scene ? (
                 <ImageDataProperty
                   name="Scene"
-                  property="scene"
+                  variant={buttonVariant('scene')}
+                  toggle={() => toggleProperty('scene')}
                   value={scene}
                   fullWidth
                 />
@@ -224,7 +181,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
               {promptTags?.length ? (
                 <ImageDataProperty
                   name="Tags"
-                  property="tags"
+                  variant={buttonVariant('tags')}
+                  toggle={() => toggleProperty('tags')}
                   value={promptTags?.map(makeTagLabelWrapped).join(', ')}
                   fullWidth
                 />
@@ -232,7 +190,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
               {negativeTags?.length ? (
                 <ImageDataProperty
                   name="Negative tags"
-                  property="negativeTags"
+                  variant={buttonVariant('negativeTags')}
+                  toggle={() => toggleProperty('negativeTags')}
                   value={negativeTags?.map(makeTagLabelWrapped).join(', ')}
                   fullWidth
                 />
@@ -241,7 +200,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                 return data?.imageData[property] ? (
                   <ImageDataProperty
                     key={property}
-                    property={property}
+                    variant={buttonVariant(property)}
+                    toggle={() => toggleProperty(property)}
                     name={name}
                     value={data?.imageData[property]}
                     fullWidth={fullWidth}

@@ -46,7 +46,12 @@ function parseRawImageData(raw: string): unknown {
 }
 
 function extractNegativePromptAndOptions(lines: string[]): { negativePrompt?: string, options: any } {
-  if (lines[1].startsWith('Negative prompt:')) {
+  if (!lines[1]) {
+    return {
+      options: lines[0],
+    }
+  }
+  if (lines[1]?.startsWith('Negative prompt:')) {
     const negativePrompt = lines[1].split('Negative prompt:')[1].trim()
     return {
       negativePrompt,
