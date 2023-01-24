@@ -177,22 +177,26 @@ export const ImageList = () => {
           {page === imagesPerPage.length ? <FetchImagesButton rowsPerPage={rowsPerPage}/> : null}
         </ImageListFlex>
       </ImageListWrapper>
-      <Box width="100%" display="flex" justifyContent="center" gap="1rem">
-        <ButtonGroup size="small" variant="outlined" color="inherit" sx={{ opacity: '30%' }}>
-          <Button onClick={handleZoom('out')}>
-            <ZoomOutIcon />
-          </Button>
-          <Button onClick={handleZoom('in')}>
-            <ZoomInIcon />
-          </Button>
-        </ButtonGroup>
-        <Pagination
-          count={imagesPerPage.length}
-          variant="outlined"
-          shape="rounded"
-          page={page}
-          onChange={(_, value) => setPage(value)}
-        />
+      <Box position="relative" width="100%" display="flex" flexDirection="column" justifyContent="space-between">
+        <Box position="absolute" top="0" right="0">
+          <ButtonGroup size="small" variant="outlined" color="inherit" sx={{ opacity: '30%' }}>
+            <Button onClick={handleZoom('out')}>
+              <ZoomOutIcon />
+            </Button>
+            <Button onClick={handleZoom('in')}>
+              <ZoomInIcon />
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <Box width="100%" display="flex" justifyContent="center" gap="1rem">
+          <Pagination
+            count={imagesPerPage.length}
+            variant="outlined"
+            shape="rounded"
+            page={page}
+            onChange={(_, value) => setPage(value)}
+          />
+        </Box>
       </Box>
     </>
   )
