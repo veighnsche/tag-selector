@@ -1,5 +1,4 @@
-// text only on 1 line and ellipsis
-import styled from '@emotion/styled/dist/emotion-styled.cjs'
+import styled from '@emotion/styled'
 import { Button, Tooltip } from '@mui/material'
 import React, { ReactElement } from 'react'
 
