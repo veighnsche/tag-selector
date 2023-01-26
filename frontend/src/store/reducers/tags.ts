@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { v4 as uuid } from 'uuid'
-import { PromptTagsType, TagType } from '../../types/image-input'
-import { getNameAndStrength } from '../../utils/tags'
+import { OptimizerTypes, PromptTagsType, TagType } from '../../types/image-input'
+import { findTag, getNameAndStrength } from '../../utils/tags'
 import { RootState } from '../index'
 
 export const initialPromptTagsState: PromptTagsType = {
@@ -10,15 +10,21 @@ export const initialPromptTagsState: PromptTagsType = {
   tagPool: [],
 }
 
-function findTag(state: PromptTagsType, id: TagType['id']): keyof PromptTagsType {
+interface FindOptimizerTagParams {
+  state: PromptTagsType
+  name: TagType['name']
+  type: OptimizerTypes
+}
+
+function findOptimizerTag({ state, name, type }: FindOptimizerTagParams): (keyof PromptTagsType) | null {
   const locations: Readonly<(keyof PromptTagsType)[]> = ['tags', 'negativeTags', 'tagPool'] as const
   for (const location of locations) {
-    const index = state[location].findIndex((tag) => tag.id === id)
+    const index = state[location].findIndex((tag) => tag.name === name && tag.optimizer === type)
     if (index !== -1) {
       return location
     }
   }
-  throw new Error(`Tag ${id} not found`)
+  return null
 }
 
 export const tagsSlice = createSlice({
@@ -45,6 +51,22 @@ export const tagsSlice = createSlice({
         id: uuid(),
         hidden: action.payload.hidden,
       })))
+    },
+    toggleOptimizerTag: (state, action: PayloadAction<{
+      name: TagType['name'],
+      type: OptimizerTypes,
+    }>) => {
+      // check if tag already exists in tags
+      const { name, type } = action.payload
+      const location = findOptimizerTag({ state, name, type })
+      if (location) {
+        // remove tag from location
+        state[location] = state[location].filter(tag => tag.name !== name || tag.optimizer !== type)
+      }
+      else {
+        // add tag to tags at start
+        state.tags.unshift({ name, id: uuid(), optimizer: type })
+      }
     },
     moveTagBetweenLocations: (state, action: PayloadAction<{
       id: TagType['id'],
@@ -163,6 +185,7 @@ export const {
   toggleHideTag,
   setTagsFromImageData,
   resetTags,
+  toggleOptimizerTag,
 } = tagsSlice.actions
 
 export const selectAllTags = (state: RootState) => state.tags
@@ -191,6 +214,12 @@ export const selectGetId = (state: RootState) =>
     const { tags, negativeTags, tagPool } = state.tags
     const tag = [...tags, ...negativeTags, ...tagPool].find(tag => tag.name === name)
     return tag?.id
+  }
+
+export const selectHasOptimizerTag = (state: RootState) =>
+  ({ name, type }: { name: TagType['name'], type: OptimizerTypes }): boolean => {
+    const { tags, negativeTags, tagPool } = state.tags
+    return [...tags, ...negativeTags, ...tagPool].some(tag => tag.name === name && tag.optimizer === type)
   }
 
 export const tagsReducer = tagsSlice.reducer

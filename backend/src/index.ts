@@ -8,6 +8,7 @@ import { fetchImageController, removeImageController } from './listeners/image-c
 import { fetchImageDataController } from './listeners/image-data.controller'
 import { generateImageInterruptController, imageGenerateController } from './listeners/image-generate.controller'
 import {
+  fetchOptimizersController,
   fetchOptionsController,
   fetchSamplingMethodsController,
   fetchSdModelsController,
@@ -36,6 +37,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.FETCH_SAMPLERS, fetchSamplingMethodsController(socket))
   socket.on(SocketEvent.FETCH_IMAGE_DATA, fetchImageDataController(socket))
   socket.on(SocketEvent.GENERATE_IMAGE_INTERRUPT, generateImageInterruptController(socket))
+  socket.on(SocketEvent.FETCH_OPTIMIZERS, fetchOptimizersController(socket))
 
   socket.on(SocketEvent.DISCONNECT, () => {
     console.info('user disconnected')

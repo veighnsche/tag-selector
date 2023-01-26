@@ -1,12 +1,7 @@
 import { SendOutlined } from '@mui/icons-material'
 import ReplayIcon from '@mui/icons-material/Replay'
-import VolumeDownIcon from '@mui/icons-material/VolumeDown'
-import VolumeMuteIcon from '@mui/icons-material/VolumeMute'
-import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import {
   Box,
-  Button,
-  ButtonGroup,
   FormControl,
   IconButton,
   InputAdornment,
@@ -14,22 +9,15 @@ import {
   OutlinedInput,
   Popover,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import React, { ComponentProps, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../../store'
-import {
-  decreaseTagStrength,
-  editTag,
-  increaseTagStrength,
-  selectLocateTag, toggleHideTag,
-  toggleMuteTag,
-} from '../../../../store/reducers/tags'
+import { editTag, selectLocateTag } from '../../../../store/reducers/tags'
 import { TagType } from '../../../../types'
 import { PromptTagsType } from '../../../../types/image-input'
 import { makeTagLabelWrapped } from '../../../../utils/tags'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { buttonColorMap } from './maps'
+import { VolumeControl } from './VolumeControl'
 
 const inputColorMap: Record<keyof PromptTagsType, ComponentProps<typeof TextField>['color']> = {
   tags: 'primary',
@@ -37,20 +25,14 @@ const inputColorMap: Record<keyof PromptTagsType, ComponentProps<typeof TextFiel
   tagPool: undefined,
 }
 
-const buttonColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Button>['color']> = {
-  tags: 'primary',
-  negativeTags: 'secondary',
-  tagPool: 'inherit',
-}
-
-interface TagAddMenuProps {
+interface TagEditMenuProps {
   isOpen: boolean
   handleClose: () => void
   anchorEl: HTMLElement | null
   tag: TagType
 }
 
-export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuProps) => {
+export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagEditMenuProps) => {
   const tagPrompt = makeTagLabelWrapped(tag)
 
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -116,42 +98,7 @@ export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagAddMenuPr
             }
           />
         </FormControl>
-        <ButtonGroup fullWidth color={buttonColorMap[location]}>
-          <Tooltip title={'Hiding will add this tag to the prompt, but will not show it'}>
-            <Button
-              variant={tag.hidden ? 'contained' : 'outlined'}
-              onClick={() => {
-                dispatch(toggleHideTag({ id: tag.id, location }))
-              }}
-            >
-              {tag.hidden ? <VisibilityOffIcon/> : <VisibilityIcon/>}
-            </Button>
-          </Tooltip>
-          <Tooltip title={'Muting will prevent this tag from being added to the prompt'}>
-            <Button
-              variant={tag.muted ? 'contained' : 'outlined'}
-              onClick={() => {
-                dispatch(toggleMuteTag({ id: tag.id, location }))
-              }}
-            >
-              <VolumeMuteIcon/>
-            </Button>
-          </Tooltip>
-          <Tooltip title={'add 0.1 to strength'}>
-            <Button onClick={() => {
-              dispatch(decreaseTagStrength({ id: tag.id, location }))
-            }}>
-              <VolumeDownIcon/>
-            </Button>
-          </Tooltip>
-          <Tooltip title={'subtract 0.1 from strength'}>
-            <Button onClick={() => {
-              dispatch(increaseTagStrength({ id: tag.id, location }))
-            }}>
-              <VolumeUpIcon/>
-            </Button>
-          </Tooltip>
-        </ButtonGroup>
+        <VolumeControl location={location} tag={tag}/>
       </Box>
     </Popover>
   )

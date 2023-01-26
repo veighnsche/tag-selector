@@ -19,4 +19,5 @@ export enum SocketEvent {
   PROGRESS_IMAGE = 'progress-image',
   PROGRESS_ETA = 'progress-eta',
   PROGRESS_PERCENT = 'progress-percent',
+  FETCH_OPTIMIZERS = 'fetch-optimizers',
 }

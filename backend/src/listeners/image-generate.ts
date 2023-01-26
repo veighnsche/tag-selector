@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types'
 import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
-import { PromptTagsType } from 'frontend/src/types/image-input'
+import { OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input'
 import { SdProgressType } from 'frontend/src/types/sd-progress'
 import { SD_URL } from '../constants'
 
@@ -9,10 +9,16 @@ function tagToPrompt(tag: TagType): string {
   if (tag.muted) {
     return ''
   }
-  if (tag.strength === undefined || tag.strength === 100) {
-    return tag.name
+
+  if (tag.optimizer === OptimizerTypes.HYPERNETWORK) {
+    const strength = tag.strength || 100
+    return `<hypernet:${tag.name}:${strength / 100}>`
   }
-  return `(${tag.name}:${tag.strength / 100})`
+
+  if (tag.strength && tag.strength !== 100) {
+    return `(${tag.name}:${tag.strength / 100})`
+  }
+  return tag.name
 }
 
 export const selectTagsForInputs = ({

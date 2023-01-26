@@ -40,5 +40,8 @@ export function useEmitters() {
     setSdOptions: (options: Partial<SdOptionsType>) => {
       socket.emit(SocketEvent.SET_SD_OPTIONS, { options })
     },
+    fetchOptimizers: () => {
+      socket.emit(SocketEvent.FETCH_OPTIMIZERS)
+    }
   }
 }

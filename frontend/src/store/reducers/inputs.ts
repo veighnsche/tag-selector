@@ -113,4 +113,6 @@ export const selectSliders = (state: RootState) => {
   }
 }
 
+export const selectSeed = (state: RootState) => state.inputs.options.seed
+
 export const inputsReducer = inputsSlice.reducer

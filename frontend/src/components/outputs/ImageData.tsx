@@ -21,7 +21,7 @@ const StyledPaper = styled(Paper, {
 })<{
   open: boolean
 }>`
-  width: ${(props) => (props.open ? '30vw' : '0vw')};
+  width: ${(props) => (props.open ? 30 /** todo: should be a 3:2 ratio */ + 'vw' : '0vw')};
   height: 100vh;
   transition: width 0.8s ease-in-out;
   overflow: hidden;

@@ -1,5 +1,6 @@
 import Decimal from 'decimal.js-light'
 import { TagType } from '../types'
+import { PromptTagsType } from '../types/image-input'
 
 
 function hasStrength(strength: number | undefined): strength is number {
@@ -44,4 +45,15 @@ export function getNameAndStrength(name: string): Omit<TagType, 'id'> {
   }
   const { nameWithoutParentheses, strength } = countAndRemoveParentheses(name)
   return { name: nameWithoutParentheses, strength }
+}
+
+export function findTag(state: PromptTagsType, id: TagType['id']): keyof PromptTagsType {
+  const locations: Readonly<(keyof PromptTagsType)[]> = ['tags', 'negativeTags', 'tagPool'] as const
+  for (const location of locations) {
+    const index = state[location].findIndex((tag) => tag.id === id)
+    if (index !== -1) {
+      return location
+    }
+  }
+  throw new Error(`Tag ${id} not found`)
 }

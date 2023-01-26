@@ -19,7 +19,34 @@ export function getCurrentOptions(): Promise<SdOptionsType> {
   .then((response) => response.data)
 }
 
-export async function setSdOptions(options: Partial<SdOptionsType>): Promise<number> {
+export function setSdOptions(options: Partial<SdOptionsType>): Promise<number> {
   return axios.post(`${SD_URL}/sdapi/v1/options`, options)
-    .then((response) => response.status)
+  .then((response) => response.status)
+}
+
+interface EmbeddingResponse {
+  loaded: Record<string, any>;
+}
+
+export function fetchEmbeddings(): Promise<string[]> {
+  return axios.get(`${SD_URL}/sdapi/v1/embeddings`)
+  .then((response) => response.data)
+  .then((response: EmbeddingResponse) => Object.keys(response.loaded))
+}
+
+interface HypernetworkResponse {
+  name: string;
+  path: string;
+}
+
+export function fetchHypernetworks(): Promise<string[]> {
+  return axios.get(`${SD_URL}/sdapi/v1/hypernetworks`)
+  .then((response) => response.data)
+  .then((response: HypernetworkResponse[]) => response.map((item) => item.name))
+}
+
+export function fetchLoras(): Promise<string[]> {
+  // return axios.get(`${SD_URL}/sdapi/v1/loras`)
+  //   .then((response) => response.status)
+  return Promise.resolve([])
 }

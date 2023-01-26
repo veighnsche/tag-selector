@@ -1,9 +1,27 @@
+export enum OptimizerTypes {
+  EMBEDDING = 'embedding',
+  HYPERNETWORK = 'hypernetwork',
+  LORA = 'lora',
+}
 export interface TagType {
   id: string
   name: string
   strength?: number
   muted?: boolean
   hidden?: boolean
+  optimizer?: OptimizerTypes
+}
+
+export interface EmbeddingType extends TagType {
+  optimizer: OptimizerTypes.EMBEDDING
+}
+
+export interface HypernetworkType extends TagType {
+  optimizer: OptimizerTypes.HYPERNETWORK
+}
+
+export interface LoraType extends TagType {
+  optimizer: OptimizerTypes.LORA
 }
 
 export interface ImageOptionsType {

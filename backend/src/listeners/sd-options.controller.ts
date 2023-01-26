@@ -3,7 +3,15 @@ import { SdOptionsType } from 'frontend/src/types/sd-options'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
-import { getCurrentOptions, getModelOptions, getSamplingMethods, setSdOptions } from './sd-options'
+import {
+  fetchEmbeddings,
+  fetchHypernetworks,
+  fetchLoras,
+  getCurrentOptions,
+  getModelOptions,
+  getSamplingMethods,
+  setSdOptions,
+} from './sd-options'
 
 export function fetchSdModelsController(socket: Socket) {
   return () => {
@@ -58,10 +66,31 @@ export function setOptionsController(socket: Socket) {
     socket.emit(SocketEvent.SD_STATUS, SdStatus.READY)
 
     const newOptions = await getCurrentOptions()
-      .catch((error: AxiosError) => {
-        socket.emit(SocketEvent.ERROR, { error })
-      })
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
 
     socket.emit(SocketEvent.FETCH_SD_OPTIONS, { options: newOptions })
+  }
+}
+
+export function fetchOptimizersController(socket: Socket) {
+  return async () => {
+    const [embeddings, hypernetworks, loras] = await Promise.all([
+      fetchEmbeddings()
+      .catch((error: AxiosError) => {
+        socket.emit(SocketEvent.ERROR, { error })
+      }),
+      fetchHypernetworks()
+      .catch((error: AxiosError) => {
+        socket.emit(SocketEvent.ERROR, { error })
+      }),
+      fetchLoras()
+      .catch((error: AxiosError) => {
+        socket.emit(SocketEvent.ERROR, { error })
+      }),
+    ])
+
+    socket.emit(SocketEvent.FETCH_OPTIMIZERS, { embeddings, hypernetworks, loras })
   }
 }

@@ -86,4 +86,31 @@ export const selectImageCustomData = (state: RootState) =>
 export const selectArrayIdx = (state: RootState) =>
   (filename: string): number => state.images.images.indexOf(filename)
 
+// get the seed number of the last image
+export const selectLastSeed = (state: RootState): {
+  seed?: number
+  filename?: string
+} => {
+  // last is 0 because the array is reversed
+  const lastImage = state.images.images[0]
+  if (lastImage === undefined) {
+    return {
+      seed: undefined,
+      filename: undefined,
+    }
+  }
+  const lastImageData = state.images.imageData[lastImage]
+  if (lastImageData === undefined) {
+    return {
+      seed: undefined,
+      filename: lastImage,
+    }
+  }
+  return {
+    seed: lastImageData.seed,
+    filename: lastImage,
+  }
+}
+
+
 export const imagesReducer = imagesSlice.reducer

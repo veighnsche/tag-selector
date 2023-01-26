@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import CasinoIcon from '@mui/icons-material/Casino'
 import {
   Checkbox,
   FormControl,
@@ -12,11 +11,16 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
-  Slider, TextField,
+  Slider,
+  TextField,
 } from '@mui/material'
 import React from 'react'
+import { useFetchImageData } from '../../../../hooks/useFetchImageData'
 import { useAppDispatch, useAppSelector } from '../../../../store'
+import { selectLastSeed } from '../../../../store/reducers/images'
 import { selectSliders, setCfg, setRestoreFaces, setSeed, setSteps } from '../../../../store/reducers/inputs'
+import { RandomIcon } from '../../../icons/RandomIcon'
+import { RecycleIcon } from '../../../icons/RecycleIcon'
 import { SamplingWrapper } from './SamplingWrapper'
 import { SdModelWrapper } from './SdModelWrapper'
 
@@ -55,6 +59,20 @@ const SliderTextField = styled(TextField)`
 export const Sliders = () => {
   const values = useAppSelector(selectSliders)
   const dispatch = useAppDispatch()
+  const lastImageSeed = useAppSelector(selectLastSeed)
+  const fetchImageData = useFetchImageData()
+
+  const setSeedFromLastImage = async () => {
+    if (lastImageSeed.seed !== undefined) {
+      dispatch(setSeed(lastImageSeed.seed))
+    }
+    if (lastImageSeed.filename !== undefined) {
+      const imageData = await fetchImageData(lastImageSeed.filename)
+      if (imageData) {
+        dispatch(setSeed(imageData.imageData.seed))
+      }
+    }
+  }
 
   return (
     <StyledPaper elevation={2}>
@@ -122,12 +140,18 @@ export const Sliders = () => {
           endAdornment={
             <InputAdornment position="end">
               <IconButton
+                onClick={setSeedFromLastImage}
+                edge="end"
+              >
+                <RecycleIcon/>
+              </IconButton>
+              <IconButton
                 onClick={() => {
                   dispatch(setSeed(-1))
                 }}
                 edge="end"
               >
-                <CasinoIcon/>
+                <RandomIcon/>
               </IconButton>
             </InputAdornment>
           }

@@ -1,17 +1,17 @@
 import styled from '@emotion/styled'
-import CasinoIcon from '@mui/icons-material/Casino'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import ZoomInIcon from '@mui/icons-material/ZoomIn'
+import ZoomOutIcon from '@mui/icons-material/ZoomOut'
 import { Box, Button, ButtonGroup, IconButton, Pagination, Tooltip } from '@mui/material'
 import React, { useEffect, useMemo } from 'react'
 import { useViewDimensions } from '../../hooks/useViewDimensions'
 import { useAppSelector } from '../../store'
 import { selectImages } from '../../store/reducers/images'
 import { extractImageSize, prefixWithImageUrl } from '../../utils/files'
+import { SeedIcon } from '../icons/SeedIcon'
 import { FetchImagesButton } from './FetchImagesButton'
 import { ImageDataWrapper } from './ImageDataWrapper'
 import { ImageModal } from './ImageModal'
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 const ImageListWrapper = styled.div<{
   rowsPerPage: number
@@ -159,7 +159,7 @@ export const ImageList = () => {
                       e.stopPropagation()
                       setSeed()
                     }}>
-                      <CasinoIcon/>
+                      <SeedIcon/>
                     </SetSeedButton>
                   </Tooltip>
                   <Tooltip title={'Delete image'}>
