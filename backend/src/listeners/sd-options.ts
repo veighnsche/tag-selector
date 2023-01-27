@@ -44,9 +44,3 @@ export function fetchHypernetworks(): Promise<string[]> {
   .then((response) => response.data)
   .then((response: HypernetworkResponse[]) => response.map((item) => item.name))
 }
-
-export function fetchLoras(): Promise<string[]> {
-  // return axios.get(`${SD_URL}/sdapi/v1/loras`)
-  //   .then((response) => response.status)
-  return Promise.resolve([])
-}

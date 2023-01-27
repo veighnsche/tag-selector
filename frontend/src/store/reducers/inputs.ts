@@ -37,6 +37,12 @@ export const inputsSlice = createSlice({
       state.options.width = width
       state.options.height = height
     },
+    setWidth: (state, action: PayloadAction<number>) => {
+      state.options.width = action.payload
+    },
+    setHeight: (state, action: PayloadAction<number>) => {
+      state.options.height = action.payload
+    },
     setSteps: (state, action: PayloadAction<number>) => {
       state.options.steps = action.payload
     },
@@ -87,6 +93,8 @@ export const {
   setScene,
   setNegativePrompt,
   setSize,
+  setWidth,
+  setHeight,
   setSteps,
   setCfg,
   setSeed,

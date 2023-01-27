@@ -42,6 +42,9 @@ export function useEmitters() {
     },
     fetchOptimizers: () => {
       socket.emit(SocketEvent.FETCH_OPTIMIZERS)
+    },
+    fetchVaes: () => {
+      socket.emit(SocketEvent.FETCH_VAES)
     }
   }
 }

@@ -3,10 +3,10 @@ import { SdOptionsType } from 'frontend/src/types/sd-options'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
+import { fetchLoras, fetchVaes } from './api-helper'
 import {
   fetchEmbeddings,
   fetchHypernetworks,
-  fetchLoras,
   getCurrentOptions,
   getModelOptions,
   getSamplingMethods,
@@ -80,17 +80,31 @@ export function fetchOptimizersController(socket: Socket) {
       fetchEmbeddings()
       .catch((error: AxiosError) => {
         socket.emit(SocketEvent.ERROR, { error })
+        return []
       }),
       fetchHypernetworks()
       .catch((error: AxiosError) => {
         socket.emit(SocketEvent.ERROR, { error })
+        return []
       }),
       fetchLoras()
       .catch((error: AxiosError) => {
         socket.emit(SocketEvent.ERROR, { error })
+        return []
       }),
     ])
 
     socket.emit(SocketEvent.FETCH_OPTIMIZERS, { embeddings, hypernetworks, loras })
+  }
+}
+
+export function fetchVeasController(socket: Socket) {
+  return async () => {
+    const vaes = await fetchVaes()
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
+
+    socket.emit(SocketEvent.FETCH_VAES, { vaes })
   }
 }

@@ -11,7 +11,7 @@ import {
   fetchOptimizersController,
   fetchOptionsController,
   fetchSamplingMethodsController,
-  fetchSdModelsController,
+  fetchSdModelsController, fetchVeasController,
   setOptionsController,
 } from './listeners/sd-options.controller'
 
@@ -38,6 +38,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.FETCH_IMAGE_DATA, fetchImageDataController(socket))
   socket.on(SocketEvent.GENERATE_IMAGE_INTERRUPT, generateImageInterruptController(socket))
   socket.on(SocketEvent.FETCH_OPTIMIZERS, fetchOptimizersController(socket))
+  socket.on(SocketEvent.FETCH_VAES, fetchVeasController(socket))
 
   socket.on(SocketEvent.DISCONNECT, () => {
     console.info('user disconnected')
