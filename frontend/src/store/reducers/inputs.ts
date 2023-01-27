@@ -120,7 +120,7 @@ export const selectSliders = (state: RootState) => {
     restoreFaces: state.inputs.options.restoreFaces,
   }
 }
-
 export const selectSeed = (state: RootState) => state.inputs.options.seed
+export const selectSteps = (state: RootState) => state.inputs.options.steps
 
 export const inputsReducer = inputsSlice.reducer

@@ -2,11 +2,13 @@ import { Slider } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useEmitters } from '../../../../hooks/useEmitters'
 import { useAppSelector } from '../../../../store'
+import { selectSteps } from '../../../../store/reducers/inputs'
 import { selectCurrentClipSkip } from '../../../../store/reducers/sdOptions'
 import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider'
 
 export const ClipSkipSlider = () => {
   const currentClipSkip = useAppSelector(selectCurrentClipSkip)
+  const currentSteps = useAppSelector(selectSteps)
   const [clipSkip, setClipSkip] = useState<number>(currentClipSkip)
   const emit = useEmitters()
 
@@ -21,6 +23,12 @@ export const ClipSkipSlider = () => {
       clearTimeout(timeout)
     }
   }, [clipSkip])
+
+  useEffect(() => {
+    if (clipSkip > currentSteps) {
+      setClipSkip(currentSteps)
+    }
+  }, [currentSteps])
 
   return (
     <SliderControl>
@@ -41,7 +49,7 @@ export const ClipSkipSlider = () => {
       </SliderTextWrapper>
       <Slider
         min={1}
-        max={15}
+        max={currentSteps}
         size="small"
         value={clipSkip}
         onChange={(e, value) => {
