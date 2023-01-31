@@ -14,8 +14,6 @@ export const EmbeddingTagChip = ({ location, tag, arrayIdx, ...props }: Omit<Opt
   tagDnd(ref)
 
   return (
-    <div ref={ref}>
-      <Chip {...props}/>
-    </div>
+    <Chip ref={ref} {...props}/>
   )
 }

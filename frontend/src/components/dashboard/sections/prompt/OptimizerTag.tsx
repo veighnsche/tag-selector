@@ -28,7 +28,7 @@ export interface OptimizerTagProps extends Omit<ComponentProps<typeof Chip>, 'la
   arrayIdx: number
 }
 
-export const OptimizerTag = ({ tag, type, sx, ...props }: OptimizerTagProps) => {
+export const OptimizerTag = ({ tag, type, sx, location, arrayIdx, ...props }: OptimizerTagProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
   const isMenuOpen = Boolean(menuAnchorEl)
   const label = makeTagLabel(tag)
@@ -41,10 +41,8 @@ export const OptimizerTag = ({ tag, type, sx, ...props }: OptimizerTagProps) => 
     setMenuAnchorEl(null)
   }
 
-  const chipProps: OptimizerTagProps & Pick<ComponentProps<typeof Chip>, 'label' | 'icon'> = {
+  const chipProps: ComponentProps<typeof Chip> = {
     ...props,
-    tag,
-    type,
     label,
     icon: iconsMap[type],
     variant: 'outlined',
@@ -61,7 +59,12 @@ export const OptimizerTag = ({ tag, type, sx, ...props }: OptimizerTagProps) => 
       <Tooltip title={type}>
         <div>
           {type === OptimizerTypes.EMBEDDING ? (
-            <EmbeddingTagChip {...chipProps} />
+            <EmbeddingTagChip
+              location={location}
+              arrayIdx={arrayIdx}
+              tag={tag}
+              {...chipProps}
+            />
           ) : (
             <Chip {...chipProps} />
           )}
