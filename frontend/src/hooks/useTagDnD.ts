@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { MutableRefObject } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
+import { DragSourceHookSpec, DropTargetHookSpec } from 'react-dnd/src/hooks/types'
 import { useAppDispatch } from '../store'
 import { moveTagBetweenLocations } from '../store/reducers/tags'
 import { setIsDragging } from '../store/reducers/tagsState'
@@ -9,31 +10,26 @@ interface UseTagDnDParams {
   location: keyof PromptTagsType
   arrayIdx: number
   tag: TagType
+  collect?: {
+    drop?: DropTargetHookSpec<TagType, void, void>['collect']
+    drag?: DragSourceHookSpec<TagType, void, void>['collect']
+  }
 }
 
-export function useTagDnD({ location, arrayIdx, tag }: UseTagDnDParams) {
-  const ref = useRef<HTMLDivElement>(null)
+export type UseTagDnDReturn = [
+  {
+    collect: {
+      drop: void
+      drag: void
+    }
+  },
+  (ref: MutableRefObject<HTMLDivElement | null>) => void
+]
+
+export function useTagDnD({ location, arrayIdx, tag, collect }: UseTagDnDParams): UseTagDnDReturn {
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.ondragstart = () => {
-        dispatch(setIsDragging(true))
-      }
-      ref.current.ondragend = () => {
-        dispatch(setIsDragging(false))
-      }
-
-      return () => {
-        if (ref.current) {
-          ref.current.ondragstart = null
-          ref.current.ondragend = null
-        }
-      }
-    }
-  }, [ref.current])
-
-  const [, drop] = useDrop({
+  const [collectedDropItems, drop] = useDrop({
     accept: 'tag',
     drop: (item: { id: string }) => {
       dispatch(moveTagBetweenLocations({
@@ -43,14 +39,40 @@ export function useTagDnD({ location, arrayIdx, tag }: UseTagDnDParams) {
       }))
       dispatch(setIsDragging(false))
     },
+    collect: collect?.drop,
   })
 
-  const [, drag] = useDrag({
+  const [collectedDragItems, drag] = useDrag({
     type: 'tag',
     item: () => ({ id: tag.id }),
+    collect: collect?.drag,
   })
 
-  drag(drop(ref))
+  return [
+    {
+      collect: {
+        drop: collectedDropItems,
+        drag: collectedDragItems,
+      },
+    },
+    (ref: MutableRefObject<HTMLDivElement | null>) => {
+      drag(drop(ref))
 
-  return ref
+      if (ref.current) {
+        ref.current.ondragstart = () => {
+          dispatch(setIsDragging(true))
+        }
+        ref.current.ondragend = () => {
+          dispatch(setIsDragging(false))
+        }
+
+        return () => {
+          if (ref.current) {
+            ref.current.ondragstart = null
+            ref.current.ondragend = null
+          }
+        }
+      }
+    },
+  ]
 }

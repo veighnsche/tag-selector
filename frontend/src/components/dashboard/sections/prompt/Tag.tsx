@@ -1,5 +1,5 @@
 import { Chip } from '@mui/material'
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useRef, useState } from 'react'
 import { useTagDnD } from '../../../../hooks/useTagDnD'
 import { PromptTagsType, TagType } from '../../../../types/image-input'
 import { makeTagLabel } from '../../../../utils/tags'
@@ -24,12 +24,19 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
   const isMenuOpen = Boolean(menuAnchorEl)
   const [clipAnchorEl, setClipAnchorEl] = useState<null | HTMLElement>(null)
   const isClipOpen = Boolean(clipAnchorEl)
-  const ref = useTagDnD({ location, tag, arrayIdx })
+
+  const ref = useRef<HTMLDivElement>(null)
+  const [, makeDnd] = useTagDnD({
+    location,
+    tag,
+    arrayIdx,
+  })
+
+  makeDnd(ref)
 
   return (
-    <>
+    <div ref={ref}>
       <Chip
-        ref={ref}
         key={tag.name}
         label={label}
         color={tag.muted ? 'default' : colorMap[location]}
@@ -55,6 +62,6 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
         isOpen={isClipOpen}
         prompt={tag.name}
       />
-    </>
+    </div>
   )
 }

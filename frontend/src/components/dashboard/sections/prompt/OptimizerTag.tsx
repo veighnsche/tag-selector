@@ -1,12 +1,12 @@
 import { Chip, Tooltip } from '@mui/material'
 import { deepOrange, deepPurple } from '@mui/material/colors'
-import { ComponentProps, ReactElement, MouseEvent, useState } from 'react'
-import { useTagDnD } from '../../../../hooks/useTagDnD'
+import { ComponentProps, MouseEvent, ReactElement, useState } from 'react'
 import { OptimizerTypes, PromptTagsType, TagType } from '../../../../types/image-input'
 import { makeTagLabel } from '../../../../utils/tags'
 import { EmbeddingIcon } from '../../../icons/EmbeddingIcon'
 import { HypernetworkIcon } from '../../../icons/HypernetworkIcon'
 import { LoraIcon } from '../../../icons/LoraIcon'
+import { EmbeddingTagChip } from './EmbeddingTag'
 import { OptimizerEditMenu } from './OptimizerEditMenu'
 
 const iconsMap: Record<OptimizerTypes, ReactElement> = {
@@ -21,7 +21,7 @@ const colorsMap: Record<OptimizerTypes, string> = {
   [OptimizerTypes.LORA]: deepOrange[500],
 }
 
-interface OptimizerTagProps extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
+export interface OptimizerTagProps extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
   type: OptimizerTypes
   location: keyof PromptTagsType
   tag: TagType
@@ -59,11 +59,13 @@ export const OptimizerTag = ({ tag, type, sx, ...props }: OptimizerTagProps) => 
   return (
     <>
       <Tooltip title={type}>
-        {type === OptimizerTypes.EMBEDDING ? (
-          <EmbeddingTagChip {...chipProps} />
-        ) : (
-          <Chip {...chipProps} />
-        )}
+        <div>
+          {type === OptimizerTypes.EMBEDDING ? (
+            <EmbeddingTagChip {...chipProps} />
+          ) : (
+            <Chip {...chipProps} />
+          )}
+        </div>
       </Tooltip>
       <OptimizerEditMenu
         isOpen={isMenuOpen}
@@ -75,11 +77,3 @@ export const OptimizerTag = ({ tag, type, sx, ...props }: OptimizerTagProps) => 
   )
 }
 
-const EmbeddingTagChip = ({ location, tag, arrayIdx, ...props }: Omit<OptimizerTagProps, 'type'>) => {
-  const ref = useTagDnD({
-    location,
-    tag,
-    arrayIdx,
-  })
-  return <Chip ref={ref} {...props}/>
-}
