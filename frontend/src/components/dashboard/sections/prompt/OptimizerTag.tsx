@@ -1,5 +1,5 @@
 import { Chip, Tooltip } from '@mui/material'
-import { deepOrange, deepPurple } from '@mui/material/colors'
+import { deepOrange, deepPurple, teal } from '@mui/material/colors'
 import { ComponentProps, MouseEvent, ReactElement, useState } from 'react'
 import { OptimizerTypes, PromptTagsType, TagType } from '../../../../types/image-input'
 import { makeTagLabel } from '../../../../utils/tags'
@@ -13,12 +13,14 @@ const iconsMap: Record<OptimizerTypes, ReactElement> = {
   [OptimizerTypes.EMBEDDING]: <EmbeddingIcon/>,
   [OptimizerTypes.HYPERNETWORK]: <HypernetworkIcon/>,
   [OptimizerTypes.LORA]: <LoraIcon/>,
+  [OptimizerTypes.LYCORIS]: <LoraIcon/>,
 }
 
 const colorsMap: Record<OptimizerTypes, string> = {
   [OptimizerTypes.EMBEDDING]: deepOrange[500],
   [OptimizerTypes.HYPERNETWORK]: deepPurple[500],
   [OptimizerTypes.LORA]: deepOrange[500],
+  [OptimizerTypes.LYCORIS]: teal[500],
 }
 
 export interface OptimizerTagProps extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
@@ -58,16 +60,12 @@ export const OptimizerTag = ({ tag, type, sx, location, arrayIdx, ...props }: Op
     <>
       <Tooltip title={type}>
         <div>
-          {type === OptimizerTypes.EMBEDDING ? (
-            <EmbeddingTagChip
-              location={location}
-              arrayIdx={arrayIdx}
-              tag={tag}
-              {...chipProps}
-            />
-          ) : (
-            <Chip {...chipProps} />
-          )}
+          <EmbeddingTagChip
+            location={location}
+            arrayIdx={arrayIdx}
+            tag={tag}
+            {...chipProps}
+          />
         </div>
       </Tooltip>
       <OptimizerEditMenu

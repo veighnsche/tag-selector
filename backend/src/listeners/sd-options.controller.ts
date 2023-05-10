@@ -3,7 +3,7 @@ import { SdOptionsType } from 'frontend/src/types/sd-options'
 import { SdStatus } from 'frontend/src/types/sd-status'
 import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
-import { fetchLoras, fetchVaes } from './api-helper'
+import { fetchLoras, fetchLycoris, fetchVaes } from './api-helper'
 import {
   fetchEmbeddings,
   fetchHypernetworks,
@@ -76,7 +76,7 @@ export function setOptionsController(socket: Socket) {
 
 export function fetchOptimizersController(socket: Socket) {
   return async () => {
-    const [embeddings, hypernetworks, loras] = await Promise.all([
+    const [embeddings, hypernetworks, loras, lycoris] = await Promise.all([
       fetchEmbeddings()
       .catch((error: AxiosError) => {
         socket.emit(SocketEvent.ERROR, { error })
@@ -92,9 +92,14 @@ export function fetchOptimizersController(socket: Socket) {
         socket.emit(SocketEvent.ERROR, { error })
         return []
       }),
+      fetchLycoris()
+      .catch((error: AxiosError) => {
+        socket.emit(SocketEvent.ERROR, { error })
+        return []
+      }),
     ])
 
-    socket.emit(SocketEvent.FETCH_OPTIMIZERS, { embeddings, hypernetworks, loras })
+    socket.emit(SocketEvent.FETCH_OPTIMIZERS, { embeddings, hypernetworks, loras, lycoris })
   }
 }
 

@@ -170,6 +170,9 @@ export const Sliders = () => {
               onChange={(e: SelectChangeEvent) => {
                 setModel(e.target.value as string)
               }}
+              sx={{
+                maxWidth: '30rem'
+              }}
             >
               {models.map((model) => (
                 <MenuItem key={model.title} value={model.title}>

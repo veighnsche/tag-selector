@@ -12,10 +12,11 @@ import { useSocket } from '../../../providers/SocketProvider'
 import { OptimizerChip } from './OptimizerChip'
 
 export const Optimizers = () => {
-  const [{ embeddings, hypernetworks, loras }, setOptimizers] = useState<SdModelOptimizersType>({
+  const [{ embeddings, hypernetworks, loras, lycoris }, setOptimizers] = useState<SdModelOptimizersType>({
     embeddings: [],
     hypernetworks: [],
     loras: [],
+    lycoris: [],
   })
   const emit = useEmitters()
   const socket = useSocket()
@@ -40,7 +41,8 @@ export const Optimizers = () => {
     ...embeddings.map((embedding) => ({ type: OptimizerTypes.EMBEDDING, name: embedding })),
     ...hypernetworks.map((hypernetwork) => ({ type: OptimizerTypes.HYPERNETWORK, name: hypernetwork })),
     ...loras.map((lora) => ({ type: OptimizerTypes.LORA, name: lora })),
-  ], [embeddings, hypernetworks, loras])
+    ...lycoris.map((lycori) => ({ type: OptimizerTypes.LYCORIS, name: lycori })),
+  ], [embeddings, hypernetworks, loras, lycoris])
 
   function handleClick(optimizer: { name: string, type: OptimizerTypes }) {
     return () => {

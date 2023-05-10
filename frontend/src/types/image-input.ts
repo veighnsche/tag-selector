@@ -2,6 +2,7 @@ export enum OptimizerTypes {
   EMBEDDING = 'embedding',
   HYPERNETWORK = 'hypernetwork',
   LORA = 'lora',
+  LYCORIS = 'lycoris',
 }
 export interface TagType {
   id: string
@@ -22,6 +23,10 @@ export interface HypernetworkType extends TagType {
 
 export interface LoraType extends TagType {
   optimizer: OptimizerTypes.LORA
+}
+
+export interface LycorisType extends TagType {
+  optimizer: OptimizerTypes.LYCORIS
 }
 
 export interface ImageOptionsType {

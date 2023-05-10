@@ -20,6 +20,11 @@ function tagToPrompt(tag: TagType): string {
     return `<lora:${tag.name}:${strength / 100}>`
   }
 
+  if (tag.optimizer === OptimizerTypes.LYCORIS) {
+    const strength = tag.strength || 100
+    return `<lyco:${tag.name}:${strength / 100}>`
+  }
+
   if (tag.strength && tag.strength !== 100) {
     return `(${tag.name}:${tag.strength / 100})`
   }
