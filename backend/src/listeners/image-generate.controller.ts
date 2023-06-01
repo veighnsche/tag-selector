@@ -5,12 +5,12 @@ import { SocketEvent } from 'frontend/src/types/socket-event'
 import { Socket } from 'socket.io'
 import { INTERROGATE_URL, SD_URL } from '../constants'
 import { getNextIndex, saveImage } from './image-crud'
-import { getProgress, imageGenerate, interruptImageGenerate } from './image-generate'
+import { getProgress, imageGenerate, interruptImageGenerate, withSeedNumber } from './image-generate'
 import { imageInterrogate } from './image-interrogate'
 import { addMetadataToImage } from './image-metadata'
 
 export function imageGenerateController(socket: Socket) {
-  return async ({ inputs, tags: promptTags }: { inputs: ImageInputsType, tags: PromptTagsType }) => {
+  return async ({ inputs: inputsWithoutSeed, tags: promptTags }: { inputs: ImageInputsType, tags: PromptTagsType }) => {
 
     socket.emit(SocketEvent.SD_STATUS, SdStatus.BUSY)
     const nextIndexPromise = getNextIndex()
@@ -22,6 +22,8 @@ export function imageGenerateController(socket: Socket) {
       socket.emit(SocketEvent.PROGRESS_PERCENT, progress.progress)
     }, 800)
 
+
+    const inputs = withSeedNumber(inputsWithoutSeed)
     const imageOutput = await imageGenerate(inputs, promptTags)
     .catch((error: AxiosError) => {
       socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)

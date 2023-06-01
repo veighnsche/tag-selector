@@ -4,8 +4,19 @@ import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
 import { OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input'
 import { SdProgressType } from 'frontend/src/types/sd-progress'
 import { SD_URL } from '../constants'
+import seedrandom from 'seedrandom';
 
-function tagToPrompt(tag: TagType): string {
+function isTagNameSurroundedByCurlyBraces(tag: string) {
+  return tag.startsWith('{') && tag.endsWith('}')
+}
+
+function selectTagNameBySeed(tag: string, rng: seedrandom.PRNG) {
+  const tagNames = tag.slice(1, -1).split('|')
+  const tagIndex = Math.floor(rng() * tagNames.length)
+  return tagNames[tagIndex]
+}
+
+const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
   if (tag.muted) {
     return ''
   }
@@ -25,24 +36,32 @@ function tagToPrompt(tag: TagType): string {
     return `<lyco:${tag.name}:${strength / 100}>`
   }
 
+  if (isTagNameSurroundedByCurlyBraces(tag.name)) {
+    tag.name = selectTagNameBySeed(tag.name, rng)
+  }
+
   if (tag.strength && tag.strength !== 100) {
     return `(${tag.name}:${tag.strength / 100})`
   }
+
   return tag.name
 }
 
 export const selectTagsForInputs = ({
-  tags, negativeTags, scene, negativePrompt,
+  tags, negativeTags, scene, negativePrompt, seed,
 }: {
   tags: TagType[]
   negativeTags: TagType[]
   scene: string
   negativePrompt: string
+  seed: number
 }) => {
-  return {
-    prompt: [scene.trim(), ...tags.map(tagToPrompt)].filter(Boolean).join(', '),
-    negative: [negativePrompt.trim(), ...negativeTags.map(tagToPrompt)].filter(Boolean).join(', '),
-  }
+  const rng = seedrandom(seed.toString())
+  const seededTagToPrompt = tagToPrompt(rng)
+  return ({
+    prompt: [scene.trim(), ...tags.map(seededTagToPrompt)].filter(Boolean).join(', '),
+    negative: [negativePrompt.trim(), ...negativeTags.map(seededTagToPrompt)].filter(Boolean).join(', '),
+  })
 }
 
 
@@ -58,8 +77,9 @@ export function imageGenerate({
   const { prompt, negative } = selectTagsForInputs({
     tags,
     negativeTags,
-    scene: scene,
-    negativePrompt: negativePrompt,
+    scene,
+    negativePrompt,
+    seed,
   })
 
   const params: ImageGenerateParams = {
@@ -96,4 +116,18 @@ export function getProgress(): Promise<SdProgressType> {
 
 export function interruptImageGenerate(): Promise<void> {
   return axios.post(`${SD_URL}/sdapi/v1/interrupt`)
+}
+
+export function withSeedNumber(input: ImageInputsType): ImageInputsType {
+  if (input.options.seed !== -1) {
+    return input
+  }
+
+  return {
+    ...input,
+    options: {
+      ...input.options,
+      seed: Math.floor(Math.random() * 4294967295), // max seed number is 2^32 - 1
+    },
+  }
 }
