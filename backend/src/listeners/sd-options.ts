@@ -2,6 +2,7 @@ import axios from 'axios'
 import { SdModelType } from 'frontend/src/types/sd-models'
 import { SdOptionsType } from 'frontend/src/types/sd-options'
 import { SdSamplersType } from 'frontend/src/types/sd-samplers'
+import { SdUpscalersType } from 'frontend/src/types/sd-upscalers'
 import { SD_URL } from '../constants'
 
 export function getModelOptions(): Promise<SdModelType[]> {
@@ -11,6 +12,11 @@ export function getModelOptions(): Promise<SdModelType[]> {
 
 export function getSamplingMethods(): Promise<SdSamplersType[]> {
   return axios.get(`${SD_URL}/sdapi/v1/samplers`)
+  .then((response) => response.data)
+}
+
+export function getUpscalers(): Promise<SdUpscalersType[]> {
+  return axios.get(`${SD_URL}/sdapi/v1/upscalers`)
   .then((response) => response.data)
 }
 

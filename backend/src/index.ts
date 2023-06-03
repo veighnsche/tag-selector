@@ -11,7 +11,9 @@ import {
   fetchOptimizersController,
   fetchOptionsController,
   fetchSamplingMethodsController,
-  fetchSdModelsController, fetchVeasController,
+  fetchSdModelsController,
+  fetchUpscalersController,
+  fetchVeasController,
   setOptionsController,
 } from './listeners/sd-options.controller'
 
@@ -35,6 +37,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.FETCH_SD_OPTIONS, fetchOptionsController(socket))
   socket.on(SocketEvent.SET_SD_OPTIONS, setOptionsController(socket))
   socket.on(SocketEvent.FETCH_SAMPLERS, fetchSamplingMethodsController(socket))
+  socket.on(SocketEvent.FETCH_UPSCALERS, fetchUpscalersController(socket))
   socket.on(SocketEvent.FETCH_IMAGE_DATA, fetchImageDataController(socket))
   socket.on(SocketEvent.GENERATE_IMAGE_INTERRUPT, generateImageInterruptController(socket))
   socket.on(SocketEvent.FETCH_OPTIMIZERS, fetchOptimizersController(socket))

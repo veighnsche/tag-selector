@@ -6,7 +6,7 @@ import { selectCurrentModel } from '../../../../store/reducers/sdOptions'
 import { SocketEvent } from '../../../../types'
 import { SdModelType } from '../../../../types/sd-models'
 import { useSocket } from '../../../providers/SocketProvider'
-import { Loading } from './Loading'
+import { Loading } from '../../Loading'
 
 interface SdModelWrapperProps {
   children: (props: SdModelWrapperChildrenProps) => ReactNode;

@@ -16,6 +16,13 @@ const initialState: ImageInputsType = {
     seed: -1,
     samplingMethod: 'Euler a',
     restoreFaces: false,
+    highResFix: {
+      enabled: false,
+      upscaler: 'ESRGAN_4x',
+      scale: 2,
+      steps: 0,
+      denoisingStrength: 0.7,
+    },
   },
 }
 
@@ -57,6 +64,21 @@ export const inputsSlice = createSlice({
     },
     setSamplingMethod: (state, action: PayloadAction<string>) => {
       state.options.samplingMethod = action.payload
+    },
+    setHighResFix: (state, action: PayloadAction<boolean>) => {
+      state.options.highResFix.enabled = action.payload
+    },
+    setHRFScale: (state, action: PayloadAction<number>) => {
+      state.options.highResFix.scale = action.payload
+    },
+    setHRFSteps: (state, action: PayloadAction<number>) => {
+      state.options.highResFix.steps = action.payload
+    },
+    setHRFUpscaler: (state, action: PayloadAction<string>) => {
+      state.options.highResFix.upscaler = action.payload
+    },
+    setHRFDenoisingStrength: (state, action: PayloadAction<number>) => {
+      state.options.highResFix.denoisingStrength = action.payload
     },
     setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
       const imageData = action.payload
@@ -100,6 +122,11 @@ export const {
   setSeed,
   setRestoreFaces,
   setSamplingMethod,
+  setHighResFix,
+  setHRFScale,
+  setHRFSteps,
+  setHRFUpscaler,
+  setHRFDenoisingStrength,
   setInputsFromImageData,
 } = inputsSlice.actions
 
@@ -120,6 +147,8 @@ export const selectSliders = (state: RootState) => {
     restoreFaces: state.inputs.options.restoreFaces,
   }
 }
+
+export const selectHRF = (state: RootState) => state.inputs.options.highResFix
 export const selectSeed = (state: RootState) => state.inputs.options.seed
 export const selectSteps = (state: RootState) => state.inputs.options.steps
 

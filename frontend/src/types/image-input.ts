@@ -37,6 +37,15 @@ export interface ImageOptionsType {
   seed: number
   samplingMethod: string
   restoreFaces: boolean
+  highResFix: HighResFixType
+}
+
+export interface HighResFixType {
+  enabled: boolean
+  upscaler: string
+  scale: number
+  steps: number
+  denoisingStrength: number
 }
 
 export interface ImageInputsType {

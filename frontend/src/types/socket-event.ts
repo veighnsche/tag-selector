@@ -11,6 +11,7 @@ export enum SocketEvent {
   FETCH_IMAGES_MODAL = 'fetch-images-modal',
   REMOVE_IMAGE = 'remove-image',
   FETCH_SD_MODELS = 'fetch-sd-models',
+  FETCH_UPSCALERS = 'fetch-upscalers',
   FETCH_SD_OPTIONS = 'fetch-sd-options',
   SET_SD_OPTIONS = 'set-sd-options',
   FETCH_SAMPLERS = 'fetch-samplers',

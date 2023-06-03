@@ -8,4 +8,10 @@ export interface ImageGenerateParams {
   seed: number;
   steps: number
   width: number;
+
+  enable_hr: boolean;
+  hr_scale: number;
+  hr_second_pass_steps: number;
+  hr_upscaler: string;
+  denoising_strength: number;
 }

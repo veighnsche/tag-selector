@@ -4,9 +4,10 @@ import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/mater
 import React from 'react'
 import { AdvancedOptionsLayout } from './sections/advanced/layout'
 import { HeaderLayout } from './sections/header/layout'
+import { HighResFixLayout } from './sections/highresFix/layout'
 import { Optimizers } from './sections/optimizers'
-import { OptionsSummary } from './sections/options/OptionsSummary'
 import { OptionsLayout } from './sections/options/layout'
+import { OptionsSummary } from './sections/options/OptionsSummary'
 import { OutputLayout } from './sections/output/layout'
 import { PromptLayout } from './sections/prompt/layout'
 
@@ -49,6 +50,7 @@ const StyledPaper = styled(Paper)`
 
 enum AccordionNames {
   Options = 'options',
+  HighResFix = 'highResFix',
   Optimizers = 'optimizers',
   Advanced = 'advanced',
 }
@@ -90,6 +92,20 @@ export const DashboardLayout = () => {
             </AccordionSummary>
             <AccordionDetails>
               <OptionsLayout/>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            disableGutters
+            expanded={expanded === AccordionNames.HighResFix}
+            onChange={handleChange(AccordionNames.HighResFix)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }}/>}
+            >
+              HighRes Fix
+            </AccordionSummary>
+            <AccordionDetails>
+              <HighResFixLayout/>
             </AccordionDetails>
           </Accordion>
           <Accordion

@@ -67,7 +67,7 @@ export const selectTagsForInputs = ({
 
 export function imageGenerate({
   prompt: { scene, negativePrompt },
-  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod },
+  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix },
 }: ImageInputsType, {
   tags,
   negativeTags,
@@ -92,6 +92,12 @@ export function imageGenerate({
     seed,
     restore_faces: restoreFaces,
     sampler_index: samplingMethod,
+
+    enable_hr: highResFix.enabled,
+    hr_upscaler: highResFix.upscaler,
+    hr_scale: highResFix.scale,
+    hr_second_pass_steps: highResFix.steps,
+    denoising_strength: highResFix.denoisingStrength,
   }
 
   return axios.post(`${SD_URL}/sdapi/v1/txt2img`, params)

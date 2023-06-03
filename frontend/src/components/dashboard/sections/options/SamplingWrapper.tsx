@@ -6,7 +6,7 @@ import { setSamplingMethod } from '../../../../store/reducers/inputs'
 import { SocketEvent } from '../../../../types'
 import { SdSamplersType } from '../../../../types/sd-samplers'
 import { useSocket } from '../../../providers/SocketProvider'
-import { Loading } from './Loading'
+import { Loading } from '../../Loading'
 
 interface SamplingWrapperProps {
   children: (props: SamplingWrapperChildrenProps) => ReactNode;

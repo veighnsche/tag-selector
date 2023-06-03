@@ -10,6 +10,7 @@ import {
   getCurrentOptions,
   getModelOptions,
   getSamplingMethods,
+  getUpscalers,
   setSdOptions,
 } from './sd-options'
 
@@ -37,6 +38,18 @@ export function fetchSamplingMethodsController(socket: Socket) {
   }
 }
 
+export function fetchUpscalersController(socket: Socket) {
+  return () => {
+    getUpscalers()
+    .then(upscalers => {
+      socket.emit(SocketEvent.FETCH_UPSCALERS, { upscalers })
+    })
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.ERROR, { error })
+    })
+  }
+}
+
 export function fetchOptionsController(socket: Socket) {
   return () => {
     getCurrentOptions()
@@ -53,10 +66,10 @@ export function setOptionsController(socket: Socket) {
   return async ({ options }: { options: Partial<SdOptionsType> }) => {
     socket.emit(SocketEvent.SD_STATUS, SdStatus.BUSY)
     const status = await setSdOptions(options)
-      .catch((error: AxiosError) => {
-        socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
-        socket.emit(SocketEvent.ERROR, { error })
-      })
+    .catch((error: AxiosError) => {
+      socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
+      socket.emit(SocketEvent.ERROR, { error })
+    })
 
     if (status !== 200) {
       socket.emit(SocketEvent.SD_STATUS, SdStatus.ERROR)
