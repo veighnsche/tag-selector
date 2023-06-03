@@ -6,11 +6,11 @@ import { SdProgressType } from 'frontend/src/types/sd-progress'
 import { SD_URL } from '../constants'
 import seedrandom from 'seedrandom';
 
-function isTagNameSurroundedByCurlyBraces(tag: string) {
+function isTagBracketed(tag: string) {
   return tag.startsWith('{') && tag.endsWith('}')
 }
 
-function selectTagNameBySeed(tag: string, rng: seedrandom.PRNG) {
+function pickTagBySeed(tag: string, rng: seedrandom.PRNG) {
   const tagNames = tag.slice(1, -1).split('|')
   const tagIndex = Math.floor(rng() * tagNames.length)
   return tagNames[tagIndex]
@@ -36,8 +36,8 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
     return `<lyco:${tag.name}:${strength / 100}>`
   }
 
-  if (isTagNameSurroundedByCurlyBraces(tag.name)) {
-    tag.name = selectTagNameBySeed(tag.name, rng)
+  if (isTagBracketed(tag.name)) {
+    tag.name = pickTagBySeed(tag.name, rng)
   }
 
   if (tag.strength && tag.strength !== 100) {
