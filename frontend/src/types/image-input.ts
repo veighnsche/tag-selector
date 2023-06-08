@@ -4,6 +4,12 @@ export enum OptimizerTypes {
   LORA = 'lora',
   LYCORIS = 'lycoris',
 }
+
+export type DynamicTagType = {
+  positive: TagType[]
+  negative: TagType[]
+}[]
+
 export interface TagType {
   id: string
   name: string
@@ -11,6 +17,7 @@ export interface TagType {
   muted?: boolean
   hidden?: boolean
   optimizer?: OptimizerTypes
+  dynamic?: DynamicTagType
 }
 
 export interface EmbeddingType extends TagType {

@@ -1,24 +1,75 @@
 import axios, { AxiosError } from 'axios'
 import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types'
 import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
-import { OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input'
+import { DynamicTagType, OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input'
 import { SdProgressType } from 'frontend/src/types/sd-progress'
+import seedrandom from 'seedrandom'
 import { SD_URL } from '../constants'
-import seedrandom from 'seedrandom';
 
 function isTagBracketed(tag: string) {
   return tag.startsWith('{') && tag.endsWith('}')
 }
 
-function pickTagBySeed(tag: string, rng: seedrandom.PRNG) {
+function pickBracketedTag(tag: string, rng: seedrandom.PRNG) {
   const tagNames = tag.slice(1, -1).split('|')
   const tagIndex = Math.floor(rng() * tagNames.length)
   return tagNames[tagIndex]
 }
 
+function pickDynamicTag(dynamicTag: DynamicTagType, rng: seedrandom.PRNG): string {
+  const tagIndex = Math.floor(rng() * dynamicTag.length)
+  const tag = dynamicTag[tagIndex]
+  const positive = tag.positive.map(tag => tagToPrompt(rng)(tag)).join(', ')
+  if (tag.negative.length === 0) {
+    return `${positive}`
+  }
+
+  const negative = tag.negative.map(tag => tagToPrompt(rng)(tag)).join(', ')
+  return `[[${positive}!!${negative}]]`
+}
+
+export function untangleDynamicTags(prompts: { prompt: string, negative: string }): {
+  prompt: string,
+  negative: string
+} {
+  const { prompt, negative } = prompts;
+
+  const dynamicTagPattern = /\[\[(.*?)!!(.*?)]]/g;
+  const match = prompt.match(dynamicTagPattern);
+
+  if (!match) {
+    return { prompt, negative };
+  }
+
+  const newPrompt = match.reduce((acc, dynamicTag) => {
+    const removedBrackets = dynamicTag.slice(2, -2);
+    const [dynamicPositive] = removedBrackets.split('!!');
+    if (!dynamicPositive) {
+      const withExtraComma = acc.replace(dynamicTag, '').trim();
+      // Remove extra comma, could either be a trailing comma or a double comma (", ,")
+      return withExtraComma.replace(/, ,/g, ',').replace(/,$/, '');
+    }
+    return acc.replace(dynamicTag, dynamicPositive.trim());
+  }, prompt);
+
+  const dynamicNegatives = match.map(dynamicTag => {
+    const removedBrackets = dynamicTag.slice(2, -2);
+    const [, dynamicNegative] = removedBrackets.split('!!');
+    return dynamicNegative.trim();
+  }).filter(Boolean);
+
+  const newNegative = negative ? [...dynamicNegatives, negative].join(', ') : dynamicNegatives.join(', ');
+
+  return { prompt: newPrompt, negative: newNegative };
+}
+
 const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
   if (tag.muted) {
     return ''
+  }
+
+  if (tag.dynamic !== undefined) {
+    return pickDynamicTag(tag.dynamic, rng)
   }
 
   if (tag.optimizer === OptimizerTypes.HYPERNETWORK) {
@@ -37,7 +88,7 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
   }
 
   if (isTagBracketed(tag.name)) {
-    tag.name = pickTagBySeed(tag.name, rng)
+    tag.name = pickBracketedTag(tag.name, rng)
   }
 
   if (tag.strength && tag.strength !== 100) {
@@ -48,20 +99,21 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
 }
 
 export const selectTagsForInputs = ({
-  tags, negativeTags, scene, negativePrompt, seed,
+  tags, negativeTags, scene, negativePrompt, rng,
 }: {
   tags: TagType[]
   negativeTags: TagType[]
   scene: string
   negativePrompt: string
-  seed: number
+  rng: seedrandom.PRNG
 }) => {
-  const rng = seedrandom(seed.toString())
   const seededTagToPrompt = tagToPrompt(rng)
-  return ({
+  const prompts = {
     prompt: [scene.trim(), ...tags.map(seededTagToPrompt)].filter(Boolean).join(', '),
     negative: [negativePrompt.trim(), ...negativeTags.map(seededTagToPrompt)].filter(Boolean).join(', '),
-  })
+  }
+
+  return untangleDynamicTags(prompts)
 }
 
 
@@ -72,14 +124,15 @@ export function imageGenerate({
   tags,
   negativeTags,
 }: PromptTagsType): Promise<ImageOutputType> {
-  console.time('generateImage')
+  const rng = seedrandom(seed.toString())
 
+  console.time('generateImage')
   const { prompt, negative } = selectTagsForInputs({
     tags,
     negativeTags,
     scene,
     negativePrompt,
-    seed,
+    rng,
   })
 
   const params: ImageGenerateParams = {
