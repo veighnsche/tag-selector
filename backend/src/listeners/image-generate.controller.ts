@@ -20,7 +20,7 @@ export function imageGenerateController(socket: Socket) {
       socket.emit(SocketEvent.PROGRESS_IMAGE, progress.current_image)
       socket.emit(SocketEvent.PROGRESS_ETA, progress.eta_relative)
       socket.emit(SocketEvent.PROGRESS_PERCENT, progress.progress)
-    }, 2400)
+    }, 9900)
 
 
     const inputs = withSeedNumber(inputsWithoutSeed)

@@ -11,7 +11,7 @@ function isTagBracketed(tag: string) {
 }
 
 function pickBracketedTag(tag: string, rng: seedrandom.PRNG) {
-  const tagNames = tag.slice(1, -1).split('|')
+  const tagNames = tag.slice(1, -1).split('|').map(tag => tag.trim())
   const tagIndex = Math.floor(rng() * tagNames.length)
   return tagNames[tagIndex]
 }
@@ -64,7 +64,7 @@ export function untangleDynamicTags(prompts: { prompt: string, negative: string 
 }
 
 const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
-  if (tag.muted) {
+  if (tag.muted || tag.name === '') {
     return ''
   }
 
@@ -88,7 +88,11 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
   }
 
   if (isTagBracketed(tag.name)) {
-    tag.name = pickBracketedTag(tag.name, rng)
+    tag.name = pickBracketedTag(tag.name, rng).trim()
+
+    if (tag.name === '') {
+      return ''
+    }
   }
 
   if (tag.strength && tag.strength !== 100) {
