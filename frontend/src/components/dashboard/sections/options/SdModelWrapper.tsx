@@ -1,12 +1,12 @@
-import React, { ReactNode, useEffect, useState } from 'react'
-import { useEffectOnce } from '../../../../hooks/useEffectOnce'
-import { useEmitters } from '../../../../hooks/useEmitters'
-import { useAppSelector } from '../../../../store'
-import { selectCurrentModel } from '../../../../store/reducers/sdOptions'
-import { SocketEvent } from '../../../../types'
-import { SdModelType } from '../../../../types/sd-models'
-import { useSocket } from '../../../providers/SocketProvider'
-import { Loading } from '../../Loading'
+import React, { ReactNode, useEffect, useState } from 'react';
+import { useEffectOnce } from '../../../../hooks/useEffectOnce';
+import { useEmitters } from '../../../../hooks/useEmitters';
+import { useAppSelector } from '../../../../store';
+import { selectCurrentModel } from '../../../../store/reducers/sdOptions';
+import { SocketEvent } from '../../../../types';
+import { SdModelType } from '../../../../types/sd-models';
+import { useSocket } from '../../../providers/SocketProvider';
+import { Loading } from '../../Loading';
 
 interface SdModelWrapperProps {
   children: (props: SdModelWrapperChildrenProps) => ReactNode;
@@ -19,47 +19,46 @@ interface SdModelWrapperChildrenProps {
 }
 
 export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
-  const socket = useSocket()
-  const [models, setModels] = useState<SdModelType[]>([])
-  const [loading, setLoading] = useState(models.length === 0)
-  const currentModel = useAppSelector(selectCurrentModel)
-  const emit = useEmitters()
+  const socket = useSocket();
+  const [models, setModels] = useState<SdModelType[]>([]);
+  const [loading, setLoading] = useState(models.length === 0);
+  const currentModel = useAppSelector(selectCurrentModel);
+  const emit = useEmitters();
 
   useEffectOnce(() => {
     if (models.length === 0) {
-      emit.fetchSdModels()
+      emit.fetchSdModels();
     }
-  })
+  });
 
   useEffect(() => {
-    socket.on(SocketEvent.FETCH_SD_MODELS, ({ models }: { models: SdModelType[] }) => {
-      setModels(models)
-      setLoading(false)
-    })
+    socket.on(
+      SocketEvent.FETCH_SD_MODELS,
+      ({ models }: { models: SdModelType[] }) => {
+        setModels(models);
+        setLoading(false);
+      }
+    );
 
     return () => {
-      socket.off(SocketEvent.FETCH_SD_MODELS)
-    }
-  }, [])
+      socket.off(SocketEvent.FETCH_SD_MODELS);
+    };
+  }, []);
 
   useEffect(() => {
     if (currentModel) {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [currentModel])
+  }, [currentModel]);
 
   const setModel = (model: SdModelType['title']) => {
-    setLoading(true)
-    emit.setSdOptions({ sd_model_checkpoint: model })
-  }
+    setLoading(true);
+    emit.setSdOptions({ sd_model_checkpoint: model });
+  };
 
   if (loading) {
-    return <Loading subject={'models'}/>
+    return <Loading subject={'models'} />;
   }
 
-  return (
-    <>
-      {children({ models, currentModel, setModel })}
-    </>
-  )
-}
+  return <>{children({ models, currentModel, setModel })}</>;
+};

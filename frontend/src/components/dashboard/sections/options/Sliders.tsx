@@ -1,4 +1,4 @@
-import styled from '@emotion/styled'
+import styled from '@emotion/styled';
 import {
   Checkbox,
   FormControl,
@@ -12,17 +12,28 @@ import {
   Select,
   SelectChangeEvent,
   Slider,
-} from '@mui/material'
-import React from 'react'
-import { useFetchImageData } from '../../../../hooks/useFetchImageData'
-import { useAppDispatch, useAppSelector } from '../../../../store'
-import { selectLastSeed } from '../../../../store/reducers/images'
-import { selectSliders, setCfg, setRestoreFaces, setSeed, setSteps } from '../../../../store/reducers/inputs'
-import { RandomIcon } from '../../../icons/RandomIcon'
-import { RecycleIcon } from '../../../icons/RecycleIcon'
-import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider'
-import { SamplingWrapper } from './SamplingWrapper'
-import { SdModelWrapper } from './SdModelWrapper'
+} from '@mui/material';
+import React from 'react';
+import { useFetchImageData } from '../../../../hooks/useFetchImageData';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { selectLastSeed } from '../../../../store/reducers/images';
+import {
+  selectSliders,
+  setCfg,
+  setRestoreFaces,
+  setSeed,
+  setSteps,
+} from '../../../../store/reducers/inputs';
+import { RandomIcon } from '../../../icons/RandomIcon';
+import { RecycleIcon } from '../../../icons/RecycleIcon';
+import {
+  SliderControl,
+  SliderLabel,
+  SliderTextField,
+  SliderTextWrapper,
+} from '../../../styled/Slider';
+import { SamplingWrapper } from './SamplingWrapper';
+import { SdModelWrapper } from './SdModelWrapper';
 
 const StyledPaper = styled(Paper)`
   padding: 0.75rem;
@@ -33,25 +44,25 @@ const StyledPaper = styled(Paper)`
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-`
+`;
 
 export const Sliders = () => {
-  const values = useAppSelector(selectSliders)
-  const dispatch = useAppDispatch()
-  const lastImageSeed = useAppSelector(selectLastSeed)
-  const fetchImageData = useFetchImageData()
+  const values = useAppSelector(selectSliders);
+  const dispatch = useAppDispatch();
+  const lastImageSeed = useAppSelector(selectLastSeed);
+  const fetchImageData = useFetchImageData();
 
   const setSeedFromLastImage = async () => {
     if (lastImageSeed.seed !== undefined) {
-      dispatch(setSeed(lastImageSeed.seed))
+      dispatch(setSeed(lastImageSeed.seed));
     }
     if (lastImageSeed.filename !== undefined) {
-      const imageData = await fetchImageData(lastImageSeed.filename)
+      const imageData = await fetchImageData(lastImageSeed.filename);
       if (imageData) {
-        dispatch(setSeed(imageData.imageData.seed))
+        dispatch(setSeed(imageData.imageData.seed));
       }
     }
-  }
+  };
 
   return (
     <StyledPaper elevation={2}>
@@ -75,7 +86,7 @@ export const Sliders = () => {
           size="small"
           value={values.steps}
           onChange={(e, value) => {
-            dispatch(setSteps(value as number))
+            dispatch(setSteps(value as number));
           }}
         />
       </SliderControl>
@@ -101,7 +112,7 @@ export const Sliders = () => {
           size="small"
           value={values.cfg}
           onChange={(e, value) => {
-            dispatch(setCfg(value as number))
+            dispatch(setCfg(value as number));
           }}
         />
       </SliderControl>
@@ -114,23 +125,20 @@ export const Sliders = () => {
           type="number"
           value={values.seed}
           onChange={(e) => {
-            dispatch(setSeed(Number(e.target.value) as number))
+            dispatch(setSeed(Number(e.target.value) as number));
           }}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton
-                onClick={setSeedFromLastImage}
-                edge="end"
-              >
-                <RecycleIcon/>
+              <IconButton onClick={setSeedFromLastImage} edge="end">
+                <RecycleIcon />
               </IconButton>
               <IconButton
                 onClick={() => {
-                  dispatch(setSeed(-1))
+                  dispatch(setSeed(-1));
                 }}
                 edge="end"
               >
-                <RandomIcon/>
+                <RandomIcon />
               </IconButton>
             </InputAdornment>
           }
@@ -146,7 +154,7 @@ export const Sliders = () => {
               size="small"
               value={values.samplingMethod}
               onChange={(e: SelectChangeEvent) => {
-                setSampler(e.target.value as string)
+                setSampler(e.target.value as string);
               }}
             >
               {samplers.map(({ name }) => (
@@ -168,10 +176,10 @@ export const Sliders = () => {
               size="small"
               value={currentModel}
               onChange={(e: SelectChangeEvent) => {
-                setModel(e.target.value as string)
+                setModel(e.target.value as string);
               }}
               sx={{
-                maxWidth: '30rem'
+                maxWidth: '30rem',
               }}
             >
               {models.map((model) => (
@@ -189,7 +197,7 @@ export const Sliders = () => {
           <Checkbox
             size="small"
             onChange={(e) => {
-              dispatch(setRestoreFaces(e.target.checked as boolean))
+              dispatch(setRestoreFaces(e.target.checked as boolean));
             }}
           />
         }
@@ -197,5 +205,5 @@ export const Sliders = () => {
         value={values.restoreFaces}
       />
     </StyledPaper>
-  )
-}
+  );
+};

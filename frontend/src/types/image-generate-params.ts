@@ -6,7 +6,7 @@ export interface ImageGenerateParams {
   restore_faces: boolean;
   sampler_index: string;
   seed: number;
-  steps: number
+  steps: number;
   width: number;
 
   enable_hr: boolean;
@@ -15,6 +15,6 @@ export interface ImageGenerateParams {
   hr_upscaler: string;
   denoising_strength: number;
 
-  "refiner_checkpoint": string,
-  "refiner_switch_at": number,
+  refiner_checkpoint: string;
+  refiner_switch_at: number;
 }

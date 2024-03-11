@@ -1,8 +1,8 @@
-import JoinFullIcon from '@mui/icons-material/JoinFull'
-import JoinInnerIcon from '@mui/icons-material/JoinInner'
-import SendOutlined from '@mui/icons-material/SendOutlined'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import JoinFullIcon from '@mui/icons-material/JoinFull';
+import JoinInnerIcon from '@mui/icons-material/JoinInner';
+import SendOutlined from '@mui/icons-material/SendOutlined';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   FormControl,
@@ -12,66 +12,74 @@ import {
   OutlinedInput,
   Popover,
   Tooltip,
-} from '@mui/material'
-import React, { ComponentProps, useEffect, useState } from 'react'
-import { useAppDispatch } from '../../../../store'
-import { newTags } from '../../../../store/reducers/tags'
-import { PromptTagsType } from '../../../../types/image-input'
+} from '@mui/material';
+import React, { ComponentProps, useEffect, useState } from 'react';
+import { useAppDispatch } from '../../../../store';
+import { newTags } from '../../../../store/reducers/tags';
+import { PromptTagsType } from '../../../../types/image-input';
 
-const formControlColorMap: Record<keyof PromptTagsType, ComponentProps<typeof FormControl>['color']> = {
+const formControlColorMap: Record<
+  keyof PromptTagsType,
+  ComponentProps<typeof FormControl>['color']
+> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: 'primary',
-}
+};
 
 interface TagAddMenuProps {
-  isOpen: boolean
-  onClose: () => void
-  anchorEl: HTMLElement | null
-  location: keyof PromptTagsType
+  isOpen: boolean;
+  onClose: () => void;
+  anchorEl: HTMLElement | null;
+  location: keyof PromptTagsType;
 }
 
-export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuProps) => {
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const [value, setValue] = useState<string>('')
-  const dispatch = useAppDispatch()
-  const [doNotSeparate, setDoNotSeparate] = useState(false)
-  const [addAsHidden, setAddAsHidden] = useState(false)
+export const TagAddMenu = ({
+  isOpen,
+  onClose,
+  anchorEl,
+  location,
+}: TagAddMenuProps) => {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const [doNotSeparate, setDoNotSeparate] = useState(false);
+  const [addAsHidden, setAddAsHidden] = useState(false);
 
   const doNotSeparateText = doNotSeparate
     ? 'Add single tag (for adding long negative tags)'
-    : 'Add comma separated tags'
+    : 'Add comma separated tags';
 
   function handleAdd() {
-    const newTagsParams = { names: [], location, hidden: addAsHidden }
+    const newTagsParams = { names: [], location, hidden: addAsHidden };
     if (doNotSeparate) {
-      dispatch(newTags({ ...newTagsParams, names: [value] }))
-      return
+      dispatch(newTags({ ...newTagsParams, names: [value] }));
+      return;
     }
-    const tags = value.split(',').map((tag) => tag.trim())
-    dispatch(newTags({ ...newTagsParams, names: tags }))
+    const tags = value.split(',').map((tag) => tag.trim());
+    dispatch(newTags({ ...newTagsParams, names: tags }));
   }
 
   function handleClose() {
-    setAddAsHidden(false)
-    setDoNotSeparate(false)
-    setValue('')
-    onClose()
+    setAddAsHidden(false);
+    setDoNotSeparate(false);
+    setValue('');
+    onClose();
   }
 
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
-        inputRef.current?.focus()
-      }, 0)
+        inputRef.current?.focus();
+      }, 0);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   return (
     <Popover
       open={isOpen}
       onClose={() => {
-        onClose()
+        onClose();
       }}
       anchorEl={anchorEl}
       anchorOrigin={{
@@ -86,53 +94,60 @@ export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuPr
           size="small"
           color={formControlColorMap[location]}
         >
-          <InputLabel>
-            {doNotSeparateText}
-          </InputLabel>
+          <InputLabel>{doNotSeparateText}</InputLabel>
           <OutlinedInput
             inputRef={inputRef}
             label={doNotSeparateText}
             value={value}
             onChange={(e) => {
-              setValue(e.target.value)
+              setValue(e.target.value);
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                handleAdd()
-                handleClose()
+                handleAdd();
+                handleClose();
               }
               if (e.key === 'Escape') {
-                handleClose()
+                handleClose();
               }
             }}
             endAdornment={
               <InputAdornment position="end">
-                <Tooltip title={doNotSeparate ? 'Separate tags' : 'Do not separate tags'}>
+                <Tooltip
+                  title={
+                    doNotSeparate ? 'Separate tags' : 'Do not separate tags'
+                  }
+                >
                   <IconButton
                     edge="end"
                     onClick={() => {
-                      setDoNotSeparate(!doNotSeparate)
+                      setDoNotSeparate(!doNotSeparate);
                     }}
                   >
-                    {doNotSeparate ? <JoinFullIcon/> : <JoinInnerIcon/>}
+                    {doNotSeparate ? <JoinFullIcon /> : <JoinInnerIcon />}
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={addAsHidden ? 'Add as visible' : 'Add as hidden'}>
+                <Tooltip
+                  title={addAsHidden ? 'Add as visible' : 'Add as hidden'}
+                >
                   <IconButton
                     edge="end"
                     onClick={() => {
-                      setAddAsHidden(!addAsHidden)
+                      setAddAsHidden(!addAsHidden);
                     }}
                   >
-                    {addAsHidden ? <VisibilityOffIcon/> : <VisibilityIcon/>}
+                    {addAsHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={`Add to ${location}`}>
-                  <IconButton edge="end" onClick={() => {
-                    handleAdd()
-                    handleClose()
-                  }}>
-                    <SendOutlined/>
+                  <IconButton
+                    edge="end"
+                    onClick={() => {
+                      handleAdd();
+                      handleClose();
+                    }}
+                  >
+                    <SendOutlined />
                   </IconButton>
                 </Tooltip>
               </InputAdornment>
@@ -141,5 +156,5 @@ export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuPr
         </FormControl>
       </Box>
     </Popover>
-  )
-}
+  );
+};

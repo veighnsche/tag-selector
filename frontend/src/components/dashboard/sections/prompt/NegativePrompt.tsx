@@ -1,14 +1,17 @@
-import { TextField } from '@mui/material'
-import { ChangeEvent } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../../store'
-import { selectNegativePrompt, setNegativePrompt } from '../../../../store/reducers/inputs'
+import { TextField } from '@mui/material';
+import { ChangeEvent } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import {
+  selectNegativePrompt,
+  setNegativePrompt,
+} from '../../../../store/reducers/inputs';
 
 export const NegativePrompt = () => {
-  const negativePrompt = useAppSelector(selectNegativePrompt)
-  const dispatch = useAppDispatch()
+  const negativePrompt = useAppSelector(selectNegativePrompt);
+  const dispatch = useAppDispatch();
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    dispatch(setNegativePrompt(event.target.value))
+    dispatch(setNegativePrompt(event.target.value));
   }
 
   return (
@@ -18,5 +21,5 @@ export const NegativePrompt = () => {
       onChange={handleChange}
       color="secondary"
     />
-  )
-}
+  );
+};

@@ -1,4 +1,3 @@
 export interface SdSamplersType {
-  name: string
-  
+  name: string;
 }

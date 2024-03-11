@@ -1,15 +1,15 @@
-import styled from '@emotion/styled'
-import { Button, Tooltip } from '@mui/material'
-import React, { ReactElement } from 'react'
+import styled from '@emotion/styled';
+import { Button, Tooltip } from '@mui/material';
+import React, { ReactElement } from 'react';
 
 const StyledButton = styled(Button)<{
-  fullWidth?: boolean
+  fullWidth?: boolean;
 }>`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : '50%')};
   font-weight: normal;
   text-transform: none;
   border-radius: 0;
-`
+`;
 
 interface ImageDataPropertyProps {
   name: string;
@@ -19,20 +19,22 @@ interface ImageDataPropertyProps {
   toggle: () => void;
 }
 
-export const ImageDataProperty = ({ name, value, fullWidth, variant, toggle }: ImageDataPropertyProps) => {
-  const display = value.toString().slice(0, 50)
-  const isLonger = value.toString().length > 50
+export const ImageDataProperty = ({
+  name,
+  value,
+  fullWidth,
+  variant,
+  toggle,
+}: ImageDataPropertyProps) => {
+  const display = value.toString().slice(0, 50);
+  const isLonger = value.toString().length > 50;
 
   const TooltipWrapper = ({ children }: { children: ReactElement }) => {
     if (!isLonger) {
-      return <>{children}</>
+      return <>{children}</>;
     }
-    return (
-      <Tooltip title={value.toString()}>
-        {children}
-      </Tooltip>
-    )
-  }
+    return <Tooltip title={value.toString()}>{children}</Tooltip>;
+  };
 
   return (
     <TooltipWrapper>
@@ -41,14 +43,13 @@ export const ImageDataProperty = ({ name, value, fullWidth, variant, toggle }: I
         size="small"
         variant={variant}
         onClick={(e) => {
-          e.stopPropagation()
-          toggle()
+          e.stopPropagation();
+          toggle();
         }}
       >
-        <span style={{ fontWeight: 500 }}>{name}:</span>
-        {' '}
-        {display}{isLonger ? '...' : ''}
+        <span style={{ fontWeight: 500 }}>{name}:</span> {display}
+        {isLonger ? '...' : ''}
       </StyledButton>
     </TooltipWrapper>
-  )
-}
+  );
+};

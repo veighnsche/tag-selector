@@ -1,15 +1,20 @@
-import styled from '@emotion/styled'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material'
-import React from 'react'
-import { AdvancedOptionsLayout } from './sections/advanced/layout'
-import { HeaderLayout } from './sections/header/layout'
-import { HighResFixLayout } from './sections/highresFix/layout'
-import { Optimizers } from './sections/optimizers'
-import { OptionsLayout } from './sections/options/layout'
-import { OptionsSummary } from './sections/options/OptionsSummary'
-import { OutputLayout } from './sections/output/layout'
-import { PromptLayout } from './sections/prompt/layout'
+import styled from '@emotion/styled';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Paper,
+} from '@mui/material';
+import React from 'react';
+import { AdvancedOptionsLayout } from './sections/advanced/layout';
+import { HeaderLayout } from './sections/header/layout';
+import { HighResFixLayout } from './sections/highresFix/layout';
+import { Optimizers } from './sections/optimizers';
+import { OptionsLayout } from './sections/options/layout';
+import { OptionsSummary } from './sections/options/OptionsSummary';
+import { OutputLayout } from './sections/output/layout';
+import { PromptLayout } from './sections/prompt/layout';
 
 const LayoutGrid = styled.main`
   width: 100%;
@@ -24,29 +29,29 @@ const LayoutGrid = styled.main`
     'header header'
     'prompt output'
     'options output';
-`
+`;
 
 const HeaderArea = styled.header`
   grid-area: header;
-`
+`;
 
 const PromptArea = styled.section`
   grid-area: prompt;
   height: 100%;
-`
+`;
 
 const OutputArea = styled.section`
   grid-area: output;
-`
+`;
 
 const OptionsArea = styled.section`
   grid-area: options;
-`
+`;
 
 const StyledPaper = styled(Paper)`
   padding: 0.75rem;
   height: 100%;
-`
+`;
 
 enum AccordionNames {
   Options = 'options',
@@ -55,29 +60,29 @@ enum AccordionNames {
   Advanced = 'advanced',
 }
 
-
 export const DashboardLayout = () => {
-  const [expanded, setExpanded] = React.useState<string | false>(false)
+  const [expanded, setExpanded] = React.useState<string | false>(false);
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false)
-  }
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   return (
     <LayoutGrid>
       <HeaderArea>
         <StyledPaper>
-          <HeaderLayout/>
+          <HeaderLayout />
         </StyledPaper>
       </HeaderArea>
       <PromptArea>
         <StyledPaper>
-          <PromptLayout/>
+          <PromptLayout />
         </StyledPaper>
       </PromptArea>
       <OutputArea>
         <StyledPaper>
-          <OutputLayout/>
+          <OutputLayout />
         </StyledPaper>
       </OutputArea>
       <OptionsArea>
@@ -87,11 +92,15 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Options}
             onChange={handleChange(AccordionNames.Options)}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }}/>}>
-              <OptionsSummary/>
+            <AccordionSummary
+              expandIcon={
+                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
+              }
+            >
+              <OptionsSummary />
             </AccordionSummary>
             <AccordionDetails>
-              <OptionsLayout/>
+              <OptionsLayout />
             </AccordionDetails>
           </Accordion>
           <Accordion
@@ -100,12 +109,14 @@ export const DashboardLayout = () => {
             onChange={handleChange(AccordionNames.HighResFix)}
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }}/>}
+              expandIcon={
+                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
+              }
             >
               HighRes Fix
             </AccordionSummary>
             <AccordionDetails>
-              <HighResFixLayout/>
+              <HighResFixLayout />
             </AccordionDetails>
           </Accordion>
           <Accordion
@@ -113,11 +124,15 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Optimizers}
             onChange={handleChange(AccordionNames.Optimizers)}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }}/>}>
+            <AccordionSummary
+              expandIcon={
+                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
+              }
+            >
               Optimizers
             </AccordionSummary>
             <AccordionDetails>
-              <Optimizers/>
+              <Optimizers />
             </AccordionDetails>
           </Accordion>
           <Accordion
@@ -125,15 +140,19 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Advanced}
             onChange={handleChange(AccordionNames.Advanced)}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }}/>}>
+            <AccordionSummary
+              expandIcon={
+                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
+              }
+            >
               Advanced options
             </AccordionSummary>
             <AccordionDetails>
-              <AdvancedOptionsLayout/>
+              <AdvancedOptionsLayout />
             </AccordionDetails>
           </Accordion>
         </Paper>
       </OptionsArea>
     </LayoutGrid>
-  )
-}
+  );
+};

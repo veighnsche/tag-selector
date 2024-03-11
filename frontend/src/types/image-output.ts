@@ -1,19 +1,19 @@
 export interface ImageOutputType {
-  images: string[]
+  images: string[];
   parameters: {
-    prompt: string
-    seed: number
-  }
-  info: ImageOutputInfoType
+    prompt: string;
+    seed: number;
+  };
+  info: ImageOutputInfoType;
 }
 
 export interface ImageOutputInfoType {
-  seed: number
-  width: number
-  height: number
+  seed: number;
+  width: number;
+  height: number;
 }
 
 export interface GetImagesPathsType {
-  toIndex?: number
-  amount?: number
+  toIndex?: number;
+  amount?: number;
 }

@@ -1,8 +1,8 @@
-import styled from '@emotion/styled'
-import { Button, Paper } from '@mui/material'
-import { useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../../store'
-import { selectSize, setSize } from '../../../../store/reducers/inputs'
+import styled from '@emotion/styled';
+import { Button, Paper } from '@mui/material';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { selectSize, setSize } from '../../../../store/reducers/inputs';
 
 const StyledPaper = styled(Paper)`
   padding: 0.75rem;
@@ -11,17 +11,17 @@ const StyledPaper = styled(Paper)`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-`
+`;
 
 const RatioButton = styled(Button)`
   width: 30%;
   height: 4rem;
-`
+`;
 
 const RatioButtonAr = styled(Button)`
   width: 12%;
   height: 4rem;
-`
+`;
 
 const totalPixelChoices = [
   512 * 512,
@@ -29,7 +29,7 @@ const totalPixelChoices = [
   768 * 768,
   768 * 1024,
   1024 * 1024,
-]
+];
 
 const aspectRatioChoices = [
   { width: 4, height: 3 },
@@ -38,28 +38,35 @@ const aspectRatioChoices = [
   { width: 16, height: 9 },
   { width: 2, height: 1 },
   { width: 2.39, height: 1 },
-]
+];
 
-function calculateRatio(totalPixels: number, widthRatio: number, heightRatio: number) {
-  const width = Math.sqrt(totalPixels * (heightRatio / widthRatio))
-  const height = width * (widthRatio / heightRatio)
+function calculateRatio(
+  totalPixels: number,
+  widthRatio: number,
+  heightRatio: number
+) {
+  const width = Math.sqrt(totalPixels * (heightRatio / widthRatio));
+  const height = width * (widthRatio / heightRatio);
 
   return {
     width: Math.round(width),
     height: Math.round(height),
-  }
+  };
 }
 
 export const ImageRatio = () => {
-  const dispatch = useAppDispatch()
-  const selectedSize = useAppSelector(selectSize)
-  const [selectedRatio, setSelectedRatio] = useState<{ width: number, height: number }>(aspectRatioChoices[2])
+  const dispatch = useAppDispatch();
+  const selectedSize = useAppSelector(selectSize);
+  const [selectedRatio, setSelectedRatio] = useState<{
+    width: number;
+    height: number;
+  }>(aspectRatioChoices[2]);
 
   const imageSizes = totalPixelChoices.flatMap((totalPixels) => [
     calculateRatio(totalPixels, selectedRatio.width, selectedRatio.height),
     calculateRatio(totalPixels, 1, 1),
     calculateRatio(totalPixels, selectedRatio.height, selectedRatio.width),
-  ])
+  ]);
 
   return (
     <StyledPaper elevation={2}>
@@ -68,12 +75,10 @@ export const ImageRatio = () => {
           key={index}
           variant="outlined"
           onClick={() => {
-            setSelectedRatio(ratio)
+            setSelectedRatio(ratio);
           }}
           sx={{
-            color: selectedRatio === ratio
-              ? 'secondary.main'
-              : 'primary.main',
+            color: selectedRatio === ratio ? 'secondary.main' : 'primary.main',
           }}
           color={selectedRatio === ratio ? 'secondary' : 'primary'}
         >
@@ -82,11 +87,12 @@ export const ImageRatio = () => {
       ))}
 
       {imageSizes.map(({ width, height }) => {
-        const isSelected = selectedSize.width === width && selectedSize.height === height
+        const isSelected =
+          selectedSize.width === width && selectedSize.height === height;
 
         const handleClick = () => {
-          dispatch(setSize({ width, height }))
-        }
+          dispatch(setSize({ width, height }));
+        };
 
         return (
           <RatioButton
@@ -101,14 +107,12 @@ export const ImageRatio = () => {
               sx={{
                 width: width / 20,
                 height: height / 20,
-                backgroundColor: isSelected
-                  ? 'secondary.main'
-                  : 'primary.main',
+                backgroundColor: isSelected ? 'secondary.main' : 'primary.main',
               }}
             />
           </RatioButton>
-        )
+        );
       })}
     </StyledPaper>
-  )
-}
+  );
+};

@@ -1,3 +1,3 @@
 export interface SdUpscalersType {
-  name: string
+  name: string;
 }

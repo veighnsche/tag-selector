@@ -1,14 +1,20 @@
-import styled from '@emotion/styled'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { Box, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material'
-import React, { useCallback, useMemo, useState } from 'react'
-import { initialPromptTagsState } from '../../store/reducers/tags'
-import { PromptTagsType, TagType } from '../../types/image-input'
-import { ImageTag } from './ImageTag'
+import styled from '@emotion/styled';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import {
+  Box,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import React, { useCallback, useMemo, useState } from 'react';
+import { initialPromptTagsState } from '../../store/reducers/tags';
+import { PromptTagsType, TagType } from '../../types/image-input';
+import { ImageTag } from './ImageTag';
 
 interface ImageTagsProps {
-  tags?: string[]
-  promptTags?: PromptTagsType
+  tags?: string[];
+  promptTags?: PromptTagsType;
 }
 
 const TagContainer = styled.div`
@@ -16,52 +22,53 @@ const TagContainer = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 0.25rem;
-`
+`;
 
 export const ImageTagList = ({
   tags = [],
   promptTags = initialPromptTagsState,
 }: ImageTagsProps) => {
-  const [showAI, setShowAI] = useState(true)
-  const [showPrompt, setShowPrompt] = useState(true)
-  const [showNegative, setShowNegative] = useState(false)
+  const [showAI, setShowAI] = useState(true);
+  const [showPrompt, setShowPrompt] = useState(true);
+  const [showNegative, setShowNegative] = useState(false);
 
   const hydratedTags: TagType[] = useMemo(() => {
     return tags.map((tag) => ({
       name: tag,
       id: '', // id is not used here
-    }))
-  }, [tags])
+    }));
+  }, [tags]);
 
-  const replaceTags = useCallback((tags: TagType[], location: keyof PromptTagsType) => {
-    promptTags[location].forEach((tag) => {
-      const index = tags.findIndex((t) => t.name === tag.name)
-      if (index !== -1) {
-        tags[index] = tag
-      }
-      else if (location === 'tags') {
-        tags.unshift(tag)
-      }
-      else {
-        tags.push(tag)
-      }
-    })
-    return tags
-  }, [promptTags])
+  const replaceTags = useCallback(
+    (tags: TagType[], location: keyof PromptTagsType) => {
+      promptTags[location].forEach((tag) => {
+        const index = tags.findIndex((t) => t.name === tag.name);
+        if (index !== -1) {
+          tags[index] = tag;
+        } else if (location === 'tags') {
+          tags.unshift(tag);
+        } else {
+          tags.push(tag);
+        }
+      });
+      return tags;
+    },
+    [promptTags]
+  );
 
   const viewTags = useMemo(() => {
-    let tags: TagType[] = []
+    let tags: TagType[] = [];
     if (showAI) {
-      tags = [...tags, ...hydratedTags]
+      tags = [...tags, ...hydratedTags];
     }
     if (showPrompt) {
-      tags = replaceTags(tags, 'tags')
+      tags = replaceTags(tags, 'tags');
     }
     if (showNegative) {
-      tags = replaceTags(tags, 'negativeTags')
+      tags = replaceTags(tags, 'negativeTags');
     }
-    return tags
-  }, [showAI, showPrompt, showNegative, hydratedTags, promptTags])
+    return tags;
+  }, [showAI, showPrompt, showNegative, hydratedTags, promptTags]);
 
   return (
     <>
@@ -74,31 +81,40 @@ export const ImageTagList = ({
       >
         <Typography sx={{ m: '0' }}>Tags</Typography>
         <Tooltip title="Left-click to add to the tags pool, then keep clicking to cycle through the pools">
-          <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary', mr: '1rem' }}/>
+          <InfoOutlinedIcon
+            fontSize="small"
+            sx={{ color: 'text.secondary', mr: '1rem' }}
+          />
         </Tooltip>
         <FormControlLabel
-          control={<Switch
-            onChange={(e) => setShowAI(e.target.checked)}
-            checked={showAI}
-            size="small"
-          />}
+          control={
+            <Switch
+              onChange={(e) => setShowAI(e.target.checked)}
+              checked={showAI}
+              size="small"
+            />
+          }
           label="AI"
         />
         <FormControlLabel
-          control={<Switch
-            onChange={(e) => setShowPrompt(e.target.checked)}
-            checked={showPrompt}
-            size="small"
-          />}
+          control={
+            <Switch
+              onChange={(e) => setShowPrompt(e.target.checked)}
+              checked={showPrompt}
+              size="small"
+            />
+          }
           label="Prompt"
         />
         <FormControlLabel
-          control={<Switch
-            onChange={(e) => setShowNegative(e.target.checked)}
-            checked={showNegative}
-            size="small"
-            color="secondary"
-          />}
+          control={
+            <Switch
+              onChange={(e) => setShowNegative(e.target.checked)}
+              checked={showNegative}
+              size="small"
+              color="secondary"
+            />
+          }
           label="Negative"
           componentsProps={{
             typography: {
@@ -110,10 +126,10 @@ export const ImageTagList = ({
       <Box flex={1} px="1rem" sx={{ overflowY: 'auto' }}>
         <TagContainer>
           {viewTags.map((tag) => (
-            <ImageTag tag={tag} key={tag.name}/>
+            <ImageTag tag={tag} key={tag.name} />
           ))}
         </TagContainer>
       </Box>
     </>
-  )
-}
+  );
+};

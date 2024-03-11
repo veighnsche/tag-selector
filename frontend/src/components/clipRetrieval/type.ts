@@ -1,4 +1,4 @@
 export interface ClipType {
-  caption: string
-  url: string
+  caption: string;
+  url: string;
 }
