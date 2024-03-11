@@ -4,11 +4,11 @@ import { SD_URL } from '../constants';
 interface ImageDataParameters {
   Prompt: string;
   Model: string;
-  'Size-1': number;
-  'Size-2': number;
-  Steps: number;
-  'CFG scale': number;
-  Seed: number;
+  'Size-1': string;
+  'Size-2': string;
+  Steps: string;
+  'CFG scale': string;
+  Seed: string;
   Sampler: string;
 }
 
@@ -31,11 +31,11 @@ export async function fetchImageData(filePath: string): Promise<unknown> {
   // then parse the data and return it
   return {
     model: imageDataRaw.parameters.Model,
-    width: imageDataRaw.parameters['Size-1'],
-    height: imageDataRaw.parameters['Size-2'],
-    steps: imageDataRaw.parameters.Steps,
-    cfg: imageDataRaw.parameters['CFG scale'],
-    seed: imageDataRaw.parameters.Seed,
+    width: Number(imageDataRaw.parameters['Size-1']),
+    height: Number(imageDataRaw.parameters['Size-2']),
+    steps: Number(imageDataRaw.parameters.Steps),
+    cfg: Number(imageDataRaw.parameters['CFG scale']),
+    seed: Number(imageDataRaw.parameters.Seed),
     samplingMethod: imageDataRaw.parameters.Sampler,
   };
 }

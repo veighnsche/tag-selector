@@ -1,7 +1,8 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useEffectOnce } from '../../../../hooks/useEffectOnce';
 import { useEmitters } from '../../../../hooks/useEmitters';
-import { useAppSelector } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { selectRefinerCheckpoint, setRefinerCheckpoint } from '../../../../store/reducers/inputs';
 import { selectCurrentModel } from '../../../../store/reducers/sdOptions';
 import { SocketEvent } from '../../../../types';
 import { SdModelType } from '../../../../types/sd-models';
@@ -16,6 +17,8 @@ interface SdModelWrapperChildrenProps {
   models: SdModelType[];
   currentModel: SdModelType['title'];
   setModel: (model: SdModelType['title']) => void;
+  currentRefiner: SdModelType['title'];
+  setRefiner: (refiner: SdModelType['title']) => void;
 }
 
 export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
@@ -23,7 +26,9 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
   const [models, setModels] = useState<SdModelType[]>([]);
   const [loading, setLoading] = useState(models.length === 0);
   const currentModel = useAppSelector(selectCurrentModel);
+  const currentRefiner = useAppSelector(selectRefinerCheckpoint);
   const emit = useEmitters();
+  const dispatch = useAppDispatch();
 
   useEffectOnce(() => {
     if (models.length === 0) {
@@ -53,9 +58,13 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
     emit.setSdOptions({ sd_model_checkpoint: model });
   };
 
+  const setRefiner = (refiner: SdModelType['title']) => {
+    dispatch(setRefinerCheckpoint(refiner));
+  };
+
   if (loading) {
     return <Loading subject={'models'} />;
   }
 
-  return <>{children({ models, currentModel, setModel })}</>;
+  return <>{children({ models, currentModel, setModel, currentRefiner, setRefiner })}</>;
 };

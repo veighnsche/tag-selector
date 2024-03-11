@@ -23,6 +23,10 @@ const initialState: ImageInputsType = {
       steps: 0,
       denoisingStrength: 0.7,
     },
+    refiner: {
+      checkpoint: '',
+      switchAt: 50,
+    }
   },
 };
 
@@ -83,6 +87,12 @@ export const inputsSlice = createSlice({
     setHRFDenoisingStrength: (state, action: PayloadAction<number>) => {
       state.options.highResFix.denoisingStrength = action.payload;
     },
+    setRefinerCheckpoint: (state, action: PayloadAction<string>) => {
+      state.options.refiner.checkpoint = action.payload;
+    },
+    setRefinerSwitchAt: (state, action: PayloadAction<number>) => {
+      state.options.refiner.switchAt = action.payload;
+    },
     setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
       const imageData = action.payload;
 
@@ -130,6 +140,8 @@ export const {
   setHRFSteps,
   setHRFUpscaler,
   setHRFDenoisingStrength,
+  setRefinerCheckpoint,
+  setRefinerSwitchAt,
   setInputsFromImageData,
 } = inputsSlice.actions;
 
@@ -148,11 +160,14 @@ export const selectSliders = (state: RootState) => {
     seed: state.inputs.options.seed,
     samplingMethod: state.inputs.options.samplingMethod,
     restoreFaces: state.inputs.options.restoreFaces,
+    refinerSwitchAt: state.inputs.options.refiner.switchAt,
   };
 };
 
 export const selectHRF = (state: RootState) => state.inputs.options.highResFix;
 export const selectSeed = (state: RootState) => state.inputs.options.seed;
 export const selectSteps = (state: RootState) => state.inputs.options.steps;
+
+export const selectRefinerCheckpoint = (state: RootState) => state.inputs.options.refiner.checkpoint;
 
 export const inputsReducer = inputsSlice.reducer;

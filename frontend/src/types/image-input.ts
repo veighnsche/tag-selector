@@ -45,6 +45,7 @@ export interface ImageOptionsType {
   samplingMethod: string;
   restoreFaces: boolean;
   highResFix: HighResFixType;
+  refiner: RefinerType;
 }
 
 export interface HighResFixType {
@@ -53,6 +54,11 @@ export interface HighResFixType {
   scale: number;
   steps: number;
   denoisingStrength: number;
+}
+
+export interface RefinerType {
+  checkpoint: string;
+  switchAt: number;
 }
 
 export interface ImageInputsType {

@@ -121,23 +121,23 @@ export const selectTagsForInputs = ({
 }
 
 
-export function imageGenerate({
+export async function imageGenerate({
   prompt: { scene, negativePrompt },
-  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix },
+  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix, refiner },
 }: ImageInputsType, {
   tags,
   negativeTags,
 }: PromptTagsType): Promise<ImageOutputType> {
-  const rng = seedrandom(seed.toString())
+  const rng = seedrandom(seed.toString());
 
-  console.time('generateImage')
+  console.time('generateImage');
   const { prompt, negative } = selectTagsForInputs({
     tags,
     negativeTags,
     scene,
     negativePrompt,
     rng,
-  })
+  });
 
   const params: ImageGenerateParams = {
     prompt,
@@ -155,23 +155,23 @@ export function imageGenerate({
     hr_scale: highResFix.scale,
     hr_second_pass_steps: highResFix.steps,
     denoising_strength: highResFix.denoisingStrength,
-    refiner_checkpoint: "sd_xl_refiner_1.0",
-    refiner_switch_at: 80,
-  }
 
-  return axios.post(`${SD_URL}/sdapi/v1/txt2img`, params)
-  .then(response => {
-    console.timeEnd('generateImage')
-    return response.data
-  })
-  .then((imageOutput: ImageOutputType) => ({
-    ...imageOutput,
-    info: JSON.parse(imageOutput.info as unknown as string),
-  }))
-  .catch((error: AxiosError) => {
-    console.timeEnd('generateImage')
-    throw error
-  })
+    refiner_checkpoint: refiner.checkpoint,
+    refiner_switch_at: refiner.switchAt / 100,
+  };
+
+  try {
+    const response = await axios.post(`${SD_URL}/sdapi/v1/txt2img`, params);
+    console.timeEnd('generateImage');
+    const imageOutput = response.data;
+    return ({
+      ...imageOutput,
+      info: JSON.parse(imageOutput.info as unknown as string),
+    });
+  } catch (error) {
+    console.timeEnd('generateImage');
+    throw error;
+  }
 }
 
 export function getProgress(): Promise<SdProgressType> {
