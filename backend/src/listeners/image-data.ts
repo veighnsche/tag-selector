@@ -4,8 +4,8 @@ import { SD_URL } from '../constants';
 interface ImageDataParameters {
   Prompt: string;
   Model: string;
-  Width: number;
-  Height: number;
+  'Size-1': number;
+  'Size-2': number;
   Steps: number;
   'CFG scale': number;
   Seed: number;
@@ -31,8 +31,8 @@ export async function fetchImageData(filePath: string): Promise<unknown> {
   // then parse the data and return it
   return {
     model: imageDataRaw.parameters.Model,
-    width: imageDataRaw.parameters.Width,
-    height: imageDataRaw.parameters.Height,
+    width: imageDataRaw.parameters['Size-1'],
+    height: imageDataRaw.parameters['Size-2'],
     steps: imageDataRaw.parameters.Steps,
     cfg: imageDataRaw.parameters['CFG scale'],
     seed: imageDataRaw.parameters.Seed,
