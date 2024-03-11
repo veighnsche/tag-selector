@@ -18,10 +18,7 @@ import { useAppDispatch } from '../../../../store';
 import { newTags } from '../../../../store/reducers/tags';
 import { PromptTagsType } from '../../../../types/image-input';
 
-const formControlColorMap: Record<
-  keyof PromptTagsType,
-  ComponentProps<typeof FormControl>['color']
-> = {
+const formControlColorMap: Record<keyof PromptTagsType, ComponentProps<typeof FormControl>['color']> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: 'primary',
@@ -34,12 +31,7 @@ interface TagAddMenuProps {
   location: keyof PromptTagsType;
 }
 
-export const TagAddMenu = ({
-  isOpen,
-  onClose,
-  anchorEl,
-  location,
-}: TagAddMenuProps) => {
+export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<string>('');
   const dispatch = useAppDispatch();
@@ -88,12 +80,7 @@ export const TagAddMenu = ({
       }}
     >
       <Box width="40rem" p={1}>
-        <FormControl
-          variant="outlined"
-          fullWidth
-          size="small"
-          color={formControlColorMap[location]}
-        >
+        <FormControl variant="outlined" fullWidth size="small" color={formControlColorMap[location]}>
           <InputLabel>{doNotSeparateText}</InputLabel>
           <OutlinedInput
             inputRef={inputRef}
@@ -113,11 +100,7 @@ export const TagAddMenu = ({
             }}
             endAdornment={
               <InputAdornment position="end">
-                <Tooltip
-                  title={
-                    doNotSeparate ? 'Separate tags' : 'Do not separate tags'
-                  }
-                >
+                <Tooltip title={doNotSeparate ? 'Separate tags' : 'Do not separate tags'}>
                   <IconButton
                     edge="end"
                     onClick={() => {
@@ -127,9 +110,7 @@ export const TagAddMenu = ({
                     {doNotSeparate ? <JoinFullIcon /> : <JoinInnerIcon />}
                   </IconButton>
                 </Tooltip>
-                <Tooltip
-                  title={addAsHidden ? 'Add as visible' : 'Add as hidden'}
-                >
+                <Tooltip title={addAsHidden ? 'Add as visible' : 'Add as hidden'}>
                   <IconButton
                     edge="end"
                     onClick={() => {

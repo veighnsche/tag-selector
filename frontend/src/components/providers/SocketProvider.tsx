@@ -1,17 +1,7 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import socketio, { Socket } from 'socket.io-client';
 import { useAppDispatch, useAppSelector } from '../../store';
-import {
-  selectSocketStatus,
-  setSocketStatus,
-  SocketStatus,
-} from '../../store/reducers/socketStatus';
+import { selectSocketStatus, setSocketStatus, SocketStatus } from '../../store/reducers/socketStatus';
 import { SocketEvent } from '../../types';
 
 interface SocketProviderProps {
@@ -76,9 +66,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     }
   }, [socketStatus]);
 
-  return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };
 
 export function useSocket() {

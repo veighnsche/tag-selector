@@ -1,9 +1,6 @@
 import { MutableRefObject } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import {
-  DragSourceHookSpec,
-  DropTargetHookSpec,
-} from 'react-dnd/src/hooks/types';
+import { DragSourceHookSpec, DropTargetHookSpec } from 'react-dnd/src/hooks/types';
 import { useAppDispatch } from '../store';
 import { moveTagBetweenLocations } from '../store/reducers/tags';
 import { setIsDragging } from '../store/reducers/tagsState';
@@ -29,12 +26,7 @@ export type UseTagDnDReturn = [
   (ref: MutableRefObject<HTMLDivElement | null>) => void,
 ];
 
-export function useTagDnD({
-  location,
-  arrayIdx,
-  tag,
-  collect,
-}: UseTagDnDParams): UseTagDnDReturn {
+export function useTagDnD({ location, arrayIdx, tag, collect }: UseTagDnDParams): UseTagDnDReturn {
   const dispatch = useAppDispatch();
 
   const [collectedDropItems, drop] = useDrop({

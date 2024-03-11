@@ -5,10 +5,7 @@ import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { setScene } from '../../../../store/reducers/inputs';
 import { resetTags } from '../../../../store/reducers/tags';
-import {
-  selectShowHiddenTags,
-  toggleShowHiddenTags,
-} from '../../../../store/reducers/tagsState';
+import { selectShowHiddenTags, toggleShowHiddenTags } from '../../../../store/reducers/tagsState';
 
 interface TagMenuProps {
   isMenuOpen: boolean;
@@ -16,11 +13,7 @@ interface TagMenuProps {
   menuAnchorEl: HTMLElement | null;
 }
 
-export const TagMenu = ({
-  isMenuOpen,
-  onClose,
-  menuAnchorEl,
-}: TagMenuProps) => {
+export const TagMenu = ({ isMenuOpen, onClose, menuAnchorEl }: TagMenuProps) => {
   const dispatch = useAppDispatch();
   const showHidden = useAppSelector(selectShowHiddenTags);
   return (
@@ -31,11 +24,7 @@ export const TagMenu = ({
         }}
       >
         <ListItemIcon>
-          {showHidden ? (
-            <VisibilityIcon fontSize="small" />
-          ) : (
-            <VisibilityOffIcon fontSize="small" />
-          )}
+          {showHidden ? <VisibilityIcon fontSize="small" /> : <VisibilityOffIcon fontSize="small" />}
         </ListItemIcon>
         <ListItemText>{showHidden ? 'Hide ' : 'Show '}hidden tags</ListItemText>
       </MenuItem>

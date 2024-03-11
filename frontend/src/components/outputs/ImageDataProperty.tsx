@@ -19,13 +19,7 @@ interface ImageDataPropertyProps {
   toggle: () => void;
 }
 
-export const ImageDataProperty = ({
-  name,
-  value,
-  fullWidth,
-  variant,
-  toggle,
-}: ImageDataPropertyProps) => {
+export const ImageDataProperty = ({ name, value, fullWidth, variant, toggle }: ImageDataPropertyProps) => {
   const display = value.toString().slice(0, 50);
   const isLonger = value.toString().length > 50;
 

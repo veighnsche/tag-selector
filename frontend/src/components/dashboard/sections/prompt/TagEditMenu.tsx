@@ -19,10 +19,7 @@ import { makeTagLabelWrapped } from '../../../../utils/tags';
 import { buttonColorMap } from './maps';
 import { VolumeControl } from './VolumeControl';
 
-const inputColorMap: Record<
-  keyof PromptTagsType,
-  ComponentProps<typeof TextField>['color']
-> = {
+const inputColorMap: Record<keyof PromptTagsType, ComponentProps<typeof TextField>['color']> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: undefined,
@@ -35,12 +32,7 @@ interface TagEditMenuProps {
   tag: TagType;
 }
 
-export const TagEditMenu = ({
-  isOpen,
-  handleClose,
-  anchorEl,
-  tag,
-}: TagEditMenuProps) => {
+export const TagEditMenu = ({ isOpen, handleClose, anchorEl, tag }: TagEditMenuProps) => {
   const tagPrompt = makeTagLabelWrapped(tag);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -73,12 +65,7 @@ export const TagEditMenu = ({
       }}
     >
       <Box width="20rem" p={1} display="flex" flexDirection="column" gap={1}>
-        <FormControl
-          variant="outlined"
-          fullWidth
-          size="small"
-          color={inputColor}
-        >
+        <FormControl variant="outlined" fullWidth size="small" color={inputColor}>
           <InputLabel>{tagPrompt}</InputLabel>
           <OutlinedInput
             inputRef={inputRef}
@@ -104,11 +91,7 @@ export const TagEditMenu = ({
                 >
                   <ReplayIcon />
                 </IconButton>
-                <IconButton
-                  edge="end"
-                  onClick={handleEdit}
-                  color={buttonColorMap[location]}
-                >
+                <IconButton edge="end" onClick={handleEdit} color={buttonColorMap[location]}>
                   <SendOutlined />
                 </IconButton>
               </InputAdornment>

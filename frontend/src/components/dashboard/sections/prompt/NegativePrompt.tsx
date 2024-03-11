@@ -1,10 +1,7 @@
 import { TextField } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import {
-  selectNegativePrompt,
-  setNegativePrompt,
-} from '../../../../store/reducers/inputs';
+import { selectNegativePrompt, setNegativePrompt } from '../../../../store/reducers/inputs';
 
 export const NegativePrompt = () => {
   const negativePrompt = useAppSelector(selectNegativePrompt);
@@ -14,12 +11,5 @@ export const NegativePrompt = () => {
     dispatch(setNegativePrompt(event.target.value));
   }
 
-  return (
-    <TextField
-      label="Negative prompt"
-      value={negativePrompt}
-      onChange={handleChange}
-      color="secondary"
-    />
-  );
+  return <TextField label="Negative prompt" value={negativePrompt} onChange={handleChange} color="secondary" />;
 };

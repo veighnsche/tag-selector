@@ -3,12 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useEmitters } from '../../../../hooks/useEmitters';
 import { useAppSelector } from '../../../../store';
 import { selectCurrentTagScanThreshold } from '../../../../store/reducers/sdOptions';
-import {
-  SliderControl,
-  SliderLabel,
-  SliderTextField,
-  SliderTextWrapper,
-} from '../../../styled/Slider';
+import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider';
 
 export const InterrogateSlider = () => {
   const currentThreshold = useAppSelector(selectCurrentTagScanThreshold);

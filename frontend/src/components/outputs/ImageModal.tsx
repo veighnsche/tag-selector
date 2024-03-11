@@ -148,11 +148,7 @@ export const ImageModal = () => {
   }
 
   return (
-    <Backdrop
-      open={isModalOpen}
-      onClick={handleClose}
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    >
+    <Backdrop open={isModalOpen} onClick={handleClose} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <ImageContainer>
         {modalImage ? (
           <ImageDataFlex>
@@ -163,10 +159,7 @@ export const ImageModal = () => {
                 setIsInfoOpen(!isInfoOpen);
               }}
             >
-              <StyledImage
-                isInfoOpen={isInfoOpen}
-                src={prefixWithImageUrl(modalImage!)}
-              />
+              <StyledImage isInfoOpen={isInfoOpen} src={prefixWithImageUrl(modalImage!)} />
               <Tooltip title={'Delete image'}>
                 <DeleteButton
                   onClick={(e) => {

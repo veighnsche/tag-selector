@@ -1,13 +1,7 @@
 import { ClipType } from './type';
 
-export function fetchClipRetrieval({
-  prompt,
-}: {
-  prompt: string;
-}): Promise<ClipType[]> {
-  const url =
-    process.env.REACT_APP_CLIP_RETRIEVAL_URL ||
-    'https://knn5.laion.ai/knn-service';
+export function fetchClipRetrieval({ prompt }: { prompt: string }): Promise<ClipType[]> {
+  const url = process.env.REACT_APP_CLIP_RETRIEVAL_URL || 'https://knn5.laion.ai/knn-service';
   return fetch(url, {
     method: 'POST',
     headers: {

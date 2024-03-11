@@ -4,10 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useEffectOnce } from '../../../../hooks/useEffectOnce';
 import { useEmitters } from '../../../../hooks/useEmitters';
 import { useAppSelector } from '../../../../store';
-import {
-  selectHasOptimizerTag,
-  toggleOptimizerTag,
-} from '../../../../store/reducers/tags';
+import { selectHasOptimizerTag, toggleOptimizerTag } from '../../../../store/reducers/tags';
 import { SocketEvent } from '../../../../types';
 import { OptimizerTypes } from '../../../../types/image-input';
 import { SdModelOptimizersType } from '../../../../types/sd-model-optimizers';
@@ -15,13 +12,12 @@ import { useSocket } from '../../../providers/SocketProvider';
 import { OptimizerChip } from './OptimizerChip';
 
 export const Optimizers = () => {
-  const [{ embeddings, hypernetworks, loras, lycoris }, setOptimizers] =
-    useState<SdModelOptimizersType>({
-      embeddings: [],
-      hypernetworks: [],
-      loras: [],
-      lycoris: [],
-    });
+  const [{ embeddings, hypernetworks, loras, lycoris }, setOptimizers] = useState<SdModelOptimizersType>({
+    embeddings: [],
+    hypernetworks: [],
+    loras: [],
+    lycoris: [],
+  });
   const emit = useEmitters();
   const socket = useSocket();
   const isOptimizerActive = useAppSelector(selectHasOptimizerTag);
@@ -32,12 +28,9 @@ export const Optimizers = () => {
   });
 
   useEffect(() => {
-    socket.on(
-      SocketEvent.FETCH_OPTIMIZERS,
-      (optimizers: SdModelOptimizersType) => {
-        setOptimizers(optimizers);
-      }
-    );
+    socket.on(SocketEvent.FETCH_OPTIMIZERS, (optimizers: SdModelOptimizersType) => {
+      setOptimizers(optimizers);
+    });
 
     return () => {
       socket.off(SocketEvent.FETCH_OPTIMIZERS);

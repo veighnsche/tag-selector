@@ -24,9 +24,7 @@ export const VolumeControl = ({ location, tag }: VolumeControlProps) => {
   const dispatch = useAppDispatch();
   return (
     <ButtonGroup fullWidth color={buttonColorMap[location]}>
-      <Tooltip
-        title={'Hiding will add this tag to the prompt, but will not show it'}
-      >
+      <Tooltip title={'Hiding will add this tag to the prompt, but will not show it'}>
         <Button
           variant={tag.hidden ? 'contained' : 'outlined'}
           onClick={() => {
@@ -36,9 +34,7 @@ export const VolumeControl = ({ location, tag }: VolumeControlProps) => {
           {tag.hidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
         </Button>
       </Tooltip>
-      <Tooltip
-        title={'Muting will prevent this tag from being added to the prompt'}
-      >
+      <Tooltip title={'Muting will prevent this tag from being added to the prompt'}>
         <Button
           variant={tag.muted ? 'contained' : 'outlined'}
           onClick={() => {

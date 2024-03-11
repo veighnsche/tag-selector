@@ -3,12 +3,7 @@ import { useRef } from 'react';
 import { useTagDnD } from '../../../../hooks/useTagDnD';
 import { OptimizerTagProps } from './OptimizerTag';
 
-export const EmbeddingTagChip = ({
-  location,
-  tag,
-  arrayIdx,
-  ...props
-}: Omit<OptimizerTagProps, 'type'>) => {
+export const EmbeddingTagChip = ({ location, tag, arrayIdx, ...props }: Omit<OptimizerTagProps, 'type'>) => {
   const ref = useRef<HTMLDivElement>(null);
   const [, tagDnd] = useTagDnD({
     location,

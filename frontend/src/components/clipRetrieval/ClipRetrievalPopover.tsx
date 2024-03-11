@@ -9,12 +9,7 @@ interface ClipRetrievalPopoverProps {
   prompt: string;
 }
 
-export const ClipRetrievalPopover = ({
-  anchorEl,
-  handleClose,
-  isOpen,
-  prompt,
-}: ClipRetrievalPopoverProps) => {
+export const ClipRetrievalPopover = ({ anchorEl, handleClose, isOpen, prompt }: ClipRetrievalPopoverProps) => {
   const boxRef = useRef<HTMLDivElement>(null);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
 
@@ -68,21 +63,9 @@ export const ClipRetrievalPopover = ({
       <Typography variant="h6" align="center">
         {prompt}
       </Typography>
-      <Box
-        height="30vh"
-        width="100%"
-        display="flex"
-        flexWrap="nowrap"
-        overflow="auto"
-        ref={boxRef}
-      >
+      <Box height="30vh" width="100%" display="flex" flexWrap="nowrap" overflow="auto" ref={boxRef}>
         {images.map((img) => (
-          <img
-            key={img.src}
-            src={img.src}
-            alt={img.alt}
-            style={{ width: 'auto', height: '100%' }}
-          />
+          <img key={img.src} src={img.src} alt={img.alt} style={{ width: 'auto', height: '100%' }} />
         ))}
       </Box>
     </Popover>

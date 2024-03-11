@@ -3,10 +3,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import { Button } from '@mui/material';
 import { useEmitters } from '../../../../hooks/useEmitters';
 import { useAppSelector } from '../../../../store';
-import {
-  selectIsPlaying,
-  selectSdStatus,
-} from '../../../../store/reducers/sdStatus';
+import { selectIsPlaying, selectSdStatus } from '../../../../store/reducers/sdStatus';
 import { SdStatus } from '../../../../types';
 
 export const StopOrSkipButton = () => {

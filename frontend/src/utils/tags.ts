@@ -49,15 +49,8 @@ export function getNameAndStrength(name: string): Omit<TagType, 'id'> {
   return { name: nameWithoutParentheses, strength };
 }
 
-export function findTag(
-  state: PromptTagsType,
-  id: TagType['id']
-): keyof PromptTagsType {
-  const locations: Readonly<(keyof PromptTagsType)[]> = [
-    'tags',
-    'negativeTags',
-    'tagPool',
-  ] as const;
+export function findTag(state: PromptTagsType, id: TagType['id']): keyof PromptTagsType {
+  const locations: Readonly<(keyof PromptTagsType)[]> = ['tags', 'negativeTags', 'tagPool'] as const;
   for (const location of locations) {
     const index = state[location].findIndex((tag) => tag.id === id);
     if (index !== -1) {

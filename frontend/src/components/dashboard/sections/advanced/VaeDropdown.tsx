@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React from 'react';
 import { useEffectOnce } from '../../../../hooks/useEffectOnce';
 import { useEmitters } from '../../../../hooks/useEmitters';

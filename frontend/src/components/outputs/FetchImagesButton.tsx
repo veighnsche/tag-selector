@@ -22,9 +22,7 @@ export const FetchImagesButton = ({ rowsPerPage }: { rowsPerPage: number }) => {
     // get last image name
     const lastImage = images[images.length - 1];
     const lastImageSplitSlash = lastImage.split('/');
-    const lastImageNumber = Number(
-      lastImageSplitSlash[lastImageSplitSlash.length - 1].split('-')[0]
-    );
+    const lastImageNumber = Number(lastImageSplitSlash[lastImageSplitSlash.length - 1].split('-')[0]);
 
     const params: GetImagesPathsType = {
       amount: 15,
@@ -36,13 +34,7 @@ export const FetchImagesButton = ({ rowsPerPage }: { rowsPerPage: number }) => {
 
   // button with icon
   return (
-    <StyledButton
-      rowsPerPage={rowsPerPage}
-      onClick={handleClick}
-      size="large"
-      variant="outlined"
-      color="primary"
-    >
+    <StyledButton rowsPerPage={rowsPerPage} onClick={handleClick} size="large" variant="outlined" color="primary">
       More images
     </StyledButton>
   );

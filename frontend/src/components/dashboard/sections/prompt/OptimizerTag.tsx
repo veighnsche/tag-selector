@@ -1,11 +1,7 @@
 import { Chip, Tooltip } from '@mui/material';
 import { deepOrange, deepPurple, teal } from '@mui/material/colors';
 import { ComponentProps, MouseEvent, ReactElement, useState } from 'react';
-import {
-  OptimizerTypes,
-  PromptTagsType,
-  TagType,
-} from '../../../../types/image-input';
+import { OptimizerTypes, PromptTagsType, TagType } from '../../../../types/image-input';
 import { makeTagLabel } from '../../../../utils/tags';
 import { EmbeddingIcon } from '../../../icons/EmbeddingIcon';
 import { HypernetworkIcon } from '../../../icons/HypernetworkIcon';
@@ -27,22 +23,14 @@ const colorsMap: Record<OptimizerTypes, string> = {
   [OptimizerTypes.LYCORIS]: teal[500],
 };
 
-export interface OptimizerTagProps
-  extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
+export interface OptimizerTagProps extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
   type: OptimizerTypes;
   location: keyof PromptTagsType;
   tag: TagType;
   arrayIdx: number;
 }
 
-export const OptimizerTag = ({
-  tag,
-  type,
-  sx,
-  location,
-  arrayIdx,
-  ...props
-}: OptimizerTagProps) => {
+export const OptimizerTag = ({ tag, type, sx, location, arrayIdx, ...props }: OptimizerTagProps) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const label = makeTagLabel(tag);
@@ -72,20 +60,10 @@ export const OptimizerTag = ({
     <>
       <Tooltip title={type}>
         <div>
-          <EmbeddingTagChip
-            location={location}
-            arrayIdx={arrayIdx}
-            tag={tag}
-            {...chipProps}
-          />
+          <EmbeddingTagChip location={location} arrayIdx={arrayIdx} tag={tag} {...chipProps} />
         </div>
       </Tooltip>
-      <OptimizerEditMenu
-        isOpen={isMenuOpen}
-        handleClose={handleMenuClose}
-        anchorEl={menuAnchorEl}
-        tag={tag}
-      />
+      <OptimizerEditMenu isOpen={isMenuOpen} handleClose={handleMenuClose} anchorEl={menuAnchorEl} tag={tag} />
     </>
   );
 };

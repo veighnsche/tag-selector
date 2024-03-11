@@ -20,12 +20,7 @@ import {
   setHRFScale,
   setHRFSteps,
 } from '../../../../store/reducers/inputs';
-import {
-  SliderControl,
-  SliderLabel,
-  SliderTextField,
-  SliderTextWrapper,
-} from '../../../styled/Slider';
+import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider';
 import { UpscalerWrapper } from './UpscalersWrapper';
 
 const StyledPaper = styled(Paper)`
@@ -136,9 +131,7 @@ export const HighResFix = () => {
             size="small"
             variant="standard"
             value={values.denoisingStrength}
-            onChange={(e) =>
-              dispatch(setHRFDenoisingStrength(Number(e.target.value)))
-            }
+            onChange={(e) => dispatch(setHRFDenoisingStrength(Number(e.target.value)))}
             InputProps={{
               disableUnderline: true,
             }}
@@ -150,9 +143,7 @@ export const HighResFix = () => {
           step={0.01}
           size="small"
           value={values.denoisingStrength}
-          onChange={(e, value) =>
-            dispatch(setHRFDenoisingStrength(value as number))
-          }
+          onChange={(e, value) => dispatch(setHRFDenoisingStrength(value as number))}
         />
       </SliderControl>
     </StyledPaper>

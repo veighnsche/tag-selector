@@ -1,12 +1,6 @@
 import styled from '@emotion/styled';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import {
-  Box,
-  FormControlLabel,
-  Switch,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import { initialPromptTagsState } from '../../store/reducers/tags';
 import { PromptTagsType, TagType } from '../../types/image-input';
@@ -24,10 +18,7 @@ const TagContainer = styled.div`
   gap: 0.25rem;
 `;
 
-export const ImageTagList = ({
-  tags = [],
-  promptTags = initialPromptTagsState,
-}: ImageTagsProps) => {
+export const ImageTagList = ({ tags = [], promptTags = initialPromptTagsState }: ImageTagsProps) => {
   const [showAI, setShowAI] = useState(true);
   const [showPrompt, setShowPrompt] = useState(true);
   const [showNegative, setShowNegative] = useState(false);
@@ -72,38 +63,17 @@ export const ImageTagList = ({
 
   return (
     <>
-      <Box
-        pl="1.5rem"
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        gap="0.25rem"
-      >
+      <Box pl="1.5rem" display="flex" flexDirection="row" alignItems="center" gap="0.25rem">
         <Typography sx={{ m: '0' }}>Tags</Typography>
         <Tooltip title="Left-click to add to the tags pool, then keep clicking to cycle through the pools">
-          <InfoOutlinedIcon
-            fontSize="small"
-            sx={{ color: 'text.secondary', mr: '1rem' }}
-          />
+          <InfoOutlinedIcon fontSize="small" sx={{ color: 'text.secondary', mr: '1rem' }} />
         </Tooltip>
         <FormControlLabel
-          control={
-            <Switch
-              onChange={(e) => setShowAI(e.target.checked)}
-              checked={showAI}
-              size="small"
-            />
-          }
+          control={<Switch onChange={(e) => setShowAI(e.target.checked)} checked={showAI} size="small" />}
           label="AI"
         />
         <FormControlLabel
-          control={
-            <Switch
-              onChange={(e) => setShowPrompt(e.target.checked)}
-              checked={showPrompt}
-              size="small"
-            />
-          }
+          control={<Switch onChange={(e) => setShowPrompt(e.target.checked)} checked={showPrompt} size="small" />}
           label="Prompt"
         />
         <FormControlLabel

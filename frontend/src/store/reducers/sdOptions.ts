@@ -19,10 +19,7 @@ export const sdOptionsSlice = createSlice({
   name: 'sdOptions',
   initialState,
   reducers: {
-    setSdOptions: (
-      state,
-      action: PayloadAction<{ options: SdOptionsType }>
-    ) => {
+    setSdOptions: (state, action: PayloadAction<{ options: SdOptionsType }>) => {
       state.options = action.payload.options;
     },
   },
@@ -30,12 +27,9 @@ export const sdOptionsSlice = createSlice({
 
 export const { setSdOptions } = sdOptionsSlice.actions;
 
-export const selectCurrentModel = (state: RootState) =>
-  state.sdOptions.options.sd_model_checkpoint;
-export const selectCurrentClipSkip = (state: RootState) =>
-  state.sdOptions.options.CLIP_stop_at_last_layers;
-export const selectCurrentVae = (state: RootState) =>
-  state.sdOptions.options.sd_vae;
+export const selectCurrentModel = (state: RootState) => state.sdOptions.options.sd_model_checkpoint;
+export const selectCurrentClipSkip = (state: RootState) => state.sdOptions.options.CLIP_stop_at_last_layers;
+export const selectCurrentVae = (state: RootState) => state.sdOptions.options.sd_vae;
 export const selectCurrentTagScanThreshold = (state: RootState) =>
   state.sdOptions.options.interrogate_deepbooru_score_threshold;
 

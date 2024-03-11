@@ -1,14 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Chip, IconButton, Paper, Typography } from '@mui/material';
-import {
-  ComponentProps,
-  MouseEvent,
-  ReactNode,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ComponentProps, MouseEvent, ReactNode, useMemo, useRef, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { RootState, useAppDispatch, useAppSelector } from '../../../../store';
 import {
@@ -18,37 +11,26 @@ import {
   selectTagPool,
   selectTags,
 } from '../../../../store/reducers/tags';
-import {
-  selectIsDragging,
-  selectShowHiddenTags,
-  setIsDragging,
-} from '../../../../store/reducers/tagsState';
+import { selectIsDragging, selectShowHiddenTags, setIsDragging } from '../../../../store/reducers/tagsState';
 import { TagType } from '../../../../types';
 import { PromptTagsType } from '../../../../types/image-input';
 import { OptimizerTag } from './OptimizerTag';
 import { Tag } from './Tag';
 import { TagAddMenu } from './TagAddMenu';
 
-const selectMap: Record<keyof PromptTagsType, (state: RootState) => TagType[]> =
-  {
-    tags: selectTags,
-    negativeTags: selectNegativeTags,
-    tagPool: selectTagPool,
-  };
+const selectMap: Record<keyof PromptTagsType, (state: RootState) => TagType[]> = {
+  tags: selectTags,
+  negativeTags: selectNegativeTags,
+  tagPool: selectTagPool,
+};
 
-const typographyColorMap: Record<
-  keyof PromptTagsType,
-  ComponentProps<typeof Typography>['color']
-> = {
+const typographyColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Typography>['color']> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: 'default',
 };
 
-const chipColorMap: Record<
-  keyof PromptTagsType,
-  ComponentProps<typeof Chip>['color']
-> = {
+const chipColorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: 'default',
@@ -60,10 +42,7 @@ const displayMap: Record<keyof PromptTagsType, ReactNode> = {
   tagPool: (
     <>
       Tag Pool
-      <span style={{ opacity: 0.5, fontSize: '0.75rem' }}>
-        {' '}
-        (unused in prompt)
-      </span>
+      <span style={{ opacity: 0.5, fontSize: '0.75rem' }}> (unused in prompt)</span>
     </>
   ),
 };
@@ -79,10 +58,7 @@ export const TagList = ({ location }: TagPaperProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpen = Boolean(anchorEl);
   const showHidden = useAppSelector(selectShowHiddenTags);
-  const viewedTags = useMemo(
-    () => (showHidden ? tags : tags.filter((tag) => !tag.hidden)),
-    [showHidden, tags]
-  );
+  const viewedTags = useMemo(() => (showHidden ? tags : tags.filter((tag) => !tag.hidden)), [showHidden, tags]);
 
   const binDropRef = useRef<HTMLDivElement>(null);
   const isDragging = useAppSelector(selectIsDragging);
@@ -131,21 +107,9 @@ export const TagList = ({ location }: TagPaperProps) => {
   binDrop(binDropRef);
 
   return (
-    <Box
-      ref={dropRef}
-      height={location === 'tagPool' ? '75%' : '100%'}
-      sx={{ position: 'relative' }}
-    >
-      <Paper
-        elevation={isOver ? 4 : 2}
-        sx={{ height: '100%', p: '0.5rem' }}
-        square
-      >
-        <Typography
-          variant="caption"
-          sx={{ ml: '0.5rem', opacity: 0.5 }}
-          color={typographyColorMap[location]}
-        >
+    <Box ref={dropRef} height={location === 'tagPool' ? '75%' : '100%'} sx={{ position: 'relative' }}>
+      <Paper elevation={isOver ? 4 : 2} sx={{ height: '100%', p: '0.5rem' }} square>
+        <Typography variant="caption" sx={{ ml: '0.5rem', opacity: 0.5 }} color={typographyColorMap[location]}>
           {displayMap[location]}
         </Typography>
         <Box display="flex" flexWrap="wrap" gap="0.25rem" alignItems="center">
@@ -162,27 +126,12 @@ export const TagList = ({ location }: TagPaperProps) => {
           >
             {isDragging ? <DeleteIcon /> : <AddIcon />}
           </IconButton>
-          <TagAddMenu
-            isOpen={isOpen}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            location={location}
-          />
+          <TagAddMenu isOpen={isOpen} anchorEl={anchorEl} onClose={handleClose} location={location} />
           {viewedTags.map((tag, idx) => {
             if (tag.optimizer) {
-              return (
-                <OptimizerTag
-                  key={tag.id}
-                  type={tag.optimizer}
-                  tag={tag}
-                  location={location}
-                  arrayIdx={idx}
-                />
-              );
+              return <OptimizerTag key={tag.id} type={tag.optimizer} tag={tag} location={location} arrayIdx={idx} />;
             }
-            return (
-              <Tag key={tag.id} location={location} tag={tag} arrayIdx={idx} />
-            );
+            return <Tag key={tag.id} location={location} tag={tag} arrayIdx={idx} />;
           })}
         </Box>
       </Paper>

@@ -1,12 +1,7 @@
 import { Chip } from '@mui/material';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import {
-  moveTagBetweenLocations,
-  newTag,
-  selectGetId,
-  selectLocateTagByName,
-} from '../../store/reducers/tags';
+import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTagByName } from '../../store/reducers/tags';
 import { TagType } from '../../types';
 import { makeTagLabel } from '../../utils/tags';
 // import { ClipRetrievalPopover } from '../clipRetrieval/ClipRetrievalPopover'

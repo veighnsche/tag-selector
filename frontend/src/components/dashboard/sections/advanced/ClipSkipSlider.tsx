@@ -4,12 +4,7 @@ import { useEmitters } from '../../../../hooks/useEmitters';
 import { useAppSelector } from '../../../../store';
 import { selectSteps } from '../../../../store/reducers/inputs';
 import { selectCurrentClipSkip } from '../../../../store/reducers/sdOptions';
-import {
-  SliderControl,
-  SliderLabel,
-  SliderTextField,
-  SliderTextWrapper,
-} from '../../../styled/Slider';
+import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider';
 
 export const ClipSkipSlider = () => {
   const currentClipSkip = useAppSelector(selectCurrentClipSkip);

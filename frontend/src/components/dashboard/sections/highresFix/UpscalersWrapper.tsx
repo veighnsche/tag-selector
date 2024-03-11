@@ -31,13 +31,10 @@ export const UpscalerWrapper = ({ children }: UpscalerWrapperProps) => {
   });
 
   useEffect(() => {
-    socket.on(
-      SocketEvent.FETCH_UPSCALERS,
-      ({ upscalers }: { upscalers: SdUpscalersType[] }) => {
-        setUpscalers(upscalers);
-        setLoading(false);
-      }
-    );
+    socket.on(SocketEvent.FETCH_UPSCALERS, ({ upscalers }: { upscalers: SdUpscalersType[] }) => {
+      setUpscalers(upscalers);
+      setLoading(false);
+    });
 
     return () => {
       socket.off(SocketEvent.FETCH_UPSCALERS);

@@ -4,11 +4,7 @@ import { Button } from '@mui/material';
 import { useEffect } from 'react';
 import { useGenerateImage } from '../../../../hooks/useGenerateImage';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import {
-  selectIsPlaying,
-  selectSdStatus,
-  toggleIsPlaying,
-} from '../../../../store/reducers/sdStatus';
+import { selectIsPlaying, selectSdStatus, toggleIsPlaying } from '../../../../store/reducers/sdStatus';
 import { SdStatus } from '../../../../types';
 
 export const PlayButton = () => {

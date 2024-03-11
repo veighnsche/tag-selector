@@ -53,13 +53,9 @@ export const imagesSlice = createSlice({
       if (previousIndex < 0) return;
       state.imageModal = state.images[previousIndex];
     },
-    setImageData: (
-      state,
-      action: PayloadAction<{ filename: string } & FetchImageDataType>
-    ) => {
+    setImageData: (state, action: PayloadAction<{ filename: string } & FetchImageDataType>) => {
       state.imageData[action.payload.filename] = action.payload.imageData;
-      state.imageCustomData[action.payload.filename] =
-        action.payload.tagSelectorData;
+      state.imageCustomData[action.payload.filename] = action.payload.tagSelectorData;
     },
   },
 });

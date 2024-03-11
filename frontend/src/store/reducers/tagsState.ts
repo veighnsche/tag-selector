@@ -26,9 +26,7 @@ export const tagsState = createSlice({
 
 export const { setIsDragging, toggleShowHiddenTags } = tagsState.actions;
 
-export const selectIsDragging = (state: RootState) =>
-  state.tagsState.isDragging;
-export const selectShowHiddenTags = (state: RootState) =>
-  state.tagsState.showHiddenTags;
+export const selectIsDragging = (state: RootState) => state.tagsState.isDragging;
+export const selectShowHiddenTags = (state: RootState) => state.tagsState.showHiddenTags;
 
 export const tagsStateReducer = tagsState.reducer;

@@ -1,11 +1,6 @@
 import styled from '@emotion/styled';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Paper,
-} from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Paper } from '@mui/material';
 import React from 'react';
 import { AdvancedOptionsLayout } from './sections/advanced/layout';
 import { HeaderLayout } from './sections/header/layout';
@@ -63,10 +58,9 @@ enum AccordionNames {
 export const DashboardLayout = () => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <LayoutGrid>
@@ -92,11 +86,7 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Options}
             onChange={handleChange(AccordionNames.Options)}
           >
-            <AccordionSummary
-              expandIcon={
-                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
-              }
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />}>
               <OptionsSummary />
             </AccordionSummary>
             <AccordionDetails>
@@ -108,11 +98,7 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.HighResFix}
             onChange={handleChange(AccordionNames.HighResFix)}
           >
-            <AccordionSummary
-              expandIcon={
-                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
-              }
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />}>
               HighRes Fix
             </AccordionSummary>
             <AccordionDetails>
@@ -124,11 +110,7 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Optimizers}
             onChange={handleChange(AccordionNames.Optimizers)}
           >
-            <AccordionSummary
-              expandIcon={
-                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
-              }
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />}>
               Optimizers
             </AccordionSummary>
             <AccordionDetails>
@@ -140,11 +122,7 @@ export const DashboardLayout = () => {
             expanded={expanded === AccordionNames.Advanced}
             onChange={handleChange(AccordionNames.Advanced)}
           >
-            <AccordionSummary
-              expandIcon={
-                <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />
-              }
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />}>
               Advanced options
             </AccordionSummary>
             <AccordionDetails>

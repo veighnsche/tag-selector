@@ -1,10 +1,6 @@
 import { useSocket } from '../components/providers/SocketProvider';
 import { useAppDispatch, useAppSelector } from '../store';
-import {
-  selectImageCustomData,
-  selectImageData,
-  setImageData,
-} from '../store/reducers/images';
+import { selectImageCustomData, selectImageData, setImageData } from '../store/reducers/images';
 import { SocketEvent } from '../types';
 import { FetchImageDataType } from '../types/fetch-image-data';
 import { FullImageDataType } from '../types/image-data';

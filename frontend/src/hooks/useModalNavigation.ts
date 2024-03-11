@@ -28,15 +28,12 @@ export function useModalNavigation() {
     if (!isLastImage) {
       dispatch(nextModalImage());
     } else if (modalImage) {
-      socket.on(
-        SocketEvent.FETCH_IMAGES_MODAL,
-        ({ nextImage }: { nextImage: string }) => {
-          if (nextImage) {
-            dispatch(setModalImage(nextImage));
-          }
-          socket.off(SocketEvent.FETCH_IMAGES_MODAL);
+      socket.on(SocketEvent.FETCH_IMAGES_MODAL, ({ nextImage }: { nextImage: string }) => {
+        if (nextImage) {
+          dispatch(setModalImage(nextImage));
         }
-      );
+        socket.off(SocketEvent.FETCH_IMAGES_MODAL);
+      });
       // todo: toIndex should be the filename
       emit.fetchImagesModal({
         amount: 10,

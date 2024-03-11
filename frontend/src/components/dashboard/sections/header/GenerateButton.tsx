@@ -45,12 +45,7 @@ export const GenerateButton = () => {
   }
 
   return (
-    <StyledButton
-      busy={!!eta}
-      variant="contained"
-      onClick={handleClick}
-      disabled={sdStatus === SdStatus.BUSY}
-    >
+    <StyledButton busy={!!eta} variant="contained" onClick={handleClick} disabled={sdStatus === SdStatus.BUSY}>
       {eta ? `${eta}` : 'Generate one'}
     </StyledButton>
   );

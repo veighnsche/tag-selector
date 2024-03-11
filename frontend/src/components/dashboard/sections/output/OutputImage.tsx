@@ -27,8 +27,7 @@ interface ImageOutputResponseType {
 
 export const OutputImage = () => {
   const socket = useSocket();
-  const [generateImageData, setGenerateImageData] =
-    useState<ImageOutputType | null>(null);
+  const [generateImageData, setGenerateImageData] = useState<ImageOutputType | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -56,12 +55,9 @@ export const OutputImage = () => {
   }, []);
 
   useEffect(() => {
-    socket.on(
-      SocketEvent.IMAGE_OUTPUT,
-      ({ images }: ImageOutputResponseType) => {
-        dispatch(addImagesToStart(images));
-      }
-    );
+    socket.on(SocketEvent.IMAGE_OUTPUT, ({ images }: ImageOutputResponseType) => {
+      dispatch(addImagesToStart(images));
+    });
 
     return () => {
       socket.off(SocketEvent.IMAGE_OUTPUT);

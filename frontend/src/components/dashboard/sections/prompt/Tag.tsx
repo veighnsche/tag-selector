@@ -6,10 +6,7 @@ import { makeTagLabel } from '../../../../utils/tags';
 // import { ClipRetrievalPopover } from '../../../clipRetrieval/ClipRetrievalPopover'
 import { TagEditMenu } from './TagEditMenu';
 
-const colorMap: Record<
-  keyof PromptTagsType,
-  ComponentProps<typeof Chip>['color']
-> = {
+const colorMap: Record<keyof PromptTagsType, ComponentProps<typeof Chip>['color']> = {
   tags: 'primary',
   negativeTags: 'secondary',
   tagPool: 'default',
@@ -53,12 +50,7 @@ export const Tag = ({ location, tag, arrayIdx }: TagsProps) => {
         //   setClipAnchorEl(e.currentTarget)
         // }}
       />
-      <TagEditMenu
-        isOpen={isMenuOpen}
-        handleClose={() => setMenuAnchorEl(null)}
-        anchorEl={menuAnchorEl}
-        tag={tag}
-      />
+      <TagEditMenu isOpen={isMenuOpen} handleClose={() => setMenuAnchorEl(null)} anchorEl={menuAnchorEl} tag={tag} />
       {/*<ClipRetrievalPopover*/}
       {/*  anchorEl={clipAnchorEl}*/}
       {/*  handleClose={() => setClipAnchorEl(null)}*/}

@@ -83,10 +83,7 @@ export const inputsSlice = createSlice({
     setHRFDenoisingStrength: (state, action: PayloadAction<number>) => {
       state.options.highResFix.denoisingStrength = action.payload;
     },
-    setInputsFromImageData: (
-      state,
-      action: PayloadAction<Partial<ImageDataType>>
-    ) => {
+    setInputsFromImageData: (state, action: PayloadAction<Partial<ImageDataType>>) => {
       const imageData = action.payload;
 
       if (imageData.prompt) {
@@ -138,8 +135,7 @@ export const {
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectScene = (state: RootState) => state.inputs.prompt.scene;
-export const selectNegativePrompt = (state: RootState) =>
-  state.inputs.prompt.negativePrompt;
+export const selectNegativePrompt = (state: RootState) => state.inputs.prompt.negativePrompt;
 export const selectSize = (state: RootState) => {
   const { width, height } = state.inputs.options;
   return { width, height };

@@ -32,12 +32,9 @@ export const SdOptionsProvider = ({ children }: SdOptionsProviderProps) => {
   });
 
   useEffect(() => {
-    socket.on(
-      SocketEvent.FETCH_SD_OPTIONS,
-      ({ options }: { options: SdOptionsType }) => {
-        dispatch(setSdOptions({ options }));
-      }
-    );
+    socket.on(SocketEvent.FETCH_SD_OPTIONS, ({ options }: { options: SdOptionsType }) => {
+      dispatch(setSdOptions({ options }));
+    });
 
     return () => {
       socket.off(SocketEvent.FETCH_SD_OPTIONS);

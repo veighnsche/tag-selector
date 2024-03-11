@@ -31,13 +31,10 @@ export const SamplingWrapper = ({ children }: SamplingWrapperProps) => {
   });
 
   useEffect(() => {
-    socket.on(
-      SocketEvent.FETCH_SAMPLERS,
-      ({ samplers }: { samplers: SdSamplersType[] }) => {
-        setSamplers(samplers);
-        setLoading(false);
-      }
-    );
+    socket.on(SocketEvent.FETCH_SAMPLERS, ({ samplers }: { samplers: SdSamplersType[] }) => {
+      setSamplers(samplers);
+      setLoading(false);
+    });
 
     return () => {
       socket.off(SocketEvent.FETCH_SAMPLERS);

@@ -1,11 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from '@mui/material';
+import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { selectScene, setScene } from '../../../../store/reducers/inputs';
@@ -43,21 +37,14 @@ export const Scene = () => {
           onBlur={() => dispatch(setScene(text))}
           startAdornment={
             <InputAdornment position="start">
-              <IconButton
-                size="small"
-                onClick={(event) => setMenuAnchorEl(event.currentTarget)}
-              >
+              <IconButton size="small" onClick={(event) => setMenuAnchorEl(event.currentTarget)}>
                 <MenuIcon fontSize="small" />
               </IconButton>
             </InputAdornment>
           }
         />
       </FormControl>
-      <TagMenu
-        isMenuOpen={isMenuOpen}
-        onClose={handleClose}
-        menuAnchorEl={menuAnchorEl}
-      />
+      <TagMenu isMenuOpen={isMenuOpen} onClose={handleClose} menuAnchorEl={menuAnchorEl} />
     </>
   );
 };

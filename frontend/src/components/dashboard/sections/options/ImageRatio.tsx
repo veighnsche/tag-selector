@@ -23,13 +23,7 @@ const RatioButtonAr = styled(Button)`
   height: 4rem;
 `;
 
-const totalPixelChoices = [
-  512 * 512,
-  512 * 768,
-  768 * 768,
-  768 * 1024,
-  1024 * 1024,
-];
+const totalPixelChoices = [512 * 512, 512 * 768, 768 * 768, 768 * 1024, 1024 * 1024];
 
 const aspectRatioChoices = [
   { width: 4, height: 3 },
@@ -40,11 +34,7 @@ const aspectRatioChoices = [
   { width: 2.39, height: 1 },
 ];
 
-function calculateRatio(
-  totalPixels: number,
-  widthRatio: number,
-  heightRatio: number
-) {
+function calculateRatio(totalPixels: number, widthRatio: number, heightRatio: number) {
   const width = Math.sqrt(totalPixels * (heightRatio / widthRatio));
   const height = width * (widthRatio / heightRatio);
 
@@ -87,8 +77,7 @@ export const ImageRatio = () => {
       ))}
 
       {imageSizes.map(({ width, height }) => {
-        const isSelected =
-          selectedSize.width === width && selectedSize.height === height;
+        const isSelected = selectedSize.width === width && selectedSize.height === height;
 
         const handleClick = () => {
           dispatch(setSize({ width, height }));

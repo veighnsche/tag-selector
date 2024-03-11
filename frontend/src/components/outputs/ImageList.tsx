@@ -2,14 +2,7 @@ import styled from '@emotion/styled';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  Pagination,
-  Tooltip,
-} from '@mui/material';
+import { Box, Button, ButtonGroup, IconButton, Pagination, Tooltip } from '@mui/material';
 import React, { useEffect, useMemo } from 'react';
 import { useViewDimensions } from '../../hooks/useViewDimensions';
 import { useAppSelector } from '../../store';
@@ -90,10 +83,7 @@ export const ImageList = () => {
   const { width: viewWidth, height: viewHeight } = useViewDimensions();
 
   const imageHeight = viewHeight * (0.9 / rowsPerPage);
-  const imagesPlusFetchButton = [
-    ...images,
-    `-${(2 / 3) * imageHeight}x${imageHeight}`,
-  ];
+  const imagesPlusFetchButton = [...images, `-${(2 / 3) * imageHeight}x${imageHeight}`];
   const gap = 4;
 
   const imagesPerPage = useMemo(() => {
@@ -138,9 +128,7 @@ export const ImageList = () => {
   }, [imagesPerPage]);
 
   const displayedImages = useMemo(() => {
-    const startIndex = imagesPerPage
-      .slice(0, page - 1)
-      .reduce((a, b) => a + b, 0);
+    const startIndex = imagesPerPage.slice(0, page - 1).reduce((a, b) => a + b, 0);
     const endIndex = startIndex + imagesPerPage[page - 1];
     return images.slice(startIndex, endIndex);
   }, [images.length, imagesPerPage, page, rowsPerPage]);
@@ -162,14 +150,8 @@ export const ImageList = () => {
           {displayedImages.map((image, index) => (
             <ImageDataWrapper key={image} filename={image} arrayIdx={index}>
               {({ setSeed, handleDelete, openModal }) => (
-                <ImageButtonsContainer
-                  onClick={openModal}
-                  rowsPerPage={rowsPerPage}
-                >
-                  <StyledImage
-                    src={prefixWithImageUrl(image)}
-                    rowsPerPage={rowsPerPage}
-                  />
+                <ImageButtonsContainer onClick={openModal} rowsPerPage={rowsPerPage}>
+                  <StyledImage src={prefixWithImageUrl(image)} rowsPerPage={rowsPerPage} />
                   <Tooltip title={'Set seed from image'}>
                     <SetSeedButton
                       onClick={(e) => {
@@ -194,25 +176,12 @@ export const ImageList = () => {
               )}
             </ImageDataWrapper>
           ))}
-          {page === imagesPerPage.length ? (
-            <FetchImagesButton rowsPerPage={rowsPerPage} />
-          ) : null}
+          {page === imagesPerPage.length ? <FetchImagesButton rowsPerPage={rowsPerPage} /> : null}
         </ImageListFlex>
       </ImageListWrapper>
-      <Box
-        position="relative"
-        width="100%"
-        display="flex"
-        flexDirection="column"
-        justifyContent="space-between"
-      >
+      <Box position="relative" width="100%" display="flex" flexDirection="column" justifyContent="space-between">
         <Box position="absolute" top="0" right="0">
-          <ButtonGroup
-            size="small"
-            variant="outlined"
-            color="inherit"
-            sx={{ opacity: '30%' }}
-          >
+          <ButtonGroup size="small" variant="outlined" color="inherit" sx={{ opacity: '30%' }}>
             <Button onClick={handleZoom('out')}>
               <ZoomOutIcon />
             </Button>

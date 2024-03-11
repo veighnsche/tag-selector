@@ -17,21 +17,10 @@ import React from 'react';
 import { useFetchImageData } from '../../../../hooks/useFetchImageData';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { selectLastSeed } from '../../../../store/reducers/images';
-import {
-  selectSliders,
-  setCfg,
-  setRestoreFaces,
-  setSeed,
-  setSteps,
-} from '../../../../store/reducers/inputs';
+import { selectSliders, setCfg, setRestoreFaces, setSeed, setSteps } from '../../../../store/reducers/inputs';
 import { RandomIcon } from '../../../icons/RandomIcon';
 import { RecycleIcon } from '../../../icons/RecycleIcon';
-import {
-  SliderControl,
-  SliderLabel,
-  SliderTextField,
-  SliderTextWrapper,
-} from '../../../styled/Slider';
+import { SliderControl, SliderLabel, SliderTextField, SliderTextWrapper } from '../../../styled/Slider';
 import { SamplingWrapper } from './SamplingWrapper';
 import { SdModelWrapper } from './SdModelWrapper';
 

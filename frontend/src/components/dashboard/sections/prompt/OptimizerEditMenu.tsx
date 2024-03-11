@@ -12,12 +12,7 @@ interface OptimizerEditMenuProps {
   tag: TagType;
 }
 
-export const OptimizerEditMenu = ({
-  isOpen,
-  handleClose,
-  anchorEl,
-  tag,
-}: OptimizerEditMenuProps) => {
+export const OptimizerEditMenu = ({ isOpen, handleClose, anchorEl, tag }: OptimizerEditMenuProps) => {
   const location = useAppSelector(selectLocateTag)(tag.id);
 
   return (

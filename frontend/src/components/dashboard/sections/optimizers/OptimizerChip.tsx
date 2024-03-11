@@ -20,20 +20,13 @@ const colorsMap: Record<OptimizerTypes, string> = {
   [OptimizerTypes.LYCORIS]: teal[500],
 };
 
-interface OptimizerChipProps
-  extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
+interface OptimizerChipProps extends Omit<ComponentProps<typeof Chip>, 'label' | 'icon'> {
   name: string;
   type: OptimizerTypes;
   active?: boolean;
 }
 
-export const OptimizerChip = ({
-  name,
-  type,
-  active,
-  sx,
-  ...props
-}: OptimizerChipProps) => (
+export const OptimizerChip = ({ name, type, active, sx, ...props }: OptimizerChipProps) => (
   <Tooltip title={type}>
     <Chip
       label={name}
