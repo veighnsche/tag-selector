@@ -14,4 +14,7 @@ export interface ImageGenerateParams {
   hr_second_pass_steps: number;
   hr_upscaler: string;
   denoising_strength: number;
+
+  "refiner_checkpoint": string,
+  "refiner_switch_at": number,
 }

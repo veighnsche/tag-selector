@@ -155,6 +155,8 @@ export function imageGenerate({
     hr_scale: highResFix.scale,
     hr_second_pass_steps: highResFix.steps,
     denoising_strength: highResFix.denoisingStrength,
+    refiner_checkpoint: "sd_xl_refiner_1.0",
+    refiner_switch_at: 80,
   }
 
   return axios.post(`${SD_URL}/sdapi/v1/txt2img`, params)
