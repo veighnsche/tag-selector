@@ -89,10 +89,10 @@ export const ImageList = () => {
   const imagesPerPage = useMemo(() => {
     let currentRow = 0;
     let widthLeft = viewWidth;
-    let imagesPerRow = [0];
+    const imagesPerRow = [0];
 
     let currentPage = 0;
-    let imagesPerPage = [0];
+    const imagesPerPage = [0];
 
     for (const image of imagesPlusFetchButton) {
       const { width, height } = extractImageSize(image);

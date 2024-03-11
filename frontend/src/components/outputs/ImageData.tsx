@@ -126,7 +126,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
 
       dispatch(setInputsFromImageData(selectedData));
 
-      let selectedTags: Partial<PromptTagsType> = {};
+      const selectedTags: Partial<PromptTagsType> = {};
       if (isSelected('tags')) {
         selectedTags.tags = promptTags;
       }

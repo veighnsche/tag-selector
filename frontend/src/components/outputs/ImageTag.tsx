@@ -1,5 +1,4 @@
 import { Chip } from '@mui/material';
-import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTagByName } from '../../store/reducers/tags';
 import { TagType } from '../../types';
