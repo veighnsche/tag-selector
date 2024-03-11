@@ -18,16 +18,26 @@ const RatioButton = styled(Button)`
   height: 4rem;
 `
 
+const RatioButtonAr = styled(Button)`
+  width: 12%;
+  height: 4rem;
+`
+
 const totalPixelChoices = [
   512 * 512,
   512 * 768,
   768 * 768,
+  768 * 1024,
+  1024 * 1024,
 ]
 
 const aspectRatioChoices = [
   { width: 4, height: 3 },
+  { width: Math.round(Math.sqrt(2) * 1000) / 1000, height: 1 },
   { width: 3, height: 2 },
   { width: 16, height: 9 },
+  { width: 2, height: 1 },
+  { width: 2.39, height: 1 },
 ]
 
 function calculateRatio(totalPixels: number, widthRatio: number, heightRatio: number) {
@@ -43,7 +53,7 @@ function calculateRatio(totalPixels: number, widthRatio: number, heightRatio: nu
 export const ImageRatio = () => {
   const dispatch = useAppDispatch()
   const selectedSize = useAppSelector(selectSize)
-  const [selectedRatio, setSelectedRatio] = useState<{ width: number, height: number }>(aspectRatioChoices[1])
+  const [selectedRatio, setSelectedRatio] = useState<{ width: number, height: number }>(aspectRatioChoices[2])
 
   const imageSizes = totalPixelChoices.flatMap((totalPixels) => [
     calculateRatio(totalPixels, selectedRatio.width, selectedRatio.height),
@@ -54,7 +64,7 @@ export const ImageRatio = () => {
   return (
     <StyledPaper elevation={2}>
       {aspectRatioChoices.map((ratio, index) => (
-        <RatioButton
+        <RatioButtonAr
           key={index}
           variant="outlined"
           onClick={() => {
@@ -68,7 +78,7 @@ export const ImageRatio = () => {
           color={selectedRatio === ratio ? 'secondary' : 'primary'}
         >
           {ratio.width}:{ratio.height}
-        </RatioButton>
+        </RatioButtonAr>
       ))}
 
       {imageSizes.map(({ width, height }) => {
