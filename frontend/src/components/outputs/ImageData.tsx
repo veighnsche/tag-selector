@@ -21,11 +21,11 @@ const StyledPaper = styled(Paper, {
 })<{
   open: boolean;
 }>`
-  width: ${(props) => (props.open ? 30 /** todo: should be a 3:2 ratio */ + 'vw' : '0vw')};
-  height: 100vh;
-  transition: width 0.8s ease-in-out;
-  overflow: hidden;
-  position: relative;
+    width: ${(props) => (props.open ? 30 /** todo: should be a 3:2 ratio */ + 'vw' : '0vw')};
+    height: 100vh;
+    transition: width 0.8s ease-in-out;
+    overflow: hidden;
+    position: relative;
 `;
 
 interface ImageDataProps {
@@ -40,8 +40,8 @@ interface ImageDataPropertyType {
 }
 
 const DataContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const propertyList: ImageDataPropertyType[] = [
@@ -113,12 +113,12 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   function replaceSelected() {
     if (data) {
       const selectedData = selected
-        .filter((selected) => propertyList.some((property) => property.property === selected))
-        .reduce((acc, curr) => {
-          const prop = curr as keyof ImageDataType;
-          acc[prop] = data.imageData[prop] as any;
-          return acc;
-        }, {} as Partial<ImageDataType>);
+      .filter((selected) => propertyList.some((property) => property.property === selected))
+      .reduce((acc, curr) => {
+        const prop = curr as keyof ImageDataType;
+        acc[prop] = data.imageData[prop] as any;
+        return acc;
+      }, {} as Partial<ImageDataType>);
 
       if (isSelected('scene')) {
         selectedData.prompt = scene;
@@ -142,7 +142,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   function toggleProperty(property: SelectableProperties) {
     if (isSelected(property)) {
       setSelected(selected.filter((p) => p !== property));
-    } else {
+    }
+    else {
       setSelected([...selected, property]);
     }
   }
@@ -193,9 +194,8 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                   fullWidth
                 />
               ) : null}
-              {propertyList.map(({ fullWidth, name, property }) => {
-                console.log({ data: data?.imageData[property] });
-                return data?.imageData[property] ? (
+              {propertyList.map(({ fullWidth, name, property }) =>
+                data?.imageData[property] ? (
                   <ImageDataProperty
                     key={property}
                     variant={buttonVariant(property)}
@@ -204,8 +204,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                     value={data?.imageData[property]}
                     fullWidth={fullWidth}
                   />
-                ) : null;
-              })}
+                ) : null)}
             </DataContainer>
           ) : null}
           <ButtonGroup fullWidth>
