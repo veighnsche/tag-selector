@@ -24,18 +24,18 @@ export async function fetchImageData(filePath: string): Promise<unknown> {
   .then(buffer => Buffer.from(buffer).toString('base64'));
 
   // then send it with axios to the '/sdapi/v1/png-info' endpoint
-  const imageDataRaw: ImageDataRawType = await axios
+  const { parameters }: ImageDataRawType = await axios
   .post(`${SD_URL}/sdapi/v1/png-info`, { image: imageBase64 })
   .then(response => response.data);
 
   // then parse the data and return it
   return {
-    model: imageDataRaw.parameters.Model,
-    width: Number(imageDataRaw.parameters['Size-1']),
-    height: Number(imageDataRaw.parameters['Size-2']),
-    steps: Number(imageDataRaw.parameters.Steps),
-    cfg: Number(imageDataRaw.parameters['CFG scale']),
-    seed: Number(imageDataRaw.parameters.Seed),
-    samplingMethod: imageDataRaw.parameters.Sampler,
+    model: parameters.Model,
+    width: Number(parameters['Size-1']),
+    height: Number(parameters['Size-2']),
+    steps: Number(parameters.Steps),
+    cfg: Number(parameters['CFG scale']),
+    seed: Number(parameters.Seed),
+    samplingMethod: parameters.Sampler,
   };
 }
