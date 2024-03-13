@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { SdOptionsType } from '../../types/sd-options';
 import { RootState } from '../index';
 
@@ -27,10 +28,24 @@ export const sdOptionsSlice = createSlice({
 
 export const { setSdOptions } = sdOptionsSlice.actions;
 
-export const selectCurrentModel = (state: RootState) => state.sdOptions.options.sd_model_checkpoint;
-export const selectCurrentClipSkip = (state: RootState) => state.sdOptions.options.CLIP_stop_at_last_layers;
-export const selectCurrentVae = (state: RootState) => state.sdOptions.options.sd_vae;
-export const selectCurrentTagScanThreshold = (state: RootState) =>
-  state.sdOptions.options.interrogate_deepbooru_score_threshold;
+export const selectCurrentModel = createSelector(
+  (state: RootState) => state.sdOptions.options,
+  (options) => options.sd_model_checkpoint,
+);
+
+export const selectCurrentClipSkip = createSelector(
+  (state: RootState) => state.sdOptions.options,
+  (options) => options.CLIP_stop_at_last_layers,
+);
+
+export const selectCurrentVae = createSelector(
+  (state: RootState) => state.sdOptions.options,
+  (options) => options.sd_vae,
+);
+
+export const selectCurrentTagScanThreshold = createSelector(
+  (state: RootState) => state.sdOptions.options,
+  (options) => options.interrogate_deepbooru_score_threshold,
+);
 
 export const sdOptionsReducer = sdOptionsSlice.reducer;

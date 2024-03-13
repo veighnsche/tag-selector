@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { FetchImageDataType } from '../../types/fetch-image-data';
 import { ImageCustomDataType } from '../../types/image-custom-data';
 import { ImageDataType } from '../../types/image-data';
@@ -71,53 +72,78 @@ export const {
   setImageData,
 } = imagesSlice.actions;
 
-export const selectImages = (state: RootState) => state.images.images;
-export const selectModalImage = (state: RootState) => state.images.imageModal;
-export const selectIsModalOpen = (state: RootState) => state.images.isModalOpen;
-export const selectIsLastImage = (state: RootState) => {
-  if (state.images.imageModal === null) return false;
-  const currentIndex = state.images.images.indexOf(state.images.imageModal);
-  return currentIndex === state.images.images.length - 1;
-};
-export const selectImageData =
-  (state: RootState) =>
-  (filename: string): ImageDataType | undefined =>
-    state.images.imageData[filename];
-export const selectImageCustomData =
-  (state: RootState) =>
-  (filename: string): ImageCustomDataType | undefined =>
-    state.images.imageCustomData[filename];
-export const selectArrayIdx =
-  (state: RootState) =>
-  (filename: string): number =>
-    state.images.images.indexOf(filename);
+// replace 'yourRootReducer' with actual path to your root reducer
 
-// get the seed number of the last image
-export const selectLastSeed = (
-  state: RootState
-): {
-  seed?: number;
-  filename?: string;
-} => {
-  // last is 0 because the array is reversed
-  const lastImage = state.images.images[0];
-  if (lastImage === undefined) {
+export const selectImages = createSelector(
+  (state: RootState) => state.images,
+  (images) => images.images,
+);
+
+export const selectModalImage = createSelector(
+  (state: RootState) => state.images,
+  (images) => images.imageModal,
+);
+
+export const selectIsModalOpen = createSelector(
+  (state: RootState) => state.images,
+  (images) => images.isModalOpen,
+);
+
+export const selectIsLastImage = createSelector(
+  (state: RootState) => state.images,
+  (images) => {
+    if (images.imageModal === null) return false;
+    const currentIndex = images.images.indexOf(images.imageModal);
+    return currentIndex === images.images.length - 1;
+  },
+);
+
+export const selectImageData = createSelector(
+  (state: RootState) => state.images,
+  (images) =>
+    (filename: string): ImageDataType | undefined =>
+      images.imageData[filename],
+);
+
+export const selectImageCustomData = createSelector(
+  (state: RootState) => state.images,
+  (images) =>
+    (filename: string): ImageCustomDataType | undefined =>
+      images.imageCustomData[filename],
+);
+
+export const selectArrayIdx = createSelector(
+  (state: RootState) => state.images,
+  (images) =>
+    (filename: string): number =>
+      images.images.indexOf(filename),
+);
+
+export const selectLastSeed = createSelector(
+  (state: RootState) => state.images,
+  (images): {
+    seed?: number;
+    filename?: string;
+  } => {
+    const lastImage = images.images[0];
+    if (lastImage === undefined) {
+      return {
+        seed: undefined,
+        filename: undefined,
+      };
+    }
+    const lastImageData = images.imageData[lastImage];
+    if (lastImageData === undefined) {
+      return {
+        seed: undefined,
+        filename: lastImage,
+      };
+    }
     return {
-      seed: undefined,
-      filename: undefined,
-    };
-  }
-  const lastImageData = state.images.imageData[lastImage];
-  if (lastImageData === undefined) {
-    return {
-      seed: undefined,
+      seed: lastImageData.seed,
       filename: lastImage,
     };
-  }
-  return {
-    seed: lastImageData.seed,
-    filename: lastImage,
-  };
-};
+  },
+);
 
 export const imagesReducer = imagesSlice.reducer;

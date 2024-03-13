@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { RootState } from '../index';
 
 interface TagsState {
@@ -26,7 +27,14 @@ export const tagsState = createSlice({
 
 export const { setIsDragging, toggleShowHiddenTags } = tagsState.actions;
 
-export const selectIsDragging = (state: RootState) => state.tagsState.isDragging;
-export const selectShowHiddenTags = (state: RootState) => state.tagsState.showHiddenTags;
+export const selectIsDragging = createSelector(
+  (state: RootState) => state.tagsState,
+  (tagsState) => tagsState.isDragging,
+);
+
+export const selectShowHiddenTags = createSelector(
+  (state: RootState) => state.tagsState,
+  (tagsState) => tagsState.showHiddenTags,
+);
 
 export const tagsStateReducer = tagsState.reducer;

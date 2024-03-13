@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { v4 as uuid } from 'uuid';
 import { OptimizerTypes, PromptTagsType, TagType } from '../../types/image-input';
 import { findTag, getNameAndStrength } from '../../utils/tags';
@@ -36,7 +37,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         name: TagType['name'];
         location: keyof PromptTagsType;
-      }>
+      }>,
     ) => {
       const { name, location } = action.payload;
       state[location].push({ name, id: uuid() });
@@ -47,7 +48,7 @@ export const tagsSlice = createSlice({
         names: TagType['name'][];
         location: keyof PromptTagsType;
         hidden?: boolean;
-      }>
+      }>,
     ) => {
       const { names, location } = action.payload;
       const filtered = names.filter(Boolean);
@@ -57,7 +58,7 @@ export const tagsSlice = createSlice({
           ...getNameAndStrength(name),
           id: uuid(),
           hidden: action.payload.hidden,
-        }))
+        })),
       );
     },
     toggleOptimizerTag: (
@@ -65,7 +66,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         name: TagType['name'];
         type: OptimizerTypes;
-      }>
+      }>,
     ) => {
       // check if tag already exists in tags
       const { name, type } = action.payload;
@@ -73,7 +74,8 @@ export const tagsSlice = createSlice({
       if (location) {
         // remove tag from location
         state[location] = state[location].filter((tag) => tag.name !== name || tag.optimizer !== type);
-      } else {
+      }
+      else {
         // add tag to tags at start
         state.tags.unshift({ name, id: uuid(), optimizer: type });
       }
@@ -84,7 +86,7 @@ export const tagsSlice = createSlice({
         id: TagType['id'];
         to: keyof PromptTagsType;
         position?: number;
-      }>
+      }>,
     ) => {
       const { id, to, position } = action.payload;
       const from = findTag(state, id);
@@ -93,7 +95,8 @@ export const tagsSlice = createSlice({
         state[from] = state[from].filter((tag) => tag.id !== id);
         if (position !== undefined) {
           state[to].splice(position, 0, tag);
-        } else {
+        }
+        else {
           state[to].push(tag);
         }
       }
@@ -102,7 +105,7 @@ export const tagsSlice = createSlice({
       state,
       action: PayloadAction<{
         id: TagType['id'];
-      }>
+      }>,
     ) => {
       const { id } = action.payload;
       const location = findTag(state, id);
@@ -113,7 +116,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         id: TagType['id'];
         name: TagType['name'];
-      }>
+      }>,
     ) => {
       const { id, name } = action.payload;
       const location = findTag(state, id);
@@ -129,7 +132,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         id: TagType['id'];
         location: keyof PromptTagsType;
-      }>
+      }>,
     ) => {
       const { id, location } = action.payload;
       const tags = state[location];
@@ -138,7 +141,8 @@ export const tagsSlice = createSlice({
         const strength = tags[tagIndex].strength;
         if (strength === undefined) {
           tags[tagIndex].strength = 110;
-        } else {
+        }
+        else {
           tags[tagIndex].strength! += 10;
         }
       }
@@ -148,7 +152,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         id: TagType['id'];
         location: keyof PromptTagsType;
-      }>
+      }>,
     ) => {
       const { id, location } = action.payload;
       const tags = state[location];
@@ -158,7 +162,8 @@ export const tagsSlice = createSlice({
         const strength = tags[tagIndex].strength;
         if (strength === undefined) {
           tags[tagIndex].strength = 90;
-        } else {
+        }
+        else {
           tags[tagIndex].strength! -= 10;
         }
       }
@@ -168,7 +173,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         id: TagType['id'];
         location: keyof PromptTagsType;
-      }>
+      }>,
     ) => {
       const { id, location } = action.payload;
       const tags = state[location];
@@ -182,7 +187,7 @@ export const tagsSlice = createSlice({
       action: PayloadAction<{
         id: TagType['id'];
         location: keyof PromptTagsType;
-      }>
+      }>,
     ) => {
       const { id, location } = action.payload;
       const tags = state[location];
@@ -218,47 +223,66 @@ export const {
   toggleOptimizerTag,
 } = tagsSlice.actions;
 
-export const selectAllTags = (state: RootState) => state.tags;
-export const selectTags = (state: RootState) => state.tags.tags;
-export const selectNegativeTags = (state: RootState) => state.tags.negativeTags;
-export const selectTagPool = (state: RootState) => state.tags.tagPool;
-export const selectLocateTagByName =
-  (state: RootState) =>
-  (
-    name: TagType['name']
-  ): Record<`is${Capitalize<keyof PromptTagsType>}`, boolean> & {
-    found: boolean;
-  } => {
-    const { tags, negativeTags, tagPool } = state.tags;
-    const isTags = tags.some((tag) => tag.name === name);
-    const isNegativeTags = negativeTags.some((tag) => tag.name === name);
-    const isTagPool = tagPool.some((tag) => tag.name === name);
-    return {
-      isTags,
-      isNegativeTags,
-      isTagPool,
-      found: isTags || isNegativeTags || isTagPool,
-    };
-  };
+export const selectAllTags = createSelector(
+  (state: RootState) => state,
+  (state) => state.tags,
+);
 
-export const selectLocateTag =
-  (state: RootState) =>
-  (id: TagType['id']): keyof PromptTagsType =>
-    findTag(state.tags, id);
+export const selectTags = createSelector(
+  (state: RootState) => state.tags,
+  (tags) => tags.tags,
+);
 
-export const selectGetId =
-  (state: RootState) =>
-  (name: TagType['name']): TagType['id'] | undefined => {
-    const { tags, negativeTags, tagPool } = state.tags;
-    const tag = [...tags, ...negativeTags, ...tagPool].find((tag) => tag.name === name);
-    return tag?.id;
-  };
+export const selectNegativeTags = createSelector(
+  (state: RootState) => state.tags,
+  (tags) => tags.negativeTags,
+);
 
-export const selectHasOptimizerTag =
-  (state: RootState) =>
-  ({ name, type }: { name: TagType['name']; type: OptimizerTypes }): boolean => {
-    const { tags, negativeTags, tagPool } = state.tags;
-    return [...tags, ...negativeTags, ...tagPool].some((tag) => tag.name === name && tag.optimizer === type);
-  };
+export const selectTagPool = createSelector(
+  (state: RootState) => state.tags,
+  (tags) => tags.tagPool,
+);
+
+export const selectLocateTagByName = createSelector(
+  (state: RootState) => state.tags,
+  (tags) =>
+    (name: TagType['name']): Record<`is${Capitalize<keyof PromptTagsType>}`, boolean> & {
+      found: boolean;
+    } => {
+      const isTags = tags.tags.some((tag) => tag.name === name);
+      const isNegativeTags = tags.negativeTags.some((tag) => tag.name === name);
+      const isTagPool = tags.tagPool.some((tag) => tag.name === name);
+      return {
+        isTags,
+        isNegativeTags,
+        isTagPool,
+        found: isTags || isNegativeTags || isTagPool,
+      };
+    },
+);
+
+export const selectLocateTag = createSelector(
+  (state: RootState) => state.tags,
+  (tags) =>
+    (id: TagType['id']): keyof PromptTagsType =>
+      findTag(tags, id),
+);
+
+export const selectGetId = createSelector(
+  (state: RootState) => state.tags,
+  (tags) =>
+    (name: TagType['name']): TagType['id'] | undefined => {
+      const tag = [...tags.tags, ...tags.negativeTags, ...tags.tagPool].find((tag) => tag.name === name);
+      return tag?.id;
+    },
+);
+
+export const selectHasOptimizerTag = createSelector(
+  (state: RootState) => state.tags,
+  (tags) =>
+    ({ name, type }: { name: TagType['name']; type: OptimizerTypes }): boolean => {
+      return [...tags.tags, ...tags.negativeTags, ...tags.tagPool].some((tag) => tag.name === name && tag.optimizer === type);
+    },
+);
 
 export const tagsReducer = tagsSlice.reducer;

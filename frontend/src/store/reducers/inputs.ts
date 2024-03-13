@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { ImageInputsType } from '../../types';
 import { ImageDataType } from '../../types/image-data';
 import { RootState } from '../index';
@@ -26,7 +27,7 @@ const initialState: ImageInputsType = {
     refiner: {
       checkpoint: '',
       switchAt: 50,
-    }
+    },
   },
 };
 
@@ -45,7 +46,7 @@ export const inputsSlice = createSlice({
       action: PayloadAction<{
         width: number;
         height: number;
-      }>
+      }>,
     ) => {
       const { width, height } = action.payload;
       state.options.width = width;
@@ -145,29 +146,62 @@ export const {
   setInputsFromImageData,
 } = inputsSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectScene = (state: RootState) => state.inputs.prompt.scene;
-export const selectNegativePrompt = (state: RootState) => state.inputs.prompt.negativePrompt;
-export const selectSize = (state: RootState) => {
-  const { width, height } = state.inputs.options;
-  return { width, height };
-};
-export const selectInputs = (state: RootState) => state.inputs;
-export const selectSliders = (state: RootState) => {
-  return {
-    steps: state.inputs.options.steps,
-    cfg: state.inputs.options.cfg,
-    seed: state.inputs.options.seed,
-    samplingMethod: state.inputs.options.samplingMethod,
-    restoreFaces: state.inputs.options.restoreFaces,
-    refinerSwitchAt: state.inputs.options.refiner.switchAt,
-  };
-};
 
-export const selectHRF = (state: RootState) => state.inputs.options.highResFix;
-export const selectSeed = (state: RootState) => state.inputs.options.seed;
-export const selectSteps = (state: RootState) => state.inputs.options.steps;
+export const selectScene = createSelector(
+  (state: RootState) => state.inputs.prompt,
+  (prompt) => prompt.scene,
+);
 
-export const selectRefinerCheckpoint = (state: RootState) => state.inputs.options.refiner.checkpoint;
+export const selectNegativePrompt = createSelector(
+  (state: RootState) => state.inputs.prompt,
+  (prompt) => prompt.negativePrompt,
+);
+
+export const selectSize = createSelector(
+  (state: RootState) => state.inputs.options,
+  (options) => {
+    const { width, height } = options;
+    return { width, height };
+  },
+);
+
+export const selectInputs = createSelector(
+  (state: RootState) => state,
+  (state) => state.inputs,
+);
+
+export const selectSliders = createSelector(
+  (state: RootState) => state.inputs.options,
+  (options) => {
+    return {
+      steps: options.steps,
+      cfg: options.cfg,
+      seed: options.seed,
+      samplingMethod: options.samplingMethod,
+      restoreFaces: options.restoreFaces,
+      refinerSwitchAt: options.refiner.switchAt,
+    };
+  },
+);
+
+export const selectHRF = createSelector(
+  (state: RootState) => state.inputs.options,
+  (options) => options.highResFix,
+);
+
+export const selectSeed = createSelector(
+  (state: RootState) => state.inputs.options,
+  (options) => options.seed,
+);
+
+export const selectSteps = createSelector(
+  (state: RootState) => state.inputs.options,
+  (options) => options.steps,
+);
+
+export const selectRefinerCheckpoint = createSelector(
+  (state: RootState) => state.inputs.options.refiner,
+  (refiner) => refiner.checkpoint,
+);
 
 export const inputsReducer = inputsSlice.reducer;
