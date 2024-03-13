@@ -28,6 +28,10 @@ const initialState: ImageInputsType = {
       checkpoint: '',
       switchAt: 50,
     },
+    llmEnhance: {
+      enabled: true,
+      prompt: 'Add more adjectives to each tag to enhance the image.',
+    },
   },
 };
 

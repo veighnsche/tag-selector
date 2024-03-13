@@ -1,31 +1,31 @@
-import axios, { AxiosError } from 'axios'
-import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types'
-import { ImageGenerateParams } from 'frontend/src/types/image-generate-params'
-import { DynamicTagType, OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input'
-import { SdProgressType } from 'frontend/src/types/sd-progress'
-import seedrandom from 'seedrandom'
-import { SD_URL } from '../constants'
+import axios, { AxiosResponse } from 'axios';
+import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types';
+import { ImageGenerateParams } from 'frontend/src/types/image-generate-params';
+import { DynamicTagType, OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input';
+import { SdProgressType } from 'frontend/src/types/sd-progress';
+import seedrandom from 'seedrandom';
+import { LLM_URL, SD_URL } from '../constants';
 
 function isTagBracketed(tag: string) {
-  return tag.startsWith('{') && tag.endsWith('}')
+  return tag.startsWith('{') && tag.endsWith('}');
 }
 
 function pickBracketedTag(tag: string, rng: seedrandom.PRNG) {
-  const tagNames = tag.slice(1, -1).split('|').map(tag => tag.trim())
-  const tagIndex = Math.floor(rng() * tagNames.length)
-  return tagNames[tagIndex]
+  const tagNames = tag.slice(1, -1).split('|').map(tag => tag.trim());
+  const tagIndex = Math.floor(rng() * tagNames.length);
+  return tagNames[tagIndex];
 }
 
 function pickDynamicTag(dynamicTag: DynamicTagType, rng: seedrandom.PRNG): string {
-  const tagIndex = Math.floor(rng() * dynamicTag.length)
-  const tag = dynamicTag[tagIndex]
-  const positive = tag.positive.map(tag => tagToPrompt(rng)(tag)).join(', ')
+  const tagIndex = Math.floor(rng() * dynamicTag.length);
+  const tag = dynamicTag[tagIndex];
+  const positive = tag.positive.map(tag => tagToPrompt(rng)(tag)).join(', ');
   if (tag.negative.length === 0) {
-    return `${positive}`
+    return `${positive}`;
   }
 
-  const negative = tag.negative.map(tag => tagToPrompt(rng)(tag)).join(', ')
-  return `[[${positive}!!${negative}]]`
+  const negative = tag.negative.map(tag => tagToPrompt(rng)(tag)).join(', ');
+  return `[[${positive}!!${negative}]]`;
 }
 
 export function untangleDynamicTags(prompts: { prompt: string, negative: string }): {
@@ -65,42 +65,42 @@ export function untangleDynamicTags(prompts: { prompt: string, negative: string 
 
 const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
   if (tag.muted || tag.name === '') {
-    return ''
+    return '';
   }
 
   if (tag.dynamic !== undefined) {
-    return pickDynamicTag(tag.dynamic, rng)
+    return pickDynamicTag(tag.dynamic, rng);
   }
 
   if (tag.optimizer === OptimizerTypes.HYPERNETWORK) {
-    const strength = tag.strength || 100
-    return `<hypernet:${tag.name}:${strength / 100}>`
+    const strength = tag.strength || 100;
+    return `<hypernet:${tag.name}:${strength / 100}>`;
   }
 
   if (tag.optimizer === OptimizerTypes.LORA) {
-    const strength = tag.strength || 100
-    return `<lora:${tag.name}:${strength / 100}>`
+    const strength = tag.strength || 100;
+    return `<lora:${tag.name}:${strength / 100}>`;
   }
 
   if (tag.optimizer === OptimizerTypes.LYCORIS) {
-    const strength = tag.strength || 100
-    return `<lyco:${tag.name}:${strength / 100}>`
+    const strength = tag.strength || 100;
+    return `<lyco:${tag.name}:${strength / 100}>`;
   }
 
   if (isTagBracketed(tag.name)) {
-    tag.name = pickBracketedTag(tag.name, rng).trim()
+    tag.name = pickBracketedTag(tag.name, rng).trim();
 
     if (tag.name === '') {
-      return ''
+      return '';
     }
   }
 
   if (tag.strength && tag.strength !== 100) {
-    return `(${tag.name}:${tag.strength / 100})`
+    return `(${tag.name}:${tag.strength / 100})`;
   }
 
-  return tag.name
-}
+  return tag.name;
+};
 
 export const selectTagsForInputs = ({
   tags, negativeTags, scene, negativePrompt, rng,
@@ -111,19 +111,61 @@ export const selectTagsForInputs = ({
   negativePrompt: string
   rng: seedrandom.PRNG
 }) => {
-  const seededTagToPrompt = tagToPrompt(rng)
+  const seededTagToPrompt = tagToPrompt(rng);
   const prompts = {
     prompt: [scene.trim(), ...tags.map(seededTagToPrompt)].filter(Boolean).join(', '),
     negative: [negativePrompt.trim(), ...negativeTags.map(seededTagToPrompt)].filter(Boolean).join(', '),
-  }
+  };
 
-  return untangleDynamicTags(prompts)
+  return untangleDynamicTags(prompts);
+};
+
+interface Message {
+  role: 'system' | 'user';
+  content: string;
 }
 
+interface ChatCompletionRequest {
+  messages: Message[];
+  temperature: number;
+  max_tokens: number;
+  stream: boolean;
+  presence_penalty?: number;
+}
+
+interface ChatCompletionResponse {
+  choices: {
+    message: {
+      content: string;
+    }
+  }[];
+}
+
+async function getChatCompletion(llmPrompt: string, imagePrompt: string): Promise<string> {
+  try {
+    const response = await axios.post<any, AxiosResponse<ChatCompletionResponse, any>, ChatCompletionRequest>(LLM_URL, {
+      messages: [
+        { 'role': 'system', 'content': llmPrompt },
+        { 'role': 'user', 'content': imagePrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: -1,
+      stream: false,
+      presence_penalty: 1,
+    }, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.error('Error fetching chat completion:', error);
+    throw error; // Re-throw to allow for error handling where the function is used
+  }
+}
 
 export async function imageGenerate({
   prompt: { scene, negativePrompt },
-  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix, refiner },
+  options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix, refiner, llmEnhance },
 }: ImageInputsType, {
   tags,
   negativeTags,
@@ -131,13 +173,21 @@ export async function imageGenerate({
   const rng = seedrandom(seed.toString());
 
   console.time('generateImage');
-  const { prompt, negative } = selectTagsForInputs({
+  let { prompt, negative } = selectTagsForInputs({
     tags,
     negativeTags,
     scene,
     negativePrompt,
     rng,
   });
+
+  if (llmEnhance.enabled) {
+    try {
+      prompt = await getChatCompletion(llmEnhance.prompt, prompt);
+    } catch (error) {
+      console.error('Error fetching LLM completion:', error);
+    }
+  }
 
   const params: ImageGenerateParams = {
     prompt,
@@ -176,16 +226,16 @@ export async function imageGenerate({
 
 export function getProgress(): Promise<SdProgressType> {
   return axios.get(`${SD_URL}/sdapi/v1/progress`)
-  .then(response => response.data)
+  .then(response => response.data);
 }
 
 export function interruptImageGenerate(): Promise<void> {
-  return axios.post(`${SD_URL}/sdapi/v1/interrupt`)
+  return axios.post(`${SD_URL}/sdapi/v1/interrupt`);
 }
 
 export function withSeedNumber(input: ImageInputsType): ImageInputsType {
   if (input.options.seed !== -1) {
-    return input
+    return input;
   }
 
   return {
@@ -194,5 +244,5 @@ export function withSeedNumber(input: ImageInputsType): ImageInputsType {
       ...input.options,
       seed: Math.floor(Math.random() * 4294967295), // max seed number is 2^32 - 1
     },
-  }
+  };
 }

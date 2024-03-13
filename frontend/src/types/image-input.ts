@@ -46,6 +46,7 @@ export interface ImageOptionsType {
   restoreFaces: boolean;
   highResFix: HighResFixType;
   refiner: RefinerType;
+  llmEnhance: LlmEnhanceType;
 }
 
 export interface HighResFixType {
@@ -59,6 +60,11 @@ export interface HighResFixType {
 export interface RefinerType {
   checkpoint: string;
   switchAt: number;
+}
+
+export interface LlmEnhanceType {
+  enabled: boolean;
+  prompt: string;
 }
 
 export interface ImageInputsType {
