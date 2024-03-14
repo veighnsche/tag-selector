@@ -30,7 +30,7 @@ const initialState: ImageInputsType = {
     },
     llmEnhance: {
       enabled: false,
-      prompt: 'Add more adjectives to each tag to enhance the image.',
+      prompt: 'Your task is to return the same format (single line, comma separated, list of tags) with more adjectives in order to enhance the image.',
     },
   },
 };
@@ -50,7 +50,7 @@ export const inputsSlice = createSlice({
       action: PayloadAction<{
         width: number;
         height: number;
-      }>
+      }>,
     ) => {
       const { width, height } = action.payload;
       state.options.width = width;
@@ -160,12 +160,12 @@ export const {
 
 export const selectScene = createSelector(
   (state: RootState) => state.inputs.prompt,
-  (prompt) => prompt.scene
+  (prompt) => prompt.scene,
 );
 
 export const selectNegativePrompt = createSelector(
   (state: RootState) => state.inputs.prompt,
-  (prompt) => prompt.negativePrompt
+  (prompt) => prompt.negativePrompt,
 );
 
 export const selectSize = createSelector(
@@ -173,12 +173,12 @@ export const selectSize = createSelector(
   (options) => {
     const { width, height } = options;
     return { width, height };
-  }
+  },
 );
 
 export const selectInputs = createSelector(
   (state: RootState) => state,
-  (state) => state.inputs
+  (state) => state.inputs,
 );
 
 export const selectSliders = createSelector(
@@ -192,37 +192,37 @@ export const selectSliders = createSelector(
       restoreFaces: options.restoreFaces,
       refinerSwitchAt: options.refiner.switchAt,
     };
-  }
+  },
 );
 
 export const selectHRF = createSelector(
   (state: RootState) => state.inputs.options,
-  (options) => options.highResFix
+  (options) => options.highResFix,
 );
 
 export const selectSeed = createSelector(
   (state: RootState) => state.inputs.options,
-  (options) => options.seed
+  (options) => options.seed,
 );
 
 export const selectSteps = createSelector(
   (state: RootState) => state.inputs.options,
-  (options) => options.steps
+  (options) => options.steps,
 );
 
 export const selectRefinerCheckpoint = createSelector(
   (state: RootState) => state.inputs.options.refiner,
-  (refiner) => refiner.checkpoint
+  (refiner) => refiner.checkpoint,
 );
 
 export const selectLlmEnhanceEnabled = createSelector(
   (state: RootState) => state.inputs.options.llmEnhance,
-  (llmEnhance) => llmEnhance.enabled
+  (llmEnhance) => llmEnhance.enabled,
 );
 
 export const selectLlmEnhancePrompt = createSelector(
   (state: RootState) => state.inputs.options.llmEnhance,
-  (llmEnhance) => llmEnhance.prompt
+  (llmEnhance) => llmEnhance.prompt,
 );
 
 export const inputsReducer = inputsSlice.reducer;
