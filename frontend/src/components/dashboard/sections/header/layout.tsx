@@ -3,6 +3,7 @@ import React from 'react';
 import { H1 } from '../../../styled/Headers';
 import { ConnectionStatus } from './ConnectionStatus';
 import { HeaderButtonsRight } from './HeaderButtonsRight';
+import { LlmChatToggle } from './LlmChatToggle';
 
 const LayoutFlex = styled.div`
   width: 100%;
@@ -23,6 +24,7 @@ export const HeaderLayout = () => {
       <H1>Tag Selector</H1>
       <ConnectionStatus />
       <FlexAuto />
+      <LlmChatToggle />
       <HeaderButtonsRight />
     </LayoutFlex>
   );

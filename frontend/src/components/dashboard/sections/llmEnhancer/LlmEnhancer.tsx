@@ -21,14 +21,14 @@ const StyledPaper = styled(Paper)`
 `;
 
 export const LlmEnhancer = () => {
-  const dispatch = useAppDispatch()
-  const [text, setText] = React.useState("");
-  const checked = useAppSelector(selectLlmEnhanceEnabled)
-  const prompt = useAppSelector(selectLlmEnhancePrompt)
+  const dispatch = useAppDispatch();
+  const [text, setText] = React.useState('');
+  const checked = useAppSelector(selectLlmEnhanceEnabled);
+  const prompt = useAppSelector(selectLlmEnhancePrompt);
 
   React.useEffect(() => {
-    setText(prompt)
-  }, [prompt])
+    setText(prompt);
+  }, [prompt]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setLlmEnhanceEnabled(event.target.checked));
@@ -40,19 +40,12 @@ export const LlmEnhancer = () => {
 
   const handleTextBlur = () => {
     dispatch(setLlmEnhancePrompt(text));
-  }
+  };
 
   return (
     <StyledPaper elevation={2}>
       <FormControlLabel
-        control={
-          <Checkbox
-            checked={checked}
-            onChange={handleCheckboxChange}
-            name="checkbox"
-            color="primary"
-          />
-        }
+        control={<Checkbox checked={checked} onChange={handleCheckboxChange} name="checkbox" color="primary" />}
         label="Enable LLM Enhancer"
       />
       <TextField
@@ -66,4 +59,4 @@ export const LlmEnhancer = () => {
       />
     </StyledPaper>
   );
-}
+};

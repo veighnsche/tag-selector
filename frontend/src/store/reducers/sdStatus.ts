@@ -30,12 +30,12 @@ export const { setSdStatus, toggleIsPlaying } = sdStatusSlice.actions;
 
 export const selectSdStatus = createSelector(
   (state: RootState) => state.sdStatus,
-  (sdStatus) => sdStatus.status,
+  (sdStatus) => sdStatus.status
 );
 
 export const selectIsPlaying = createSelector(
   (state: RootState) => state.sdStatus,
-  (sdStatus) => sdStatus.isPlaying,
+  (sdStatus) => sdStatus.isPlaying
 );
 
 export const sdStatusReducer = sdStatusSlice.reducer;

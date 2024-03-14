@@ -29,12 +29,12 @@ export const { setIsDragging, toggleShowHiddenTags } = tagsState.actions;
 
 export const selectIsDragging = createSelector(
   (state: RootState) => state.tagsState,
-  (tagsState) => tagsState.isDragging,
+  (tagsState) => tagsState.isDragging
 );
 
 export const selectShowHiddenTags = createSelector(
   (state: RootState) => state.tagsState,
-  (tagsState) => tagsState.showHiddenTags,
+  (tagsState) => tagsState.showHiddenTags
 );
 
 export const tagsStateReducer = tagsState.reducer;

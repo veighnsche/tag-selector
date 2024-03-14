@@ -33,14 +33,14 @@ import { SamplingWrapper } from './SamplingWrapper';
 import { SdModelWrapper } from './SdModelWrapper';
 
 const StyledPaper = styled(Paper)`
-    padding: 0.75rem;
-    width: 100%;
+  padding: 0.75rem;
+  width: 100%;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 `;
 
 export const Sliders = () => {
@@ -210,7 +210,7 @@ export const Sliders = () => {
                 </Select>
                 <IconButton
                   onClick={() => {
-                    setRefiner('')
+                    setRefiner('');
                   }}
                   edge="end"
                 >

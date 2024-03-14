@@ -9,7 +9,7 @@ interface LlmChatState {
 
 const initialState: LlmChatState = {
   enabled: false,
-  messages: []
+  messages: [],
 };
 
 export const llmChatSlice = createSlice({
@@ -52,7 +52,7 @@ export const {
 
 export const selectMessages = createSelector(
   (state: { llmChat: LlmChatState }) => state.llmChat.messages,
-  (messages) => messages,
+  (messages) => messages
 );
 
 export const llmChatReducer = llmChatSlice.reducer;

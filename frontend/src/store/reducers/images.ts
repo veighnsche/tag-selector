@@ -76,17 +76,17 @@ export const {
 
 export const selectImages = createSelector(
   (state: RootState) => state.images,
-  (images) => images.images,
+  (images) => images.images
 );
 
 export const selectModalImage = createSelector(
   (state: RootState) => state.images,
-  (images) => images.imageModal,
+  (images) => images.imageModal
 );
 
 export const selectIsModalOpen = createSelector(
   (state: RootState) => state.images,
-  (images) => images.isModalOpen,
+  (images) => images.isModalOpen
 );
 
 export const selectIsLastImage = createSelector(
@@ -95,33 +95,35 @@ export const selectIsLastImage = createSelector(
     if (images.imageModal === null) return false;
     const currentIndex = images.images.indexOf(images.imageModal);
     return currentIndex === images.images.length - 1;
-  },
+  }
 );
 
 export const selectImageData = createSelector(
   (state: RootState) => state.images,
   (images) =>
     (filename: string): ImageDataType | undefined =>
-      images.imageData[filename],
+      images.imageData[filename]
 );
 
 export const selectImageCustomData = createSelector(
   (state: RootState) => state.images,
   (images) =>
     (filename: string): ImageCustomDataType | undefined =>
-      images.imageCustomData[filename],
+      images.imageCustomData[filename]
 );
 
 export const selectArrayIdx = createSelector(
   (state: RootState) => state.images,
   (images) =>
     (filename: string): number =>
-      images.images.indexOf(filename),
+      images.images.indexOf(filename)
 );
 
 export const selectLastSeed = createSelector(
   (state: RootState) => state.images,
-  (images): {
+  (
+    images
+  ): {
     seed?: number;
     filename?: string;
   } => {
@@ -143,7 +145,7 @@ export const selectLastSeed = createSelector(
       seed: lastImageData.seed,
       filename: lastImage,
     };
-  },
+  }
 );
 
 export const imagesReducer = imagesSlice.reducer;
