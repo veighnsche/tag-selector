@@ -5,6 +5,7 @@ import React from 'react';
 import { AdvancedOptionsLayout } from './sections/advanced/layout';
 import { HeaderLayout } from './sections/header/layout';
 import { HighResFixLayout } from './sections/highresFix/layout';
+import { LlmEnhancerLayout } from './sections/llmEnhancer/layout';
 import { Optimizers } from './sections/optimizers';
 import { OptionsLayout } from './sections/options/layout';
 import { OptionsSummary } from './sections/options/OptionsSummary';
@@ -12,45 +13,46 @@ import { OutputLayout } from './sections/output/layout';
 import { PromptLayout } from './sections/prompt/layout';
 
 const LayoutGrid = styled.main`
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 
-  display: grid;
-  gap: 1rem;
+    display: grid;
+    gap: 1rem;
 
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: min-content 1fr min-content;
-  grid-template-areas:
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content 1fr min-content;
+    grid-template-areas:
     'header header'
     'prompt output'
     'options output';
 `;
 
 const HeaderArea = styled.header`
-  grid-area: header;
+    grid-area: header;
 `;
 
 const PromptArea = styled.section`
-  grid-area: prompt;
-  height: 100%;
+    grid-area: prompt;
+    height: 100%;
 `;
 
 const OutputArea = styled.section`
-  grid-area: output;
+    grid-area: output;
 `;
 
 const OptionsArea = styled.section`
-  grid-area: options;
+    grid-area: options;
 `;
 
 const StyledPaper = styled(Paper)`
-  padding: 0.75rem;
-  height: 100%;
+    padding: 0.75rem;
+    height: 100%;
 `;
 
 enum AccordionNames {
   Options = 'options',
   HighResFix = 'highResFix',
+  LlmEnhancer = 'llmEnhancer',
   Optimizers = 'optimizers',
   Advanced = 'advanced',
 }
@@ -103,6 +105,18 @@ export const DashboardLayout = () => {
             </AccordionSummary>
             <AccordionDetails>
               <HighResFixLayout />
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            disableGutters
+            expanded={expanded === AccordionNames.LlmEnhancer}
+            onChange={handleChange(AccordionNames.LlmEnhancer)}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} />}>
+              LLM Enhancer
+            </AccordionSummary>
+            <AccordionDetails>
+              <LlmEnhancerLayout />
             </AccordionDetails>
           </Accordion>
           <Accordion

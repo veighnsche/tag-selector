@@ -29,7 +29,7 @@ const initialState: ImageInputsType = {
       switchAt: 50,
     },
     llmEnhance: {
-      enabled: true,
+      enabled: false,
       prompt: 'Add more adjectives to each tag to enhance the image.',
     },
   },
@@ -126,6 +126,12 @@ export const inputsSlice = createSlice({
         state.options.samplingMethod = imageData.samplingMethod;
       }
     },
+    setLlmEnhanceEnabled: (state, action: PayloadAction<boolean>) => {
+      state.options.llmEnhance.enabled = action.payload;
+    },
+    setLlmEnhancePrompt: (state, action: PayloadAction<string>) => {
+      state.options.llmEnhance.prompt = action.payload;
+    },
   },
 });
 
@@ -148,6 +154,8 @@ export const {
   setRefinerCheckpoint,
   setRefinerSwitchAt,
   setInputsFromImageData,
+  setLlmEnhanceEnabled,
+  setLlmEnhancePrompt,
 } = inputsSlice.actions;
 
 
@@ -206,6 +214,16 @@ export const selectSteps = createSelector(
 export const selectRefinerCheckpoint = createSelector(
   (state: RootState) => state.inputs.options.refiner,
   (refiner) => refiner.checkpoint,
+);
+
+export const selectLlmEnhanceEnabled = createSelector(
+  (state: RootState) => state.inputs.options.llmEnhance,
+  (llmEnhance) => llmEnhance.enabled,
+);
+
+export const selectLlmEnhancePrompt = createSelector(
+  (state: RootState) => state.inputs.options.llmEnhance,
+  (llmEnhance) => llmEnhance.prompt,
 );
 
 export const inputsReducer = inputsSlice.reducer;
