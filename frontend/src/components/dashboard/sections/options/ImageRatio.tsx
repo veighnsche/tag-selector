@@ -5,22 +5,28 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { selectSize, setSize } from '../../../../store/reducers/inputs';
 
 const StyledPaper = styled(Paper)`
-  padding: 0.75rem;
-  width: 100%;
+    padding: 0.75rem;
+    width: 100%;
 
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+`;
+
+const RatioButton = styled(Button)`
+    width: 30%;
+    height: 4rem;
+`;
+
+const RatioButtonArWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 `;
 
-const RatioButton = styled(Button)`
-  width: 30%;
-  height: 4rem;
-`;
-
 const RatioButtonAr = styled(Button)`
-  width: 12%;
-  height: 4rem;
+    height: 4rem;
 `;
 
 const totalPixelChoices = [512 * 512, 512 * 768, 768 * 768, 768 * 1024, 1024 * 1024];
@@ -60,21 +66,23 @@ export const ImageRatio = () => {
 
   return (
     <StyledPaper elevation={2}>
-      {aspectRatioChoices.map((ratio, index) => (
-        <RatioButtonAr
-          key={index}
-          variant="outlined"
-          onClick={() => {
-            setSelectedRatio(ratio);
-          }}
-          sx={{
-            color: selectedRatio === ratio ? 'secondary.main' : 'primary.main',
-          }}
-          color={selectedRatio === ratio ? 'secondary' : 'primary'}
-        >
-          {ratio.width}:{ratio.height}
-        </RatioButtonAr>
-      ))}
+      <RatioButtonArWrapper>
+        {aspectRatioChoices.map((ratio, index) => (
+          <RatioButtonAr
+            key={index}
+            variant="outlined"
+            onClick={() => {
+              setSelectedRatio(ratio);
+            }}
+            sx={{
+              color: selectedRatio === ratio ? 'secondary.main' : 'primary.main',
+            }}
+            color={selectedRatio === ratio ? 'secondary' : 'primary'}
+          >
+            {ratio.width}:{ratio.height}
+          </RatioButtonAr>
+        ))}
+      </RatioButtonArWrapper>
 
       {imageSizes.map(({ width, height }) => {
         const isSelected = selectedSize.width === width && selectedSize.height === height;
