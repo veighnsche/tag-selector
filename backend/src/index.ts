@@ -7,6 +7,7 @@ import { CLIENT_URL, PORT } from './constants';
 import { fetchImageController, removeImageController } from './controllers/image-crud.controller';
 import { fetchImageDataController } from './controllers/image-data.controller';
 import { generateImageInterruptController, imageGenerateController } from './controllers/image-generate.controller';
+import { llmCompletionController } from './controllers/llm-completion.controller';
 import {
   fetchOptimizersController,
   fetchOptionsController,
@@ -42,6 +43,7 @@ io.on(SocketEvent.CONNECT, (socket) => {
   socket.on(SocketEvent.GENERATE_IMAGE_INTERRUPT, generateImageInterruptController(socket));
   socket.on(SocketEvent.FETCH_OPTIMIZERS, fetchOptimizersController(socket));
   socket.on(SocketEvent.FETCH_VAES, fetchVeasController(socket));
+  socket.on(SocketEvent.LLM_COMPLETION, llmCompletionController(socket));
 
   socket.on(SocketEvent.DISCONNECT, () => {
     console.info('user disconnected');

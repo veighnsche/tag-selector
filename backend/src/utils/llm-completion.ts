@@ -39,7 +39,7 @@ export async function* getLlmResponse({ messages }: LlmChatRequest): AsyncGenera
       body: JSON.stringify({
         messages,
         temperature: 0.8,
-        max_tokens: -1,
+        max_tokens: 100,
         stream: true,
         presence_penalty: 1,
       }),
@@ -54,6 +54,9 @@ export async function* getLlmResponse({ messages }: LlmChatRequest): AsyncGenera
       for await (const chunk of stream) {
         yield chunk.choices[0].delta.content;
       }
+    }
+    else {
+      console.error('Stream is not iterable', { stream });
     }
   } catch (error) {
     console.error('Error fetching chat completion:', error);

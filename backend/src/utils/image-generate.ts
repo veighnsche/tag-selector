@@ -5,7 +5,7 @@ import { DynamicTagType, OptimizerTypes, PromptTagsType } from 'frontend/src/typ
 import { SdProgressType } from 'frontend/src/types/sd-progress';
 import seedrandom from 'seedrandom';
 import { SD_URL } from '../constants';
-import { getLlmPromptEnhancer } from './llm-api';
+import { getLlmPromptEnhancer } from './llm-completion';
 
 function isTagBracketed(tag: string) {
   return tag.startsWith('{') && tag.endsWith('}');

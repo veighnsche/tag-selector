@@ -22,4 +22,8 @@ export enum SocketEvent {
   PROGRESS_PERCENT = 'progress-percent',
   FETCH_OPTIMIZERS = 'fetch-optimizers',
   FETCH_VAES = 'fetch-vaes',
+
+  LLM_COMPLETION = 'llm-completion',
+  LLM_CHUNK = 'llm-chunk',
+  LLM_DONE = 'llm-done',
 }
