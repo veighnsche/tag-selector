@@ -19,3 +19,11 @@ export interface LlmChatResponse {
     }
   }[];
 }
+
+export interface LlmChatChunkResponse {
+  choices: {
+    delta: {
+      content: string;
+    }
+  }[];
+}
