@@ -1,10 +1,11 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { ImageInputsType, ImageOutputType, TagType } from 'frontend/src/types';
 import { ImageGenerateParams } from 'frontend/src/types/image-generate-params';
 import { DynamicTagType, OptimizerTypes, PromptTagsType } from 'frontend/src/types/image-input';
 import { SdProgressType } from 'frontend/src/types/sd-progress';
 import seedrandom from 'seedrandom';
-import { LLM_URL, SD_URL } from '../constants';
+import { SD_URL } from '../constants';
+import { getLlmPromptEnhancer } from './llm-api';
 
 function isTagBracketed(tag: string) {
   return tag.startsWith('{') && tag.endsWith('}');
@@ -120,51 +121,6 @@ export const selectTagsForInputs = ({
   return untangleDynamicTags(prompts);
 };
 
-interface Message {
-  role: 'system' | 'user';
-  content: string;
-}
-
-interface ChatCompletionRequest {
-  messages: Message[];
-  temperature: number;
-  max_tokens: number;
-  stream: boolean;
-  presence_penalty?: number;
-  stop?: string[];
-}
-
-interface ChatCompletionResponse {
-  choices: {
-    message: {
-      content: string;
-    }
-  }[];
-}
-
-async function getChatCompletion(llmPrompt: string, imagePrompt: string): Promise<string> {
-  try {
-    const response = await axios.post<any, AxiosResponse<ChatCompletionResponse, any>, ChatCompletionRequest>(LLM_URL, {
-      messages: [
-        { 'role': 'system', 'content': llmPrompt },
-        { 'role': 'user', 'content': imagePrompt },
-      ],
-      temperature: 0.7,
-      max_tokens: -1,
-      stream: false,
-      presence_penalty: 1,
-      stop: ['\n', '###'],
-    }, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    return response.data.choices[0].message.content;
-  } catch (error) {
-    console.error('Error fetching chat completion:', error);
-    throw error; // Re-throw to allow for error handling where the function is used
-  }
-}
-
 export async function imageGenerate({
   prompt: { scene, negativePrompt },
   options: { width, height, steps, cfg, seed, restoreFaces, samplingMethod, highResFix, refiner, llmEnhance },
@@ -185,7 +141,7 @@ export async function imageGenerate({
 
   if (llmEnhance.enabled) {
     try {
-      prompt = await getChatCompletion(llmEnhance.prompt, prompt);
+      prompt = await getLlmPromptEnhancer(llmEnhance.prompt, prompt);
     } catch (error) {
       console.error('Error fetching LLM completion:', error);
     }
