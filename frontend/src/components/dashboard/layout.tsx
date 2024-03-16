@@ -16,24 +16,24 @@ import { OutputLayout } from './sections/output/layout';
 import { PromptLayout } from './sections/prompt/layout';
 
 const LayoutGrid = styled.main<{ llmChat?: boolean }>`
-  width: 100%;
-  height: 100%;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr 1fr ${({ llmChat }) => (llmChat ? '.66fr' : '')};
-  grid-template-rows: min-content 1fr min-content;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr ${({ llmChat }) => (llmChat ? '1fr' : '')};
+    grid-template-rows: min-content 1fr min-content;
 
-  grid-template-areas: ${
-     ({ llmChat }) =>
-        (llmChat
-          ? `'header header header'
+    grid-template-areas: ${
+            ({ llmChat }) =>
+                    (llmChat
+                                    ? `'header header header'
              'prompt output llmChat'
              'options output llmChat'`
-          : `'header header'
+                                    : `'header header'
              'prompt output'
              'options output'`
-        )
-  };
+                    )
+    };
 `;
 
 const HeaderArea = styled.header`
@@ -160,11 +160,13 @@ export const DashboardLayout = () => {
           </Accordion>
         </Paper>
       </OptionsArea>
-      <LlmChatArea llmChat={isLlmChatEnabled}>
-        <StyledPaper>
-          <LlmChatLayout />
-        </StyledPaper>
-      </LlmChatArea>
+      {isLlmChatEnabled ? (
+        <LlmChatArea llmChat={isLlmChatEnabled}>
+          <StyledPaper>
+            <LlmChatLayout />
+          </StyledPaper>
+        </LlmChatArea>
+      ) : null}
     </LayoutGrid>
   );
 };

@@ -8,12 +8,8 @@ interface LlmChatState {
 }
 
 const initialState: LlmChatState = {
-  enabled: false,
-  messages: [
-    { role: 'system', content: 'Welcome to the chat!' },
-    { role: 'user', content: 'Hello, I have a question.' },
-    { role: 'assistant', content: 'Sure, what can I help you with?' },
-  ],
+  enabled: true,
+  messages: [],
 };
 
 export const llmChatSlice = createSlice({
@@ -60,12 +56,12 @@ export const {
 
 export const selectLlmChatEnabled = createSelector(
   (state: { llmChat: LlmChatState }) => state.llmChat.enabled,
-  (enabled) => enabled
+  (enabled) => enabled,
 );
 
 export const selectLlmChatMessages = createSelector(
   (state: { llmChat: LlmChatState }) => state.llmChat.messages,
-  (messages) => messages
+  (messages) => messages,
 );
 
 export const llmChatReducer = llmChatSlice.reducer;

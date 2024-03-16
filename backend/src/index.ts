@@ -17,6 +17,7 @@ import {
   fetchVeasController,
   setOptionsController,
 } from './controllers/sd-options.controller';
+import './db-init';
 
 const app = express();
 const server = http.createServer(app);
@@ -53,5 +54,6 @@ io.on(SocketEvent.CONNECT, (socket) => {
 // host output folder
 const outputDir = path.join(__dirname, '..', '..', 'outputs');
 app.use('/outputs', express.static(outputDir));
+
 
 server.listen(PORT, () => console.info(`Server started on port ${PORT}`));

@@ -39,7 +39,7 @@ export async function* getLlmResponse({ messages }: LlmChatRequest): AsyncGenera
       body: JSON.stringify({
         messages,
         temperature: 0.8,
-        max_tokens: 100,
+        max_tokens: -1,
         stream: true,
         presence_penalty: 1,
       }),

@@ -3,6 +3,7 @@ import { ImageInputsType, SocketEvent } from '../types';
 import { ImageDataRequestType } from '../types/image-data';
 import { PromptTagsType } from '../types/image-input';
 import { GetImagesPathsType } from '../types/image-output';
+import { LlmChatRequest } from '../types/llm-chat';
 import { SdOptionsType } from '../types/sd-options';
 
 export function useEmitters() {
@@ -49,5 +50,8 @@ export function useEmitters() {
     fetchVaes: () => {
       socket.emit(SocketEvent.FETCH_VAES);
     },
+    sendMessage: (request: Partial<LlmChatRequest>) => {
+      socket.emit(SocketEvent.LLM_COMPLETION, request);
+    }
   };
 }
