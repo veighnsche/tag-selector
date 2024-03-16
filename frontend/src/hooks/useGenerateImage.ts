@@ -8,8 +8,8 @@ import { useEmitters } from './useEmitters';
 export function useGenerateImage() {
   const inputs = useAppSelector(selectInputs);
   const sdStatus = useAppSelector(selectSdStatus);
-  const emit = useEmitters();
   const tags = useAppSelector(selectAllTags);
+  const emit = useEmitters();
 
   return () => {
     if (sdStatus === SdStatus.READY) {
