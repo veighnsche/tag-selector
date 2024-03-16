@@ -1,12 +1,12 @@
-import { ImageOutputType } from 'frontend/src/types'
-import { GetImagesPathsType } from 'frontend/src/types/image-output'
-import fs from 'fs'
-import path from 'path'
-import { promisify } from 'util'
+import { ImageOutputType } from 'frontend/src/types';
+import { GetImagesPathsType } from 'frontend/src/types/image-output';
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
 
 interface ValidFile {
-  index: number
-  fileName: string
+  index: number;
+  fileName: string;
 }
 
 /**
@@ -17,31 +17,31 @@ interface ValidFile {
 function filterValidFiles(files: string[]): ValidFile[] {
   return files
   .map((file) => {
-    const indexString = file.split('-')[0]
-    const index = Number(indexString)
+    const indexString = file.split('-')[0];
+    const index = Number(indexString);
     if (isNaN(index)) {
-      return false
+      return false;
     }
 
     return {
       index,
       fileName: file,
-    }
+    };
   })
-  .filter(Boolean) as ValidFile[]
+  .filter(Boolean) as ValidFile[];
 }
 
 /**
  * Finds the next index for a file by reading the directory and extracting the indexes from the existing file names.
  */
 export async function getNextIndex(): Promise<number> {
-  const outputsDir = getOutputsDir()
-  const files = await getFiles(outputsDir)
+  const outputsDir = getOutputsDir();
+  const files = await getFiles(outputsDir);
   if (files.length === 0) {
-    return 0
+    return 0;
   }
 
-  return Math.max(...files.map(file => file.index)) + 1
+  return Math.max(...files.map(file => file.index)) + 1;
 }
 
 /**
@@ -50,15 +50,15 @@ export async function getNextIndex(): Promise<number> {
  */
 export function getOutputsDir(): string {
   // get root directory, current file is in root\backend\src\utils\save-image-to-outputs.ts
-  const rootDir = path.resolve(__dirname, '..', '..', '..')
+  const rootDir = path.resolve(__dirname, '..', '..', '..');
   // create the outputs folder if it doesn't exist
-  const outputsDir = path.join(rootDir, 'outputs')
+  const outputsDir = path.join(rootDir, 'outputs');
 
   if (!fs.existsSync(outputsDir)) {
-    fs.mkdirSync(outputsDir)
+    fs.mkdirSync(outputsDir);
   }
 
-  return outputsDir
+  return outputsDir;
 }
 
 /**
@@ -69,44 +69,47 @@ export function getOutputsDir(): string {
  */
 function nameImage(index: number, imageOutput: ImageOutputType): string {
   // give the index 5 digits
-  const indexString = index.toString().padStart(5, '0')
+  const indexString = index.toString().padStart(5, '0');
   // max 50 characters for the prompt
-  const prompt = imageOutput.parameters.prompt.substring(0, 50)
+  const prompt = imageOutput.parameters.prompt.substring(0, 50);
   // replace all non-alphanumeric characters with underscores
-  const promptString = prompt.replace(/[^a-zA-Z0-9]/g, '_')
+  const promptString = prompt.replace(/[^a-zA-Z0-9]/g, '_');
   // only one underscore in a row
-  const promptStringClean = promptString.replace(/_+/g, '_').trim()
-  const size = `${imageOutput.info.width}x${imageOutput.info.height}`
+  const promptStringClean = promptString.replace(/_+/g, '_').trim();
+  const size = `${imageOutput.info.width}x${imageOutput.info.height}`;
 
-  return `${indexString}-${size}-${imageOutput.info.seed}-${promptStringClean}.png`
+  return `${indexString}-${size}-${imageOutput.info.seed}-${promptStringClean}.png`;
 }
 
 async function getFiles(dir: string): Promise<ValidFile[]> {
-  const files = await promisify(fs.readdir)(dir)
-  return filterValidFiles(files)
+  const files = await promisify(fs.readdir)(dir);
+  return filterValidFiles(files);
 }
 
 interface SaveImageParams {
-  buffer: Buffer
-  index: number
-  imageOutput: ImageOutputType
+  buffer: Buffer;
+  index: number;
+  imageOutput: ImageOutputType;
 }
 
 export async function saveImage({ buffer, index, imageOutput }: SaveImageParams): Promise<string> {
-  const outputsDir = getOutputsDir()
-  const filename = nameImage(index, imageOutput)
-  const filepath = path.join(outputsDir, filename)
+  const outputsDir = getOutputsDir();
+  const filename = nameImage(index, imageOutput);
+  const filepath = path.join(outputsDir, filename);
 
   await promisify(fs.writeFile)(
     filepath,
     buffer,
     'base64',
-  )
+  );
 
-  return filename
+  return filename;
 }
 
-export async function getImagesPaths({ toIndex = Infinity, amount = Infinity }: GetImagesPathsType = {}): Promise<string[]> {
+export async function getImagesPaths({
+  toIndex = Infinity,
+  amount = Infinity,
+}: GetImagesPathsType = {}): Promise<string[]> {
   const outputsDir = getOutputsDir();
   const files = await getFiles(outputsDir);
   // sort files by index in descending order

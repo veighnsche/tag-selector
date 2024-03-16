@@ -131,6 +131,7 @@ interface ChatCompletionRequest {
   max_tokens: number;
   stream: boolean;
   presence_penalty?: number;
+  stop?: string[];
 }
 
 interface ChatCompletionResponse {
@@ -152,6 +153,7 @@ async function getChatCompletion(llmPrompt: string, imagePrompt: string): Promis
       max_tokens: -1,
       stream: false,
       presence_penalty: 1,
+      stop: ['\n', '###'],
     }, {
       headers: { 'Content-Type': 'application/json' },
     });
