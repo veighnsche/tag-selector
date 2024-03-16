@@ -9,48 +9,61 @@ interface LlmChatState {
 
 const initialState: LlmChatState = {
   enabled: false,
-  messages: [],
+  messages: [
+    { role: 'system', content: 'Welcome to the chat!' },
+    { role: 'user', content: 'Hello, I have a question.' },
+    { role: 'assistant', content: 'Sure, what can I help you with?' },
+  ],
 };
 
 export const llmChatSlice = createSlice({
   name: 'llmChat',
   initialState,
   reducers: {
-    addSystemMessage: (state, action: PayloadAction<{ content: string }>) => {
+    llmToggleEnabled: (state) => {
+      state.enabled = !state.enabled;
+    },
+    llmAddSystemMessage: (state, action: PayloadAction<{ content: string }>) => {
       state.messages.push({ role: 'system', content: action.payload.content });
     },
-    addUserMessage: (state, action: PayloadAction<{ content: string }>) => {
+    llmAddUserMessage: (state, action: PayloadAction<{ content: string }>) => {
       state.messages.push({ role: 'user', content: action.payload.content });
     },
-    addAssistantMessage: (state, action: PayloadAction<{ content: string }>) => {
+    llmAddAssistantMessage: (state, action: PayloadAction<{ content: string }>) => {
       state.messages.push({ role: 'assistant', content: action.payload.content });
     },
-    editContent: (state, action: PayloadAction<{ index: number; content: string }>) => {
+    llmEditContent: (state, action: PayloadAction<{ index: number; content: string }>) => {
       state.messages[action.payload.index].content = action.payload.content;
     },
-    editRole: (state, action: PayloadAction<{ index: number; role: LlmMessageType['role'] }>) => {
+    llmEditRole: (state, action: PayloadAction<{ index: number; role: LlmMessageType['role'] }>) => {
       state.messages[action.payload.index].role = action.payload.role;
     },
-    removeMessage: (state, action: PayloadAction<{ index: number }>) => {
+    llmRemoveMessage: (state, action: PayloadAction<{ index: number }>) => {
       state.messages.splice(action.payload.index, 1);
     },
-    clearMessages: (state) => {
+    llmClearMessages: (state) => {
       state.messages = [];
     },
   },
 });
 
 export const {
-  addSystemMessage,
-  addUserMessage,
-  addAssistantMessage,
-  editContent,
-  editRole,
-  removeMessage,
-  clearMessages,
+  llmToggleEnabled,
+  llmAddSystemMessage,
+  llmAddUserMessage,
+  llmAddAssistantMessage,
+  llmEditContent,
+  llmEditRole,
+  llmRemoveMessage,
+  llmClearMessages,
 } = llmChatSlice.actions;
 
-export const selectMessages = createSelector(
+export const selectLlmChatEnabled = createSelector(
+  (state: { llmChat: LlmChatState }) => state.llmChat.enabled,
+  (enabled) => enabled
+);
+
+export const selectLlmChatMessages = createSelector(
   (state: { llmChat: LlmChatState }) => state.llmChat.messages,
   (messages) => messages
 );
