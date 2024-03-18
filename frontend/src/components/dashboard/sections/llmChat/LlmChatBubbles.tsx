@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { llmAddAssistantMessage, selectLlmChatMessages } from '../../../../store/reducers/llmChat';
 import { SocketEvent } from '../../../../types';
@@ -69,8 +69,25 @@ export const LlmChatBubbles = () => {
     };
   });
 
+  const chatEndRef = useRef<HTMLDivElement|null>(null);
+
+  useEffect(() => {
+    if (!chatEndRef.current) return;
+    const observer = new MutationObserver(() => {
+      if(chatEndRef.current){
+        chatEndRef.current.scrollTop = chatEndRef.current.scrollHeight;
+      }
+    });
+
+    observer.observe(chatEndRef.current, { childList: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <ChatBubbleWrapper>
+    <ChatBubbleWrapper ref={chatEndRef}>
       {messages.map((message, index) => (
         <ChatBubble key={index} role={message.role}>
           {message.content}
