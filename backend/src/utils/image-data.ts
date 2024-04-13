@@ -30,6 +30,7 @@ export async function fetchImageData(filePath: string): Promise<unknown> {
 
   // then parse the data and return it
   return {
+    prompt: parameters.Prompt,
     model: parameters.Model,
     width: Number(parameters['Size-1']),
     height: Number(parameters['Size-2']),

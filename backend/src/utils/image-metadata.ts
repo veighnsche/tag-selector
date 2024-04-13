@@ -7,10 +7,21 @@ export function addMetadataToImage(uri: string, data: ImageCustomDataType): Uint
   const buffer = Buffer.from(uri, 'base64');
   const uit8Array = new Uint8Array(buffer);
 
-  return Object.entries(data).reduce((uit8Array, [key, value]) => {
+  return Object.entries(omitCertainData(data)).reduce((uit8Array, [key, value]) => {
     return addMetadata(uit8Array, key, JSON.stringify(value));
   }, uit8Array);
 }
+
+export const omitCertainData = (data: ImageCustomDataType): ImageCustomDataType => {
+  // omitting [ImageCustomData.PROMPT_TAGS].tagPool
+  const { [ImageCustomData.PROMPT_TAGS]: { tagPool, ...promptTags }, ...rest } = data;
+  return {
+    ...rest, [ImageCustomData.PROMPT_TAGS]: {
+      tagPool: [],
+      ...promptTags,
+    },
+  };
+};
 
 export function fetchMetaDataFromImage(filename: string): ImageCustomDataType {
   const outputsDir = getOutputsDir();

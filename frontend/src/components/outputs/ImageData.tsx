@@ -46,6 +46,11 @@ const DataContainer = styled.div`
 
 const propertyList: ImageDataPropertyType[] = [
   {
+    name: 'Prompt',
+    property: 'prompt',
+    fullWidth: true,
+  },
+  {
     name: 'Model',
     property: 'model',
     fullWidth: true,
