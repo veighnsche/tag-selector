@@ -185,6 +185,8 @@ export const selectSliders = createSelector(
   (state: RootState) => state.inputs.options,
   (options) => {
     return {
+      height: options.height,
+      width: options.width,
       steps: options.steps,
       cfg: options.cfg,
       seed: options.seed,

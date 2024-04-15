@@ -14,17 +14,19 @@ import {
   SelectChangeEvent,
   Slider,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFetchImageData } from '../../../../hooks/useFetchImageData';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { selectLastSeed } from '../../../../store/reducers/images';
 import {
   selectSliders,
   setCfg,
+  setHeight,
   setRefinerSwitchAt,
   setRestoreFaces,
   setSeed,
   setSteps,
+  setWidth,
 } from '../../../../store/reducers/inputs';
 import { RandomIcon } from '../../../icons/RandomIcon';
 import { RecycleIcon } from '../../../icons/RecycleIcon';
@@ -33,14 +35,14 @@ import { SamplingWrapper } from './SamplingWrapper';
 import { SdModelWrapper } from './SdModelWrapper';
 
 const StyledPaper = styled(Paper)`
-  padding: 0.75rem;
-  width: 100%;
+    padding: 0.75rem;
+    width: 100%;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
 `;
 
 export const Sliders = () => {
@@ -48,6 +50,18 @@ export const Sliders = () => {
   const dispatch = useAppDispatch();
   const lastImageSeed = useAppSelector(selectLastSeed);
   const fetchImageData = useFetchImageData();
+
+  const [heightText, setHeightText] = useState(values.height);
+  const [widthText, setWidthText] = useState(values.width);
+
+  useEffect(() => {
+    if (heightText !== values.height) {
+      setHeightText(values.height);
+    }
+    if (widthText !== values.width) {
+      setWidthText(values.width);
+    }
+  }, [values.height, values.width]);
 
   const setSeedFromLastImage = async () => {
     if (lastImageSeed.seed !== undefined) {
@@ -63,6 +77,30 @@ export const Sliders = () => {
 
   return (
     <StyledPaper elevation={2}>
+      <Box display="flex" width="100%" justifyContent="space-between" alignItems="center" gap={2}>
+        <FormControl variant="outlined">
+          <InputLabel>Width</InputLabel>
+          <OutlinedInput
+            label="width"
+            size="small"
+            type="number"
+            value={widthText}
+            onChange={(e) => setWidthText(Number(e.target.value))}
+            onBlur={() => dispatch(setWidth(widthText))}
+          />
+        </FormControl>
+        <FormControl variant="outlined">
+          <InputLabel>Height</InputLabel>
+          <OutlinedInput
+            label="height"
+            size="small"
+            type="number"
+            value={heightText}
+            onChange={(e) => setHeightText(Number(e.target.value))}
+            onBlur={() => dispatch(setHeight(heightText))}
+          />
+        </FormControl>
+      </Box>
       <SliderControl>
         <SliderTextWrapper>
           <SliderLabel size="small">Steps</SliderLabel>

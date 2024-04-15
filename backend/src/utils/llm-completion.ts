@@ -4,6 +4,19 @@ import { Stream } from 'openai/streaming';
 import { LLM_URL } from '../constants';
 
 export async function getLlmPromptEnhancer(llmPrompt: string, imagePrompt: string): Promise<string> {
+  // separate the lora's from the tags (lora's are tags that are enclosed with '<lora' and '>')
+
+  const [loras, tags] = imagePrompt.split(', ').reduce((acc, tag) => {
+    if (tag.startsWith('<lora') && tag.endsWith('>')) {
+      acc[0].push(tag);
+    }
+    else {
+      acc[1].push(tag);
+    }
+    return acc;
+  }, [[], []] as [string[], string[]]);
+
+
   try {
     const response = await axios.post<any, AxiosResponse<LlmChatResponse>, LlmChatRequest>(LLM_URL, {
       messages: [
@@ -19,10 +32,14 @@ export async function getLlmPromptEnhancer(llmPrompt: string, imagePrompt: strin
       headers: { 'Content-Type': 'application/json' },
     });
 
-    return response.data.choices[0].message.content;
+    if (loras.length === 0) {
+      return response.data.choices[0].message.content;
+    }
+
+    return `${loras.join(', ')}, ${response.data.choices[0].message.content}`;
   } catch (error) {
     console.error('Error fetching chat completion:', error);
-    throw error; // Re-throw to allow for error handling where the function is used
+    return imagePrompt;
   }
 }
 

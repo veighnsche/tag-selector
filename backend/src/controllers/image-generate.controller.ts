@@ -22,7 +22,6 @@ export function imageGenerateController(socket: Socket) {
       socket.emit(SocketEvent.PROGRESS_PERCENT, progress.progress);
     }, 9900);
 
-
     const inputs = withSeedNumber(inputsWithoutSeed);
     const imageOutput = await imageGenerate(inputs, promptTags)
     .catch((error: AxiosError) => {

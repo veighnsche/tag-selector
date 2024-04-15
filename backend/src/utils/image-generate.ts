@@ -8,7 +8,8 @@ import { SD_URL } from '../constants';
 import { getLlmPromptEnhancer } from './llm-completion';
 
 function isTagBracketed(tag: string) {
-  return tag.startsWith('{') && tag.endsWith('}');
+  const trimmedTag = tag.trim();
+  return trimmedTag.startsWith('{') && trimmedTag.endsWith('}');
 }
 
 function pickBracketedTag(tag: string, rng: seedrandom.PRNG) {
@@ -64,7 +65,7 @@ export function untangleDynamicTags(prompts: { prompt: string, negative: string 
   return { prompt: newPrompt, negative: newNegative };
 }
 
-const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
+const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string | null => {
   if (tag.muted || tag.name === '') {
     return '';
   }
@@ -92,7 +93,7 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string => {
     tag.name = pickBracketedTag(tag.name, rng).trim();
 
     if (tag.name === '') {
-      return '';
+      return null;
     }
   }
 

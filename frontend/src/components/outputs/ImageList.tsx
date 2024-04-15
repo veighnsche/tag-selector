@@ -196,6 +196,7 @@ export const ImageList = () => {
             variant="outlined"
             shape="rounded"
             page={page}
+            siblingCount={2}
             onChange={(_, value) => setPage(value)}
           />
         </Box>
