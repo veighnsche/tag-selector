@@ -7,6 +7,7 @@ import {
   selectIsLastImage,
   selectModalImage,
   setModalImage,
+  toggleModal,
 } from '../store/reducers/images';
 import { SocketEvent } from '../types';
 import { extractFileIndex } from '../utils/files';
@@ -27,7 +28,8 @@ export function useModalNavigation() {
   function navigateNext() {
     if (!isLastImage) {
       dispatch(nextModalImage());
-    } else if (modalImage) {
+    }
+    else if (modalImage) {
       socket.on(SocketEvent.FETCH_IMAGES_MODAL, ({ nextImage }: { nextImage: string }) => {
         if (nextImage) {
           dispatch(setModalImage(nextImage));
@@ -46,9 +48,14 @@ export function useModalNavigation() {
     dispatch(previousModalImage());
   }
 
+  function closeModal() {
+    dispatch(toggleModal());
+  }
+
   return {
     navigateFirst,
     navigateNext,
     navigatePrevious,
+    closeModal,
   };
 }

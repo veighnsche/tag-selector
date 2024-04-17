@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, ButtonGroup, Divider, Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useFetchImageData } from '../../hooks/useFetchImageData';
@@ -88,7 +89,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   const fetchImageData = useFetchImageData();
   const [selected, setSelected] = useState<SelectableProperties[]>([]);
   const dispatch = useAppDispatch();
-  const { navigateFirst, navigateNext, navigatePrevious } = useModalNavigation();
+  const { navigateFirst, navigateNext, navigatePrevious, closeModal } = useModalNavigation();
 
   const negativeTags = data?.customData[ImageCustomData.PROMPT_TAGS].negativeTags;
   const promptTags = data?.customData[ImageCustomData.PROMPT_TAGS].tags;
@@ -238,6 +239,14 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
             </Button>
             <Button onClick={navigateNext}>
               <NavigateNextIcon />
+            </Button>
+            <Button
+              onClick={closeModal}
+              sx={{
+                width: '20%',
+              }}
+            >
+              <CloseIcon />
             </Button>
           </ButtonGroup>
         </Box>
