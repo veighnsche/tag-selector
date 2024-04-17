@@ -1,11 +1,15 @@
-import { Chip } from '@mui/material';
+import { Chip, useTheme } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { moveTagBetweenLocations, newTag, selectGetId, selectLocateTagByName } from '../../store/reducers/tags';
 import { TagType } from '../../types';
 import { makeTagLabel } from '../../utils/tags';
 // import { ClipRetrievalPopover } from '../clipRetrieval/ClipRetrievalPopover'
 
-export const ImageTag = ({ tag }: { tag: TagType }) => {
+export const ImageTag = ({ tag, isPrompt, isNegativePrompt }: {
+  tag: TagType;
+  isPrompt: boolean;
+  isNegativePrompt: boolean
+}) => {
   const { name, muted } = tag;
   const locateTag = useAppSelector(selectLocateTagByName);
   const getId = useAppSelector(selectGetId);
@@ -14,6 +18,10 @@ export const ImageTag = ({ tag }: { tag: TagType }) => {
   // const isClipOpen = Boolean(clipAnchorEl)
   const label = makeTagLabel(tag);
   const { isTags, isNegativeTags, isTagPool, found } = locateTag(name);
+
+  const theme = useTheme();
+  const primaryColor = theme.palette.primary.main;
+  const secondaryColor = theme.palette.secondary.main;
 
   function handleLeftClick() {
     if (!found) {
@@ -24,7 +32,7 @@ export const ImageTag = ({ tag }: { tag: TagType }) => {
       moveTagBetweenLocations({
         id: getId(name) as string,
         to: isTagPool ? 'tags' : isTags ? 'negativeTags' : 'tagPool',
-      })
+      }),
     );
   }
 
@@ -48,6 +56,9 @@ export const ImageTag = ({ tag }: { tag: TagType }) => {
             display: 'block',
             whiteSpace: 'normal',
           },
+          // if the tag is a prompt tag, give border primary color
+          // if the tag is a negative tag, give border secondary color
+          border: isPrompt ? `1px solid ${primaryColor}` : isNegativePrompt ? `1px solid ${secondaryColor}` : undefined,
         }}
       />
       {/*<ClipRetrievalPopover*/}

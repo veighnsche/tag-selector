@@ -12,10 +12,10 @@ interface ImageTagsProps {
 }
 
 const TagContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 0.25rem;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.25rem;
 `;
 
 export const ImageTagList = ({ tags = [], promptTags = initialPromptTagsState }: ImageTagsProps) => {
@@ -36,15 +36,17 @@ export const ImageTagList = ({ tags = [], promptTags = initialPromptTagsState }:
         const index = tags.findIndex((t) => t.name === tag.name);
         if (index !== -1) {
           tags[index] = tag;
-        } else if (location === 'tags') {
+        }
+        else if (location === 'tags') {
           tags.unshift(tag);
-        } else {
+        }
+        else {
           tags.push(tag);
         }
       });
       return tags;
     },
-    [promptTags]
+    [promptTags],
   );
 
   const viewTags = useMemo(() => {
@@ -96,7 +98,12 @@ export const ImageTagList = ({ tags = [], promptTags = initialPromptTagsState }:
       <Box flex={1} px="1rem" sx={{ overflowY: 'auto' }}>
         <TagContainer>
           {viewTags.map((tag) => (
-            <ImageTag tag={tag} key={tag.name} />
+            <ImageTag
+              tag={tag}
+              key={tag.name}
+              isPrompt={promptTags.tags.some((t) => t.name === tag.name)}
+              isNegativePrompt={promptTags.negativeTags.some((t) => t.name === tag.name)}
+            />
           ))}
         </TagContainer>
       </Box>

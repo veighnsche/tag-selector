@@ -54,8 +54,9 @@ export const LlmEnhancer = () => {
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         variant="outlined"
-        rows={3}
+        rows={8}
         multiline
+        maxRows={20}
       />
     </StyledPaper>
   );

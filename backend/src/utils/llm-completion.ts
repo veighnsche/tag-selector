@@ -6,27 +6,31 @@ import { LLM_URL } from '../constants';
 export async function getLlmPromptEnhancer(llmPrompt: string, imagePrompt: string): Promise<string> {
   // separate the lora's from the tags (lora's are tags that are enclosed with '<lora' and '>')
 
-  const [loras, tags] = imagePrompt.split(', ').reduce((acc, tag) => {
+  const { loras, tags } = imagePrompt.split(', ').reduce((acc, tag) => {
     if (tag.startsWith('<lora') && tag.endsWith('>')) {
-      acc[0].push(tag);
+      acc.loras.push(tag);
     }
     else {
-      acc[1].push(tag);
+      acc.tags.push(tag);
     }
     return acc;
-  }, [[], []] as [string[], string[]]);
+  }, {
+    loras: [] as string[],
+    tags: [] as string[],
+  });
 
 
   try {
     const response = await axios.post<any, AxiosResponse<LlmChatResponse>, LlmChatRequest>(LLM_URL, {
       messages: [
         { 'role': 'system', 'content': llmPrompt },
-        { 'role': 'user', 'content': imagePrompt },
+        { 'role': 'user', 'content': tags.join(', ') },
       ],
-      temperature: 0.7,
+      temperature: 0.5,
       max_tokens: -1,
       stream: false,
-      presence_penalty: 1,
+      presence_penalty: 1.05,
+      repeat_penalty: 1.05,
       stop: ['\n', '###'],
     }, {
       headers: { 'Content-Type': 'application/json' },
