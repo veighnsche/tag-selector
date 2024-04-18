@@ -13,6 +13,7 @@ export type DynamicTagType = {
 export interface TagType {
   id: string;
   name: string;
+  choices?: string;
   strength?: number;
   muted?: boolean;
   hidden?: boolean;

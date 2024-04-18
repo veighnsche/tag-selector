@@ -12,7 +12,7 @@ import { setInputsFromImageData, setLlmEnhancePrompt } from '../../store/reducer
 import { setTagsFromImageData } from '../../store/reducers/tags';
 import { ImageCustomData } from '../../types/image-custom-data';
 import { FullImageDataType, ImageDataType } from '../../types/image-data';
-import { PromptTagsType } from '../../types/image-input';
+import { PromptTagsType, TagType } from '../../types/image-input';
 import { makeTagLabelWrapped } from '../../utils/tags';
 import { ImageDataProperty } from './ImageDataProperty';
 import { ImageTagList } from './ImageTagList';
@@ -114,6 +114,18 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
     setSelected([...allProperties, 'llmPrompt', 'scene', 'tags', 'negativeTags']);
   }
 
+  function replaceTagNames(tags: TagType[]): TagType[] {
+    return tags.map(tag => {
+      if (tag.choices) {
+        return {
+          ...tag,
+          name: tag.choices,
+        };
+      }
+      return tag;
+    })
+  }
+
   function replaceSelected() {
     if (data) {
       const selectedData = selected
@@ -131,12 +143,13 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
       dispatch(setInputsFromImageData(selectedData));
 
       const selectedTags: Partial<PromptTagsType> = {};
-      if (isSelected('tags')) {
-        selectedTags.tags = promptTags;
+      if (isSelected('tags') && promptTags) {
+        selectedTags.tags = replaceTagNames(promptTags);
       }
-      if (isSelected('negativeTags')) {
-        selectedTags.negativeTags = negativeTags;
+      if (isSelected('negativeTags') && negativeTags) {
+        selectedTags.negativeTags = replaceTagNames(negativeTags);
       }
+
       dispatch(setTagsFromImageData(selectedTags));
 
       if (isSelected('llmPrompt')) {

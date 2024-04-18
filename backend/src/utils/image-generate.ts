@@ -67,7 +67,7 @@ export function untangleDynamicTags(prompts: { prompt: string, negative: string 
 
 const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string | null => {
   if (tag.muted || tag.name === '') {
-    return '';
+    return null;
   }
 
   if (tag.dynamic !== undefined) {
@@ -90,7 +90,8 @@ const tagToPrompt = (rng: seedrandom.PRNG) => (tag: TagType): string | null => {
   }
 
   if (isTagBracketed(tag.name)) {
-    tag.name = pickBracketedTag(tag.name, rng).trim();
+    tag.choices = `${tag.name}`;
+    tag.name = pickBracketedTag(tag.choices, rng).trim();
 
     if (tag.name === '') {
       return null;
@@ -183,9 +184,9 @@ export async function imageGenerate({
   }
 }
 
-export function getProgress(): Promise<SdProgressType> {
-  return axios.get(`${SD_URL}/sdapi/v1/progress`)
-  .then(response => response.data);
+export async function getProgress(): Promise<SdProgressType> {
+  let response = await axios.get(`${SD_URL}/sdapi/v1/progress`);
+  return await response.data;
 }
 
 export function interruptImageGenerate(): Promise<void> {
