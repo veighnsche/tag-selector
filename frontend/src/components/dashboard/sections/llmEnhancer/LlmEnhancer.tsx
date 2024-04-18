@@ -56,7 +56,6 @@ export const LlmEnhancer = () => {
         variant="outlined"
         rows={8}
         multiline
-        maxRows={20}
       />
     </StyledPaper>
   );
