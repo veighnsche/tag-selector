@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
+import CloseIcon from '@mui/icons-material/Close';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, ButtonGroup, Divider, Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useFetchImageData } from '../../hooks/useFetchImageData';
 import { useModalNavigation } from '../../hooks/useModalNavigation';
 import { useAppDispatch } from '../../store';
-import { setInputsFromImageData } from '../../store/reducers/inputs';
+import { setInputsFromImageData, setLlmEnhancePrompt } from '../../store/reducers/inputs';
 import { setTagsFromImageData } from '../../store/reducers/tags';
 import { ImageCustomData } from '../../types/image-custom-data';
 import { FullImageDataType, ImageDataType } from '../../types/image-data';
@@ -22,11 +22,11 @@ const StyledPaper = styled(Paper, {
 })<{
   open: boolean;
 }>`
-  width: ${(props) => (props.open ? 30 /** todo: should be a 3:2 ratio */ + 'vw' : '0vw')};
-  height: 100vh;
-  transition: width 0.8s ease-in-out;
-  overflow: hidden;
-  position: relative;
+    width: ${(props) => (props.open ? 30 /** todo: should be a 3:2 ratio */ + 'vw' : '0vw')};
+    height: 100vh;
+    transition: width 0.8s ease-in-out;
+    overflow: hidden;
+    position: relative;
 `;
 
 interface ImageDataProps {
@@ -41,16 +41,11 @@ interface ImageDataPropertyType {
 }
 
 const DataContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const propertyList: ImageDataPropertyType[] = [
-  {
-    name: 'Prompt',
-    property: 'prompt',
-    fullWidth: true,
-  },
   {
     name: 'Model',
     property: 'model',
@@ -82,7 +77,7 @@ const propertyList: ImageDataPropertyType[] = [
   },
 ];
 
-type SelectableProperties = keyof ImageDataType | 'scene' | 'tags' | 'negativeTags';
+type SelectableProperties = keyof ImageDataType | 'llmPrompt' | 'scene' | 'tags' | 'negativeTags';
 
 export const ImageData = ({ filename, open }: ImageDataProps) => {
   const [data, setData] = useState<FullImageDataType | null>(null);
@@ -95,9 +90,13 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   const promptTags = data?.customData[ImageCustomData.PROMPT_TAGS].tags;
   const scene = data?.customData[ImageCustomData.INPUTS].prompt.scene;
 
+  const llmEnhance = data?.customData[ImageCustomData.INPUTS].options.llmEnhance;
+  const llmPrompt = llmEnhance?.prompt;
+
   useEffect(() => {
     if (filename && open) {
       fetchImageData(filename).then((data) => {
+        console.log('data', data);
         setData(data);
       });
     }
@@ -119,12 +118,12 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   function replaceSelected() {
     if (data) {
       const selectedData = selected
-        .filter((selected) => propertyList.some((property) => property.property === selected))
-        .reduce((acc, curr) => {
-          const prop = curr as keyof ImageDataType;
-          acc[prop] = data.imageData[prop] as any;
-          return acc;
-        }, {} as Partial<ImageDataType>);
+      .filter((selected) => propertyList.some((property) => property.property === selected))
+      .reduce((acc, curr) => {
+        const prop = curr as keyof ImageDataType;
+        acc[prop] = data.imageData[prop] as any;
+        return acc;
+      }, {} as Partial<ImageDataType>);
 
       if (isSelected('scene')) {
         selectedData.prompt = scene;
@@ -141,6 +140,10 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
       }
       dispatch(setTagsFromImageData(selectedTags));
 
+      if (isSelected('llmPrompt')) {
+        dispatch(setLlmEnhancePrompt(llmPrompt as string));
+      }
+
       setSelected([]);
     }
   }
@@ -148,9 +151,14 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   function toggleProperty(property: SelectableProperties) {
     if (isSelected(property)) {
       setSelected(selected.filter((p) => p !== property));
-    } else {
+    }
+    else {
       setSelected([...selected, property]);
     }
+  }
+
+  function showLlmPrompt(): boolean {
+    return Boolean(llmPrompt && llmEnhance?.enabled);
   }
 
   return (
@@ -199,6 +207,15 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                   fullWidth
                 />
               ) : null}
+              {showLlmPrompt() ? (
+                <ImageDataProperty
+                  name="LLM Prompt"
+                  variant={buttonVariant('llmPrompt')}
+                  toggle={() => toggleProperty('llmPrompt')}
+                  value={llmPrompt}
+                  fullWidth
+                />
+              ) : null}
               {propertyList.map(({ fullWidth, name, property }) =>
                 data?.imageData[property] ? (
                   <ImageDataProperty
@@ -209,7 +226,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                     value={data?.imageData[property]}
                     fullWidth={fullWidth}
                   />
-                ) : null
+                ) : null,
               )}
             </DataContainer>
           ) : null}
@@ -224,7 +241,10 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
         </Box>
         <Divider flexItem sx={{ mb: 2 }} />
         <ImageTagList tags={data?.customData.tags} promptTags={data?.customData.promptTags} />
-        <Box p="1rem" mt="1rem">
+        <Box p={2} fontSize="0.6rem" mt="1rem" maxHeight="20rem" sx={{ overflowY: 'auto' }}>
+          {data?.imageData.prompt}
+        </Box>
+        <Box p="1rem">
           <ButtonGroup fullWidth variant="outlined">
             <Button
               onClick={navigateFirst}
