@@ -8,7 +8,7 @@ interface LlmChatState {
 }
 
 const initialState: LlmChatState = {
-  enabled: true,
+  enabled: false,
   messages: [],
 };
 
