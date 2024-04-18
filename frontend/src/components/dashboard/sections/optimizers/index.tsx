@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { Box, IconButton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useEffectOnce } from '../../../../hooks/useEffectOnce';
@@ -18,13 +19,13 @@ export const Optimizers = () => {
     loras: [],
     lycoris: [],
   });
-  const emit = useEmitters();
+  const { fetchOptimizers } = useEmitters();
   const socket = useSocket();
   const isOptimizerActive = useAppSelector(selectHasOptimizerTag);
   const dispatch = useDispatch();
 
   useEffectOnce(() => {
-    emit.fetchOptimizers();
+    fetchOptimizers();
   });
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const Optimizers = () => {
         name: lycori,
       })),
     ],
-    [embeddings, hypernetworks, loras, lycoris]
+    [embeddings, hypernetworks, loras, lycoris],
   );
 
   function handleClick(optimizer: { name: string; type: OptimizerTypes }) {
@@ -64,6 +65,9 @@ export const Optimizers = () => {
 
   return (
     <Box display="flex" flexWrap="wrap" gap="0.25rem" alignItems="center">
+      <IconButton size="small" onClick={fetchOptimizers}>
+        <RefreshIcon />
+      </IconButton>
       {collection.map(({ type, name }) => (
         <OptimizerChip
           key={name}
