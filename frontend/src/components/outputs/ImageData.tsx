@@ -96,7 +96,6 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   useEffect(() => {
     if (filename && open) {
       fetchImageData(filename).then((data) => {
-        console.log('data', data);
         setData(data);
       });
     }
