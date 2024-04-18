@@ -39,7 +39,6 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
 
   useEffect(() => {
     socket.on(SocketEvent.FETCH_SD_MODELS, ({ models }: { models: SdModelType[] }) => {
-      console.log('models', models)
       setModels(models);
       setLoading(false);
     });
