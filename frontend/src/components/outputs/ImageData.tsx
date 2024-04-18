@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useFetchImageData } from '../../hooks/useFetchImageData';
 import { useModalNavigation } from '../../hooks/useModalNavigation';
 import { useAppDispatch } from '../../store';
-import { setInputsFromImageData, setLlmEnhancePrompt } from '../../store/reducers/inputs';
+import { setInputsFromImageData, setLlmEnhancePrompt, setRefiner } from '../../store/reducers/inputs';
 import { setTagsFromImageData } from '../../store/reducers/tags';
 import { ImageCustomData } from '../../types/image-custom-data';
 import { FullImageDataType, ImageDataType } from '../../types/image-data';
@@ -77,7 +77,7 @@ const propertyList: ImageDataPropertyType[] = [
   },
 ];
 
-type SelectableProperties = keyof ImageDataType | 'llmPrompt' | 'scene' | 'tags' | 'negativeTags';
+type SelectableProperties = keyof ImageDataType | 'refiner' | 'llmPrompt' | 'scene' | 'tags' | 'negativeTags';
 
 export const ImageData = ({ filename, open }: ImageDataProps) => {
   const [data, setData] = useState<FullImageDataType | null>(null);
@@ -93,9 +93,14 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
   const llmEnhance = data?.customData[ImageCustomData.INPUTS].options.llmEnhance;
   const llmPrompt = llmEnhance?.prompt;
 
+  const refiner = data?.customData[ImageCustomData.INPUTS].options.refiner;
+  const refinerCheckpoint = refiner?.checkpoint;
+  const refinerSwitchAt = refiner?.switchAt;
+
   useEffect(() => {
     if (filename && open) {
       fetchImageData(filename).then((data) => {
+        console.log('ImageData', data)
         setData(data);
       });
     }
@@ -111,7 +116,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
 
   function selectAll() {
     const allProperties = propertyList.map((property) => property.property);
-    setSelected([...allProperties, 'llmPrompt', 'scene', 'tags', 'negativeTags']);
+    setSelected([...allProperties, 'refiner', 'llmPrompt', 'scene', 'tags', 'negativeTags']);
   }
 
   function replaceTagNames(tags: TagType[]): TagType[] {
@@ -154,6 +159,13 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
 
       if (isSelected('llmPrompt')) {
         dispatch(setLlmEnhancePrompt(llmPrompt as string));
+      }
+
+      if (isSelected('refiner')) {
+        dispatch(setRefiner({
+          checkpoint: refinerCheckpoint as string,
+          switchAt: refinerSwitchAt as number,
+        }))
       }
 
       setSelected([]);
@@ -225,6 +237,15 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
                   variant={buttonVariant('llmPrompt')}
                   toggle={() => toggleProperty('llmPrompt')}
                   value={llmPrompt}
+                  fullWidth
+                />
+              ) : null}
+              {refinerCheckpoint ? (
+                <ImageDataProperty
+                  name={`Refiner`}
+                  variant={buttonVariant('refiner')}
+                  toggle={() => toggleProperty('refiner')}
+                  value={`${refinerSwitchAt}% ${refinerCheckpoint.split('.')[0]}`}
                   fullWidth
                 />
               ) : null}

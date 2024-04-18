@@ -92,6 +92,9 @@ export const inputsSlice = createSlice({
     setHRFDenoisingStrength: (state, action: PayloadAction<number>) => {
       state.options.highResFix.denoisingStrength = action.payload;
     },
+    setRefiner: (state, action: PayloadAction<{ checkpoint: string; switchAt: number }>) => {
+      state.options.refiner = action.payload;
+    },
     setRefinerCheckpoint: (state, action: PayloadAction<string>) => {
       state.options.refiner.checkpoint = action.payload;
     },
@@ -151,6 +154,7 @@ export const {
   setHRFSteps,
   setHRFUpscaler,
   setHRFDenoisingStrength,
+  setRefiner,
   setRefinerCheckpoint,
   setRefinerSwitchAt,
   setInputsFromImageData,
