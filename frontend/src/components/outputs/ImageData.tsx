@@ -111,7 +111,7 @@ export const ImageData = ({ filename, open }: ImageDataProps) => {
 
   function selectAll() {
     const allProperties = propertyList.map((property) => property.property);
-    setSelected([...allProperties, 'scene', 'tags', 'negativeTags']);
+    setSelected([...allProperties, 'llmPrompt', 'scene', 'tags', 'negativeTags']);
   }
 
   function replaceSelected() {
