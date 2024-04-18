@@ -86,6 +86,14 @@ export const TagAddMenu = ({ isOpen, onClose, anchorEl, location }: TagAddMenuPr
             inputRef={inputRef}
             label={doNotSeparateText}
             value={value}
+            onPaste={(e) => {
+              e.preventDefault();
+              const text = e.clipboardData.getData('text');
+              if (text.includes(',')) {
+                setDoNotSeparate(true);
+              }
+              setValue(text);
+            }}
             onChange={(e) => {
               setValue(e.target.value);
             }}
