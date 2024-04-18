@@ -5,11 +5,11 @@ import { getOutputsDir } from './image-crud';
 
 export function addMetadataToImage(uri: string, data: ImageCustomDataType): Uint8Array {
   const buffer = Buffer.from(uri, 'base64');
-  const uit8Array = new Uint8Array(buffer);
+  const uint8Array = new Uint8Array(buffer);
 
-  return Object.entries(omitCertainData(data)).reduce((uit8Array, [key, value]) => {
-    return addMetadata(uit8Array, key, JSON.stringify(value));
-  }, uit8Array);
+  return Object.entries(omitCertainData(data)).reduce((uint8Array, [key, value]) => {
+    return addMetadata(uint8Array, key, JSON.stringify(value));
+  }, uint8Array);
 }
 
 export const omitCertainData = (data: ImageCustomDataType): ImageCustomDataType => {
