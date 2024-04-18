@@ -6,7 +6,8 @@ import { SdUpscalersType } from 'frontend/src/types/sd-upscalers';
 import { SD_URL } from '../constants';
 
 export function getModelOptions(): Promise<SdModelType[]> {
-  return axios.get(`${SD_URL}/sdapi/v1/sd-models`)
+  return axios.post(`${SD_URL}/sdapi/v1/refresh-checkpoints`)
+  .then(() => axios.get(`${SD_URL}/sdapi/v1/sd-models`))
   .then((response) => response.data);
 }
 
@@ -35,7 +36,8 @@ interface EmbeddingResponse {
 }
 
 export function fetchEmbeddings(): Promise<string[]> {
-  return axios.get(`${SD_URL}/sdapi/v1/embeddings`)
+  return axios.get(`${SD_URL}/sdapi/v1/refresh-embeddings`)
+  .then(() => axios.get(`${SD_URL}/sdapi/v1/embeddings`))
   .then((response) => response.data)
   .then((response: EmbeddingResponse) => Object.keys(response.loaded));
 }

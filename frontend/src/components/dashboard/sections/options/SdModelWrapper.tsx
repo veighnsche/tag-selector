@@ -14,6 +14,7 @@ interface SdModelWrapperProps {
 }
 
 interface SdModelWrapperChildrenProps {
+  refresh: () => void;
   models: SdModelType[];
   currentModel: SdModelType['title'];
   setModel: (model: SdModelType['title']) => void;
@@ -38,6 +39,7 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
 
   useEffect(() => {
     socket.on(SocketEvent.FETCH_SD_MODELS, ({ models }: { models: SdModelType[] }) => {
+      console.log('models', models)
       setModels(models);
       setLoading(false);
     });
@@ -53,18 +55,23 @@ export const SdModelWrapper = ({ children }: SdModelWrapperProps) => {
     }
   }, [currentModel]);
 
-  const setModel = (model: SdModelType['title']) => {
+  function setModel(model: SdModelType['title']) {
     setLoading(true);
     emit.setSdOptions({ sd_model_checkpoint: model });
-  };
+  }
 
-  const setRefiner = (refiner: SdModelType['title']) => {
+  function setRefiner(refiner: SdModelType['title']) {
     dispatch(setRefinerCheckpoint(refiner));
-  };
+  }
+
+  function refresh() {
+    setLoading(true);
+    emit.fetchSdModels();
+  }
 
   if (loading) {
     return <Loading subject={'models'} />;
   }
 
-  return <>{children({ models, currentModel, setModel, currentRefiner, setRefiner })}</>;
+  return <>{children({ models, currentModel, setModel, currentRefiner, setRefiner, refresh })}</>;
 };

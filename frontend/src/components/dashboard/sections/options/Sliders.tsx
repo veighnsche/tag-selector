@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import CloseIcon from '@mui/icons-material/Close';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   Box,
   Checkbox,
@@ -203,28 +205,39 @@ export const Sliders = () => {
       </SamplingWrapper>
 
       <SdModelWrapper>
-        {({ models, currentModel, setModel, currentRefiner, setRefiner }) => (
+        {({ models, currentModel, setModel, currentRefiner, setRefiner, refresh }) => (
           <>
+
             <FormControl>
-              <InputLabel size="small">Model</InputLabel>
-              <Select
-                label="Model"
-                size="small"
-                value={currentModel}
-                onChange={(e: SelectChangeEvent) => {
-                  setModel(e.target.value as string);
-                }}
-                sx={{
-                  maxWidth: '30rem',
-                }}
-              >
-                {models.map((model) => (
-                  <MenuItem key={model.title} value={model.title}>
-                    {model.model_name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <InputLabel size="small">Model</InputLabel>
+                <Select
+                  label="Model"
+                  size="small"
+                  value={currentModel}
+                  onChange={(e: SelectChangeEvent) => {
+                    setModel(e.target.value as string);
+                  }}
+                  sx={{
+                    maxWidth: '30rem',
+                    flexGrow: 1,
+                  }}
+                >
+                  {models.map((model) => (
+                    <MenuItem key={model.title} value={model.title}>
+                      {model.model_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <IconButton
+                  onClick={refresh}
+                  edge="end"
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </Box>
             </FormControl>
+
             <FormControl>
               <InputLabel size="small">Refiner</InputLabel>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -252,10 +265,11 @@ export const Sliders = () => {
                   }}
                   edge="end"
                 >
-                  <RecycleIcon />
+                  <CloseIcon />
                 </IconButton>
               </Box>
             </FormControl>
+
           </>
         )}
       </SdModelWrapper>
